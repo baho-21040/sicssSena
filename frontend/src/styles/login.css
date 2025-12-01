@@ -1,0 +1,285 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+:root {
+    --sena-green: #39A900;
+    --sena-light-green: #e8f5e1;
+    --sena-dark-green: #2a7d00;
+    --text-color: #333;
+    --border-color: #e0e0e0;
+}
+
+body {
+    /* Resetea los estilos base para que el fondo sea manejado por el nuevo contenedor */
+    margin: 0;
+    font-family: Arial, sans-serif;
+}
+
+.background-container {
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" opacity="0.1"><circle cx="50" cy="50" r="40" fill="%2339A900"/></svg>'), 
+                      linear-gradient(135deg, #57ff60, #006200);
+    background-size: cover, cover;
+    background-position: center;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.login-container {
+    width: 100%;
+    max-width: 450px;
+    padding: 20px;
+}
+
+.login-card {
+    /* Tarjeta moderna con ligera transparencia */
+    background-color: rgb(226, 255, 212);
+    padding: 40px;
+    border-radius: 15px;
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3); /* Sombra más profunda */
+    backdrop-filter: blur(5px); /* Efecto cristal */
+    text-align: center;
+    /* Borde verde fuerte como acento corporativo */
+    border: 1px solid var(--sena-light-green);
+}
+
+/* --- Encabezado de la Tarjeta --- */
+
+.login-header {
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.logosena {
+    width: 150px;
+    margin-bottom: 10px;
+    animation: bounce 1s infinite alternate; /* Animación sutil */
+}
+
+.titulo-bienvenida {
+    color: var(--text-color);
+    font-size: 1.6em;
+    font-weight: 300;
+}
+
+.sena-label {
+    color: var(--sena-green); /* Acento en el nombre SENA */
+    font-weight: bold;
+}
+
+.subtitulo {
+    color: #888;
+    font-size: 0.9em;
+}
+
+/* --- Campos de Entrada (Input Group V2) --- */
+
+.input-group-v2 {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 0 15px;
+    background-color: #f9f9f9;
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.input-group-v2:focus-within {
+    border-color: var(--sena-green);
+    box-shadow: 0 0 5px var(--sena-light-green);
+}
+
+.input-icon {
+    color: var(--sena-green);
+    margin-right: 15px;
+    font-size: 1.1em;
+}
+
+.input-group-v2 input {
+    flex-grow: 1;
+    padding: 12px 0;
+    border: none;
+    background: transparent;
+    font-size: 1em;
+    color: var(--text-color);
+    outline: none;
+}
+.input-group-v2 input::placeholder {
+    color: #aaa;
+}
+
+
+/* --- Opciones y Enlaces --- */
+
+.opciones {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    font-size: 0.9em;
+}
+
+.enlace-olvido {
+    color: var(--sena-dark-green);
+    text-decoration: none;
+}
+.enlace-olvido:hover {
+    text-decoration: underline;
+}
+
+/* --- Botón de Acceder --- */
+
+.btn-login-v2 {
+    width: 100%;
+    padding: 15px;
+    /* Degradado de verde SENA para un look moderno */
+    background: linear-gradient(to right, #2e9701, rgb(119, 255, 0));
+    color: rgb(255, 255, 255);
+    border: none;   
+    border-radius: 8px;
+    font-size: 1.2em;
+    font-weight: bold;
+    letter-spacing: 1px;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(57, 169, 0, 0.4);
+    transition: all 0.2s ease-in-out;
+}
+.btn-login-v2:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(57, 169, 0, 0.6);
+}
+
+/* --- Footer --- */
+
+.footer-login {
+    margin-top: 25px;
+    font-size: 0.8em;
+    color: #999;
+}
+
+/* Animación de Ejemplo */
+@keyframes bounce {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(-3px); }
+}
+
+/* --- ESTILOS MOVIDOS DESDE LOGIN.PHP --- */
+
+.modal-overlay-login {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: none; 
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+    transition: opacity 0.3s;
+}
+.modal-content-login {
+    background: white;
+    padding: 25px; 
+    border-radius: 10px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+    max-width: 450px; /* Un poco más ancho para las opciones */
+    width: 90%;
+    text-align: center;
+}
+.error-message {
+    padding: 10px;
+    margin-bottom: 15px;
+    background-color: #f8d7da;
+    color: #bf081a;
+    border: 1px solid #f5c6cb;
+    border-radius: 5px;
+    font-size: 0.9em;
+    text-align: center;
+}
+/* Estilos específicos para el selector de cuentas */
+.account-selector {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.account-option {
+    padding: 12px 15px;
+    border-radius: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: 600;
+    border: 1px solid #e0e0e0;
+    transition: all 0.2s;
+}
+.account-option.active-role {
+    background-color: #e6f3e6; /* Fondo verde claro */
+    color: #237600; /* Verde oscuro SENA */
+    cursor: pointer;
+}
+.account-option.active-role:hover {
+    background-color: #d8ead8;
+    border-color: #39A900;
+}
+.account-option.inactive-role {
+    background-color: #f7f7ff;
+    color: #6c6c6c; /* Gris para inactivo */
+    border-color: #eee;
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+.inactive-tag {
+    background-color: #ff0000;
+    color: white;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-size: 0.8em;
+}
+.active-tag {
+    background-color: #39A900;
+    color: white;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-size: 0.8em;
+}
+
+
+
+/* Estilos para el botón de cerrar en el modal */
+.btn-modal-login {
+    margin-top: 20px;
+    width: 50%;
+    padding: 10px;
+    /* Degradado de verde SENA para un look moderno */
+    background: linear-gradient(to right, #2e9701, rgb(119, 255, 0));
+    color: rgb(255, 255, 255);
+    border: none;   
+    border-radius: 8px;
+    font-size: 1.2em;
+    font-weight: bold;
+    letter-spacing: 1px;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(57, 169, 0, 0.4);
+    transition: all 0.2s ease-in-out;
+}
+.btn-modal-login:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(57, 169, 0, 0.6);
+}
+
+/* Nuevo estilo para separar la nueva sección */
+.mt-20 {
+    margin-top: 20px;
+}
+

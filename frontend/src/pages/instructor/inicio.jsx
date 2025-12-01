@@ -1,0 +1,506 @@
+import React, { useState, useEffect, useRef } from 'react';
+import { useSound } from '../../contexts/SoundContext';
+import { Link } from 'react-router-dom';
+import DashboardLayout from '../../components/DashboardLayout';
+import { useUser } from '../../contexts/UserContext';
+import { API_BASE_URL } from '../../config/api.js';
+
+const API = API_BASE_URL;
+
+const InicioInstructor = () => {
+    const { user } = useUser();
+
+    const [solicitudes, setSolicitudes] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [selectedSolicitud, setSelectedSolicitud] = useState(null);
+
+    const [showDetallesModal, setShowDetallesModal] = useState(false);
+    const [showSoporteModal, setShowSoporteModal] = useState(false);
+    const [showRechazarModal, setShowRechazarModal] = useState(false);
+    const [motivoRechazo, setMotivoRechazo] = useState('');
+    const [procesando, setProcesando] = useState(false);
+    const [notification, setNotification] = useState(null);
+
+    const { playNotificationSound } = useSound();
+    const previousCountRef = useRef(-1);
+
+    // Mostrar notificación
+    const showNotification = (message, type = 'success') => {
+        setNotification({ message, type });
+        setTimeout(() => setNotification(null), 4000);
+    };
+
+    // Cargar solicitudes
+    const cargarSolicitudes = async () => {
+        try {
+            const token = localStorage.getItem('token');
+            const response = await fetch(`${API}/api/instructor/solicitudes-pendientes`, {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+
+            const data = await response.json();
+            if (data.status === 'ok') {
+                const newCount = data.solicitudes.length;
+                const prevCount = previousCountRef.current;
+
+                // Si es la primera carga (-1), solo actualizamos el contador
+                if (prevCount === -1) {
+                    previousCountRef.current = newCount;
+                } else if (newCount > prevCount) {
+                    // Si hay más solicitudes que antes
+                    console.log('🔔 Nueva solicitud detectada!');
+                    console.log('Intentando reproducir sonido...');
+                    playNotificationSound();
+                    showNotification('🔔 Nueva solicitud recibida!', 'success');
+                    previousCountRef.current = newCount;
+                } else {
+                    // Actualizar contador si disminuye o es igual
+                    previousCountRef.current = newCount;
+                }
+
+                setSolicitudes(data.solicitudes);
+            }
+        } catch (err) {
+            console.error('Error:', err);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    // Polling cada 5 segundos
+    useEffect(() => {
+        cargarSolicitudes();
+        const interval = setInterval(cargarSolicitudes, 5000);
+        return () => clearInterval(interval);
+    }, []);
+
+    // Calcular tiempo transcurrido
+    const getTimeAgo = (fecha) => {
+        const now = new Date();
+        const past = new Date(fecha);
+        const diff = Math.floor((now - past) / 1000);
+
+        if (diff < 60) return "hace un momento";
+        if (diff < 120) return "hace 1 minuto";
+        if (diff < 3600) return `hace ${Math.floor(diff / 60)} minutos`;
+        if (diff < 7200) return "hace 1 hora";
+        if (diff < 86400) return `hace ${Math.floor(diff / 3600)} horas`;
+        if (diff < 172800) return "hace 1 día";
+        return `hace ${Math.floor(diff / 86400)} días`;
+    };
+
+    // Traducción de motivos
+    const getMotivoTexto = (motivo, descripcion) => {
+        // Normalizar motivo (quitar espacios y convertir a minúsculas)
+        const motivoNormalizado = (motivo || '').toString().trim().toLowerCase();
+
+        const motivos = {
+            'cita_medica': 'Cita o incapacidad médica',
+            'cita medica': 'Cita o incapacidad médica',
+            'electoral': 'Diligencias electorales/gubernamentales',
+            'laboral': 'Requerimientos o compromisos laborales',
+            'fuerza_mayor': 'Casos fortuitos o de fuerza mayor',
+            'fuerza mayor': 'Casos fortuitos o de fuerza mayor',
+            'etapa_productiva': 'Trámites de etapa productiva',
+            'etapa productiva': 'Trámites de etapa productiva',
+            'representacion_sena': 'Asistencia en representación del SENA',
+            'representacion sena': 'Asistencia en representación del SENA',
+            'diligencia_judicial': 'Citación a diligencias judiciales',
+            'diligencia judicial': 'Citación a diligencias judiciales',
+            'otros': 'Otros',
+            'otro': 'Otros'
+        };
+
+        let texto = motivos[motivoNormalizado];
+
+        // Si no se encuentra, intentar buscar por coincidencia parcial
+        if (!texto) {
+            for (const [key, value] of Object.entries(motivos)) {
+                if (motivoNormalizado.includes(key) || key.includes(motivoNormalizado)) {
+                    texto = value;
+                    break;
+                }
+            }
+        }
+
+        // Si aún no se encuentra, usar el valor original o "Motivo Desconocido"
+        if (!texto) {
+            console.warn('Motivo no reconocido:', motivo, 'Descripción:', descripcion);
+            texto = motivo || 'Motivo Desconocido';
+        }
+
+        // Agregar descripción si es "otros"
+        if ((motivoNormalizado === 'otros' || motivoNormalizado === 'otro') && descripcion) {
+            texto += `: ${descripcion}`;
+        }
+
+        return texto;
+    };
+
+    // Formatear hora
+    const formatHora = (hora) => {
+        if (!hora) return '';
+        const [h, m] = hora.split(':');
+        const hour = parseInt(h);
+        const ampm = hour >= 12 ? 'PM' : 'AM';
+        const hour12 = hour % 12 || 12;
+        return `${hour12}:${m} ${ampm}`;
+    };
+
+    // Formatear fecha
+    const formatFecha = (fecha) => {
+        const date = new Date(fecha);
+        return date.toLocaleDateString('es-CO', { day: '2-digit', month: '2-digit', year: 'numeric' });
+    };
+
+    // Aprobar solicitud
+    const aprobarSolicitud = async () => {
+        if (!selectedSolicitud) return;
+        setProcesando(true);
+
+        try {
+            const token = localStorage.getItem('token');
+            const response = await fetch(`${API}/api/instructor/aprobar`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({ id_permiso: selectedSolicitud.id_permiso })
+            });
+
+            const data = await response.json();
+            if (data.status === 'ok') {
+                setSolicitudes(prev => prev.filter(s => s.id_permiso !== selectedSolicitud.id_permiso));
+                setShowDetallesModal(false);
+                setSelectedSolicitud(null);
+                showNotification('✅ ' + data.message, 'success');
+            } else {
+                showNotification('Error: ' + data.message, 'error');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            showNotification('Error de conexión', 'error');
+        } finally {
+            setProcesando(false);
+        }
+    };
+
+    // Rechazar solicitud
+    const rechazarSolicitud = async () => {
+        if (!selectedSolicitud || !motivoRechazo.trim()) {
+            showNotification('Por favor, especifique el motivo del rechazo', 'error');
+            return;
+        }
+
+        setProcesando(true);
+        try {
+            const token = localStorage.getItem('token');
+            const response = await fetch(`${API}/api/instructor/rechazar`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({
+                    id_permiso: selectedSolicitud.id_permiso,
+                    motivo_rechazo: motivoRechazo
+                })
+            });
+
+            const data = await response.json();
+            if (data.status === 'ok') {
+                setSolicitudes(prev => prev.filter(s => s.id_permiso !== selectedSolicitud.id_permiso));
+                setShowRechazarModal(false);
+                setShowDetallesModal(false);
+                setSelectedSolicitud(null);
+                setMotivoRechazo('');
+                showNotification('❌ Solicitud rechazada', 'success');
+            } else {
+                showNotification('Error: ' + data.message, 'error');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            showNotification('Error de conexión', 'error');
+        } finally {
+            setProcesando(false);
+        }
+    };
+
+    return (
+        <DashboardLayout title="Portal de Instructor">
+            <div className="flex gap-6 p-6 bg-gradient-to-br from-gray-50 to-gray-100 min-h-screen">
+
+                {/* Área principal - 65% */}
+                <div className="flex-1">
+                    {/* Header */}
+                    <div className="bg-white rounded-2xl shadow-lg p-6 mb-6 border-l-4 border-l-[#39A900]">
+                        <div className="flex items-center justify-between">
+                            <div>
+                                <h2 className="text-3xl font-bold text-gray-800 mb-2">
+                                    Solicitudes Pendientes
+                                </h2>
+                                <p className="text-gray-600">Gestiona las solicitudes de tus aprendices</p>
+                            </div>
+                            <div className="bg-gradient-to-br from-[#39A900] to-[#2A7D00] text-white rounded-full w-20 h-20 flex items-center justify-center shadow-xl">
+                                <span className="text-3xl font-bold">{solicitudes.length}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Tabla de solicitudes */}
+                    {loading ? (
+                        <div className="flex justify-center items-center py-20">
+                            <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-[#39A900]"></div>
+                        </div>
+                    ) : solicitudes.length === 0 ? (
+                        <div className="bg-white rounded-2xl shadow-lg p-12 text-center">
+                            <i className="fas fa-check-circle text-6xl text-[#39A900] mb-4"></i>
+                            <p className="text-xl text-gray-600">No hay solicitudes pendientes</p>
+                        </div>
+                    ) : (
+                        <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
+                            <table className="w-full">
+                                <thead className="bg-gradient-to-r from-[#39A900] to-[#2A7D00] text-white">
+                                    <tr>
+                                        <th className="px-6 py-4 text-left font-semibold">Aprendiz</th>
+                                        <th className="px-6 py-4 text-left font-semibold">Formación</th>
+                                        <th className="px-6 py-4 text-left font-semibold">Tiempo</th>
+                                        <th className="px-6 py-4 text-center font-semibold">Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {solicitudes.map((solicitud, index) => (
+                                        <tr
+                                            key={solicitud.id_permiso}
+                                            className={`border-b hover:bg-gray-50 transition-colors ${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}`}
+                                        >
+                                            <td className="px-6 py-4">
+                                                <div className="flex items-center gap-3">
+                                                    <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center text-white font-bold">
+                                                        {solicitud.nombre_aprendiz.charAt(0)}
+                                                    </div>
+                                                    <div>
+                                                        <p className="font-semibold text-gray-800">
+                                                            {solicitud.nombre_aprendiz} {solicitud.apellido_aprendiz}
+                                                        </p>
+                                                        <p className="text-sm text-gray-500">Doc: {solicitud.documento_aprendiz}</p>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td className="px-6 py-4">
+                                                <p className="font-medium text-gray-800">{solicitud.nombre_programa}</p>
+                                                <p className="text-sm text-gray-500">Ficha: {solicitud.numero_ficha}</p>
+                                            </td>
+                                            <td className="px-6 py-4">
+                                                <span className="inline-flex items-center gap-1 text-sm text-gray-600">
+                                                    <i className="fas fa-clock text-gray-400"></i>
+                                                    {getTimeAgo(solicitud.fecha_solicitud)}
+                                                </span>
+                                            </td>
+                                            <td className="px-6 py-4 text-center">
+                                                <button
+                                                    onClick={() => {
+                                                        setSelectedSolicitud(solicitud);
+                                                        setShowDetallesModal(true);
+                                                    }}
+                                                    className="bg-gradient-to-r from-blue-500 to-blue-600 text-white px-4 py-2 rounded-lg hover:shadow-lg transition-all duration-300 font-medium"
+                                                >
+                                                    <i className="fas fa-eye mr-2"></i>
+                                                    Ver detalles
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    )}
+                </div>
+
+                {/* Panel lateral - 35% */}
+                <div className="w-[35%] space-y-4">
+
+
+                    <Link to="/instructor/editarperfil" className="w-full bg-gradient-to-r from-purple-500 to-purple-600 text-white py-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 font-semibold text-lg">
+                        <i className="fas fa-user-edit mr-2"></i>
+                        Editar Perfil
+                    </Link>
+
+                    <Link to="/instructor/historial" className="w-full bg-gradient-to-r from-indigo-500 to-indigo-600 text-white py-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 font-semibold text-lg">
+                        <i className="fas fa-inbox mr-2"></i>
+                        Solicitudes Recibidas ({solicitudes.length})
+                    </Link>
+                </div>
+            </div>
+
+            {/* Modal de Detalles */}
+            {showDetallesModal && selectedSolicitud && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[1000] backdrop-blur-sm p-4" onClick={() => !procesando && setShowDetallesModal(false)}>
+                    <div className="bg-white rounded-3xl shadow-2xl max-w-2xl w-full overflow-hidden animate-[modalAppear_0.3s_ease-out]" onClick={(e) => e.stopPropagation()}>
+                        {/* Header */}
+                        <div className="bg-gradient-to-r from-[#3498db] to-[#2980b9] p-6 text-white">
+                            <div className="flex items-center justify-between">
+                                <h2 className="text-2xl font-bold">Detalles de la Solicitud</h2>
+                                {!procesando && (
+                                    <button onClick={() => setShowDetallesModal(false)} className="text-white hover:text-gray-200 text-3xl">&times;</button>
+                                )}
+                            </div>
+                        </div>
+
+                        {/* Contenido */}
+                        <div className="p-6 space-y-4 max-h-[60vh] overflow-y-auto">
+                            <div className="grid grid-cols-2 gap-4">
+                                <div className="bg-gray-50 p-4 rounded-lg">
+                                    <p className="text-xs text-gray-500 uppercase font-semibold mb-1">Aprendiz</p>
+                                    <p className="font-bold text-gray-800">{selectedSolicitud.nombre_aprendiz} {selectedSolicitud.apellido_aprendiz}</p>
+                                </div>
+                                <div className="bg-gray-50 p-4 rounded-lg">
+                                    <p className="text-xs text-gray-500 uppercase font-semibold mb-1">Documento</p>
+                                    <p className="font-semibold text-gray-800">{selectedSolicitud.documento_aprendiz}</p>
+                                </div>
+                                <div className="bg-gray-50 p-4 rounded-lg col-span-2">
+                                    <p className="text-xs text-gray-500 uppercase font-semibold mb-1">Formación</p>
+                                    <p className="font-semibold text-gray-800">{selectedSolicitud.nombre_programa}</p>
+                                </div>
+                                <div className="bg-gray-50 p-4 rounded-lg">
+                                    <p className="text-xs text-gray-500 uppercase font-semibold mb-1">Ficha</p>
+                                    <p className="font-semibold text-gray-800">{selectedSolicitud.numero_ficha}</p>
+                                </div>
+                                <div className="bg-gray-50 p-4 rounded-lg">
+                                    <p className="text-xs text-gray-500 uppercase font-semibold mb-1">Jornada</p>
+                                    <p className="font-semibold text-gray-800">{selectedSolicitud.nombre_jornada || 'N/A'}</p>
+                                </div>
+                                <div className="bg-gray-50 p-4 rounded-lg col-span-2">
+                                    <p className="text-xs text-gray-500 uppercase font-semibold mb-1">Centro de Formación</p>
+                                    <p className="font-semibold text-gray-800">{selectedSolicitud.centro_formacion || 'N/A'}</p>
+                                </div>
+                                <div className="bg-gray-50 p-4 rounded-lg">
+                                    <p className="text-xs text-gray-500 uppercase font-semibold mb-1">Fecha de Solicitud</p>
+                                    <p className="font-semibold text-gray-800">{formatFecha(selectedSolicitud.fecha_solicitud)}</p>
+                                </div>
+                                <div className="bg-gray-50 p-4 rounded-lg">
+                                    <p className="text-xs text-gray-500 uppercase font-semibold mb-1">Hora de Salida</p>
+                                    <p className="font-semibold text-gray-800">{formatHora(selectedSolicitud.hora_salida)}</p>
+                                </div>
+                                <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded-lg col-span-2">
+                                    <p className="text-xs text-gray-600 uppercase font-semibold mb-1">Motivo</p>
+                                    <p className="text-sm text-gray-800 italic">{getMotivoTexto(selectedSolicitud.motivo, selectedSolicitud.motivo_otros)}</p>
+                                </div>
+
+                                {selectedSolicitud.soporte && (
+                                    <div className="col-span-2">
+                                        <button
+                                            onClick={() => setShowSoporteModal(true)}
+                                            className="w-full bg-white text-blue-600 border border-blue-600 py-2 rounded-lg font-bold hover:bg-blue-50 transition-all duration-300 flex items-center justify-center gap-2"
+                                        >
+                                            <span>📎</span> Visualizar Soporte Adjunto
+                                        </button>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+
+                        {/* Botones de acción */}
+                        <div className="p-6 bg-gray-50 flex gap-3">
+                            <button
+                                onClick={aprobarSolicitud}
+                                disabled={procesando}
+                                className="flex-1 bg-gradient-to-r from-[#39A900] to-[#2A7D00] text-white py-4 rounded-xl font-bold text-lg hover:shadow-xl transition-all duration-300 disabled:opacity-50"
+                            >
+                                {procesando ? <><i className="fas fa-spinner fa-spin mr-2"></i>Procesando...</> : <><i className="fas fa-check mr-2"></i>Aprobar</>}
+                            </button>
+                            <button
+                                onClick={() => {
+                                    setShowDetallesModal(false);
+                                    setShowRechazarModal(true);
+                                }}
+                                disabled={procesando}
+                                className="flex-1 bg-gradient-to-r from-red-500 to-red-600 text-white py-4 rounded-xl font-bold text-lg hover:shadow-xl transition-all duration-300 disabled:opacity-50"
+                            >
+                                <i className="fas fa-times mr-2"></i>Rechazar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Modal de Rechazo */}
+            {showRechazarModal && selectedSolicitud && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[1001] backdrop-blur-sm p-4" onClick={() => !procesando && setShowRechazarModal(false)}>
+                    <div className="bg-white rounded-3xl shadow-2xl max-w-md w-full overflow-hidden animate-[modalAppear_0.3s_ease-out]" onClick={(e) => e.stopPropagation()}>
+                        <div className="bg-gradient-to-r from-red-500 to-red-600 p-6 text-white">
+                            <div className="flex items-center justify-between">
+                                <h2 className="text-2xl font-bold">Motivo de Rechazo</h2>
+                                {!procesando && (
+                                    <button onClick={() => setShowRechazarModal(false)} className="text-white hover:text-gray-200 text-3xl">&times;</button>
+                                )}
+                            </div>
+                        </div>
+                        <div className="p-6">
+                            <p className="text-gray-700 mb-4">Especifique la razón del rechazo:</p>
+                            <textarea
+                                value={motivoRechazo}
+                                onChange={(e) => setMotivoRechazo(e.target.value)}
+                                rows="4"
+                                placeholder="Escriba el motivo aquí..."
+                                className="w-full p-3 border-2 border-gray-300 rounded-lg focus:border-red-500 focus:outline-none resize-none mb-4"
+                                disabled={procesando}
+                            />
+                            <button
+                                onClick={rechazarSolicitud}
+                                disabled={procesando || !motivoRechazo.trim()}
+                                className="w-full bg-gradient-to-r from-red-500 to-red-600 text-white py-4 rounded-xl font-bold text-lg hover:shadow-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                            >
+                                {procesando ? <><i className="fas fa-spinner fa-spin mr-2"></i>Procesando...</> : <><i className="fas fa-ban mr-2"></i>Confirmar Rechazo</>}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Modal de Soporte */}
+            {showSoporteModal && selectedSolicitud?.soporte && (
+                <div className="fixed inset-0 bg-black bg-opacity-90 z-[1100] flex justify-center items-center backdrop-blur-sm p-4" onClick={() => setShowSoporteModal(false)}>
+                    <div className="relative max-w-4xl w-full max-h-[90vh] flex justify-center items-center" onClick={(e) => e.stopPropagation()}>
+                        <button
+                            onClick={() => setShowSoporteModal(false)}
+                            className="absolute -top-10 right-0 text-white text-4xl hover:text-gray-300 focus:outline-none"
+                        >
+                            &times;
+                        </button>
+                        <img
+                            src={`${API}/${selectedSolicitud.soporte}`}
+                            alt="Soporte de la solicitud"
+                            className="max-w-full max-h-[85vh] object-contain rounded-lg shadow-2xl"
+                        />
+                    </div>
+                </div>
+            )}
+
+            {/* Toast Notification */}
+            {notification && (
+                <div className={`fixed top-4 right-4 z-[9999] px-6 py-4 rounded-lg shadow-2xl flex items-center gap-3 animate-[slideIn_0.3s_ease-out] ${notification.type === 'success'
+                    ? 'bg-green-500 text-white'
+                    : 'bg-red-500 text-white'
+                    }`}>
+                    <i className={`fas ${notification.type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'} text-2xl`}></i>
+                    <span className="font-semibold text-lg">{notification.message}</span>
+                </div>
+            )}
+
+            <style>{`
+                @keyframes modalAppear {
+                    from { opacity: 0; transform: scale(0.9) translateY(-20px); }
+                    to { opacity: 1; transform: scale(1) translateY(0); }
+                }
+                @keyframes slideIn {
+                    from { opacity: 0; transform: translateX(100px); }
+                    to { opacity: 1; transform: translateX(0); }
+                }
+            `}</style>
+        </DashboardLayout>
+    );
+};
+
+export default InicioInstructor;

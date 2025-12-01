@@ -1,0 +1,200 @@
+﻿import React, { useState, useEffect, useRef } from 'react';
+import '../../../styles/registrar.css';
+import '../../../base.css';
+import DashboardLayout from '../../../components/DashboardLayout.jsx';
+import { useUser } from '../../../contexts/UserContext.jsx';
+import { useNavigate } from 'react-router-dom';
+
+const API = import.meta.env.VITE_API_BASE_URL;
+
+export default function RegistrarUsuario() {
+    const { user } = useUser();
+    const navigate = useNavigate();
+    const topRef = useRef(null); // Ref para hacer scroll al mensaje
+
+    // Estados del formulario
+    const [formData, setFormData] = useState({
+        nombre: '',
+        apellido: '',
+        tipo_documento: '',
+        documento: '',
+        correo: '',
+        clave: '',
+        id_rol: '',
+        estado: 'Activo',
+        id_programa: ''
+    });
+
+    const [roles, setRoles] = useState([]);
+    const [programas, setProgramas] = useState([]);
+    const [filteredProgramas, setFilteredProgramas] = useState([]);
+    const [searchQuery, setSearchQuery] = useState('');
+    const [showResults, setShowResults] = useState(false);
+    const [selectedPrograma, setSelectedPrograma] = useState(null);
+    const [errorMessage, setErrorMessage] = useState('');
+    const [successMessage, setSuccessMessage] = useState('');
+
+    // Cargar roles y programas al montar
+    useEffect(() => {
+        fetchRoles();
+        fetchProgramas();
+    }, []);
+
+    // Efecto para hacer scroll cuando hay un error
+    useEffect(() => {
+        if (errorMessage && topRef.current) {
+            topRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+    }, [errorMessage]);
+
+    const fetchRoles = async () => {
+        try {
+            const response = await fetch(`${API}/api/roles`);
+            const data = await response.json();
+            if (data.status === 'ok') {
+                setRoles(data.roles);
+            }
+        } catch (error) {
+            console.error('Error cargando roles:', error);
+        }
+    };
+
+    const fetchProgramas = async () => {
+        try {
+            const token = localStorage.getItem('token');
+            const response = await fetch(`${API}/api/programas`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+            const data = await response.json();
+            if (data.status === 'ok') {
+                setProgramas(data.programas);
+            }
+        } catch (error) {
+            console.error('Error cargando programas:', error);
+        }
+    };
+
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+
+        // --- Validaciones segÃºn el campo ---
+        switch (name) {
+            case "nombre":
+            case "apellido":
+                if (!/^[A-Za-zÃ-ÃšÃ¡-ÃºÃ±Ã‘\s]*$/.test(value)) return;
+                break;
+
+            case "documento":
+                if (!/^[0-9]*$/.test(value)) return;
+                break;
+
+            case "correo":
+                if (!/^[A-Za-z0-9@._-]*$/.test(value)) return;
+                break;
+
+            case "clave":
+                const permitido = /^[A-Za-zÃ-ÃšÃ¡-ÃºÃ±Ã‘0-9@#$%&*\-_+]+$/;
+                if (value !== "" && !permitido.test(value)) return;
+                break;
+        }
+
+        // âœ” Guardar valor SOLO si pasÃ³ las validaciones
+        setFormData(prev => ({ ...prev, [name]: value }));
+    };
+
+
+    const handleSearchChange = (e) => {
+        const query = e.target.value;
+
+        // --- VALIDACIÃ“N: solo letras O solo nÃºmeros (no mezcla y nada mÃ¡s) ---
+        const soloLetras = /^[A-Za-zÃ-ÃšÃ¡-ÃºÃ±Ã‘\s]+$/;
+        const soloNumeros = /^[0-9]+$/;
+
+        if (
+            query !== "" &&
+            !soloLetras.test(query) &&
+            !soloNumeros.test(query)
+        ) {
+            return; // âŒ Bloquea cualquier sÃ­mbolo o mezcla
+        }
+
+
+
+        setSearchQuery(query);
+
+        // Si hay un programa seleccionado y el usuario escribe algo nuevo, reiniciar selecciÃ³n
+        if (selectedPrograma) {
+            setSelectedPrograma(null);
+            setFormData(prev => ({ ...prev, id_programa: '' }));
+        }
+
+        const queryLower = query.toLowerCase();
+
+        if (queryLower.length < 2) {
+            setShowResults(false);
+            setFilteredProgramas([]);
+            return;
+        }
+
+        const filtered = programas.filter(p =>
+            p.nombre_programa.toLowerCase().includes(queryLower) ||
+            p.numero_ficha.toString().includes(queryLower)
+        );
+
+        setFilteredProgramas(filtered.slice(0, 10));
+        setShowResults(true);
+    };
+
+    const handleProgramaSelect = (programa) => {
+        setSelectedPrograma(programa);
+        setFormData(prev => ({ ...prev, id_programa: programa.id_programa }));
+        setSearchQuery(programa.nombre_programa);
+        setShowResults(false);
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setErrorMessage('');
+        setSuccessMessage('');
+
+        // ValidaciÃ³n para Aprendiz
+        if (formData.id_rol === '2' && !formData.id_programa) {
+            setErrorMessage('Debe seleccionar un programa de formaciÃ³n de la lista para el Aprendiz');
+            return;
+        }
+
+        try {
+            const response = await fetch(`${API} /api/usuarios / crear`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                },
+                body: JSON.stringify(formData)
+            });
+
+            const data = await response.json();
+
+            if (data.status === 'ok') {
+                setSuccessMessage('Usuario registrado exitosamente');
+                // Redirigir a buscar usuarios despuÃ©s de 2 segundos
+                setTimeout(() => {
+                    navigate('/BuscarUsuario');
+                }, 2000);
+            } else {
+                setErrorMessage(data.message || 'Error al registrar usuario');
+            }
+        } catch (error) {
+            setErrorMessage('Error de red. Intente de nuevo mÃ¡s tarde.');
+        }
+    };
+
+    const isAprendiz = formData.id_rol === '2';
+
+    return (
+        <DashboardLayout title="Control de Salida | Registro de Usuario">
+            <div className="admin-container">
+                <div className="main-content-admin">
+                    <div className="register-container">

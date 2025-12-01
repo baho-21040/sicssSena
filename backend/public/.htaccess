@@ -1,0 +1,14 @@
+# Permitir acceso desde cualquier origen
+<IfModule mod_authz_core.c>
+    Require all granted
+</IfModule>
+
+# Reescritura de URLs
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    
+    # Redirigir todo a index.php (incluyendo OPTIONS)
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^(.*)$ index.php [QSA,L]
+</IfModule>

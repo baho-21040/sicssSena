@@ -1,0 +1,469 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+/* Variables de color SENA */
+:root {
+    --sena-green: #39A900;
+    --sena-light-green: #e8f5e1;
+    --sena-dark-green: #2a7d00;
+    --text-color: #333;
+    --border-color: #e0e0e0;
+    --bg-color: #f7f9fb;
+    --shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    margin: 0;
+    /* El padding superior se gestionará por página (ej. admin-container) para evitar espacio en login. */
+    padding-top: 0;
+}
+
+/* --- Encabezado --- */
+.main-header {
+    /* AJUSTE CLAVE: Posición Fija para que se mantenga al hacer scroll */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 100;
+    /* Asegura que esté por encima de otros elementos */
+
+    background-color: var(--sena-green);
+    color: white;
+    padding: 15px 25px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+}
+
+.header-left h2 {
+    margin: 0 0 0 15px;
+    font-size: 1.4em;
+}
+
+.menu-overlay.active {
+    display: block;
+}
+
+.menu-toggle {
+    font-size: 1.8em;
+    cursor: pointer;
+    user-select: none;
+}
+
+.header-right {
+    position: relative;
+}
+
+.notification-icon {
+    font-size: 1.6em;
+    /* Tamaño del ícono de correo */
+    color: white;
+    text-decoration: none;
+    position: relative;
+}
+
+/* Estilo para el ícono de Font Awesome */
+.notification-icon i {
+    color: white;
+}
+
+.notification-badge {
+    position: absolute;
+    top: -5px;
+    /* Posición superior */
+    right: -8px;
+    /* Posición derecha */
+    width: 10px;
+    height: 10px;
+    background-color: #FF0000;
+    /* Rojo */
+    border-radius: 50%;
+    border: 2px solid white;
+    /* Para que resalte */
+}
+
+/* --- Menú Lateral (Hamburguesa) --- */
+.side-menu {
+    height: 100%;
+    width: 30%;
+    /* Ancho que pediste */
+    max-width: 300px;
+    /* Ancho máximo para pantallas grandes */
+    min-width: 250px;
+    /* Ancho mínimo para pantallas pequeñas */
+    position: fixed;
+    z-index: 1000;
+    top: 0;
+    left: -350px;
+    /* Oculto por defecto (debe ser > max-width) */
+    background-color: var(--sena-dark-green);
+    /* Verde oscuro */
+    overflow-x: hidden;
+    padding-top: 20px;
+    transition: 0.5s;
+    /* Animación de despliegue */
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.2);
+}
+
+.side-menu a {
+    padding: 15px 20px;
+    text-decoration: none;
+    font-size: 1.1em;
+    color: #f1f1f1;
+    display: block;
+    transition: 0.3s;
+}
+
+.side-menu a:hover {
+    color: white;
+}
+
+.equix {
+    font-family: 'Font Awesome 5 Free';
+}
+
+.side-menu .close-btn {
+    position: absolute;
+    top: 5px;
+    right: 20px;
+    font-size: 2.2em;
+    padding: 0;
+
+
+}
+
+.close-btn:hover {
+    color: #ff0000;
+}
+
+
+.menu-profile {
+    text-align: center;
+    padding: 20px;
+    border-bottom: 1px solid #4a9c20;
+    margin-bottom: 10px;
+    color: white;
+}
+
+.menu-profile h4 {
+    margin: 5px 0;
+}
+
+.menu-profile small {
+    color: #e0e0e0;
+    font-size: 0.9em;
+}
+
+/* --- Contenedor del Dashboard (Grid) --- */
+.dashboard-container {
+    box-shadow: var(--shadow);
+    padding: 25px;
+    border-top: 4px solid var(--sena-green);
+}
+
+.card h2 {
+    color: var(--sena-dark-green);
+    margin-top: 0;
+    border-bottom: 2px solid var(--sena-light-green);
+    padding-bottom: 10px;
+}
+
+/* --- Botón Principal (usado en modal Aceptar) --- */
+.btn-main {
+    display: inline-block;
+    padding: 15px 30px;
+    background-color: var(--sena-green);
+    color: white;
+    border-radius: 5px;
+    font-size: 1.1em;
+    font-weight: bold;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+}
+
+.btn-main:hover {
+    background-color: var(--sena-dark-green);
+}
+
+/* Estilos de estado */
+.status-approved,
+.status-rejected,
+.status-pending {
+    padding: 4px 8px;
+    border-radius: 15px;
+    font-size: 0.9em;
+    font-weight: bold;
+}
+
+.status-approved {
+    background-color: var(--sena-light-green);
+    color: var(--sena-dark-green);
+}
+
+.status-rejected {
+    background-color: #fef1f1;
+    color: #b32a26;
+}
+
+.status-pending {
+    background-color: #fefaf0;
+    color: #c08b3e;
+}
+
+/* ========================================================== */
+/* NUEVO: Overlay para el Menú Lateral                       */
+/* ========================================================== */
+
+.menu-overlay {
+    display: none;
+    /* Oculto por defecto */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    /* Fondo negro semitransparente */
+
+    /* El z-index debe ser MENOR que el .side-menu (que es 1000) */
+    /* y MAYOR que el contenido (como .main-header) */
+    z-index: 999;
+
+    cursor: pointer;
+    /* Indica que se puede hacer clic */
+    transition: background-color 0.3s ease;
+}
+
+.menu-overlay.active {
+    display: block;
+}
+
+.menu-toggle {
+    font-size: 1.8em;
+    cursor: pointer;
+    user-select: none;
+}
+
+.header-right {
+    position: relative;
+}
+
+.notification-icon {
+    font-size: 1.6em;
+    /* Tamaño del ícono de correo */
+    color: white;
+    text-decoration: none;
+    position: relative;
+}
+
+/* Estilo para el ícono de Font Awesome */
+.notification-icon i {
+    color: white;
+}
+
+.notification-badge {
+    position: absolute;
+    top: -5px;
+    /* Posición superior */
+    right: -8px;
+    /* Posición derecha */
+    width: 10px;
+    height: 10px;
+    background-color: #FF0000;
+    /* Rojo */
+    border-radius: 50%;
+    border: 2px solid white;
+    /* Para que resalte */
+}
+
+/* --- Menú Lateral (Hamburguesa) --- */
+.side-menu {
+    height: 100%;
+    width: 30%;
+    /* Ancho que pediste */
+    max-width: 300px;
+    /* Ancho máximo para pantallas grandes */
+    min-width: 250px;
+    /* Ancho mínimo para pantallas pequeñas */
+    position: fixed;
+    z-index: 1000;
+    top: 0;
+    left: -350px;
+    /* Oculto por defecto (debe ser > max-width) */
+    background-color: var(--sena-dark-green);
+    /* Verde oscuro */
+    overflow-x: hidden;
+    padding-top: 20px;
+    transition: 0.5s;
+    /* Animación de despliegue */
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.2);
+}
+
+.side-menu a {
+    padding: 15px 20px;
+    text-decoration: none;
+    font-size: 1.1em;
+    color: #f1f1f1;
+    display: block;
+    transition: 0.3s;
+}
+
+.side-menu a:hover {
+    color: white;
+}
+
+.equix {
+    font-family: 'Font Awesome 5 Free';
+}
+
+.side-menu .close-btn {
+    position: absolute;
+    top: 5px;
+    right: 20px;
+    font-size: 2.2em;
+    padding: 0;
+
+
+}
+
+.close-btn:hover {
+    color: #ff0000;
+}
+
+
+.menu-profile {
+    text-align: center;
+    padding: 20px;
+    border-bottom: 1px solid #4a9c20;
+    margin-bottom: 10px;
+    color: white;
+}
+
+.menu-profile h4 {
+    margin: 5px 0;
+}
+
+.menu-profile small {
+    color: #e0e0e0;
+    font-size: 0.9em;
+}
+
+/* --- Contenedor del Dashboard (Grid) --- */
+.dashboard-container {
+    box-shadow: var(--shadow);
+    padding: 25px;
+    border-top: 4px solid var(--sena-green);
+}
+
+.card h2 {
+    color: var(--sena-dark-green);
+    margin-top: 0;
+    border-bottom: 2px solid var(--sena-light-green);
+    padding-bottom: 10px;
+}
+
+/* --- Botón Principal (usado en modal Aceptar) --- */
+.btn-main {
+    display: inline-block;
+    padding: 15px 30px;
+    background-color: var(--sena-green);
+    color: white;
+    border-radius: 5px;
+    font-size: 1.1em;
+    font-weight: bold;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+}
+
+.btn-main:hover {
+    background-color: var(--sena-dark-green);
+}
+
+/* Estilos de estado */
+.status-approved,
+.status-rejected,
+.status-pending {
+    padding: 4px 8px;
+    border-radius: 15px;
+    font-size: 0.9em;
+    font-weight: bold;
+}
+
+.status-approved {
+    background-color: var(--sena-light-green);
+    color: var(--sena-dark-green);
+}
+
+.status-rejected {
+    background-color: #fef1f1;
+    color: #b32a26;
+}
+
+.status-pending {
+    background-color: #fefaf0;
+    color: #c08b3e;
+}
+
+/* ========================================================== */
+/* NUEVO: Overlay para el Menú Lateral                       */
+/* ========================================================== */
+
+.menu-overlay {
+    display: none;
+    /* Oculto por defecto */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    /* Fondo negro semitransparente */
+
+    /* El z-index debe ser MENOR que el .side-menu (que es 1000) */
+    /* y MAYOR que el contenido (como .main-header) */
+    z-index: 999;
+
+    cursor: pointer;
+    /* Indica que se puede hacer clic */
+    transition: background-color 0.3s ease;
+}
+
+
+/* Quitar flechas en Chrome, Edge y Safari */
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Quitar flechas en Firefox */
+input[type=number] {
+    -moz-appearance: textfield;
+}
+
+/* --- Estilos para DashboardLayout (Fix Header/Footer) --- */
+.dashboard-wrapper {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.main-content-wrapper {
+    flex: 1;
+    padding-top: 80px;
+    /* Espacio para el header fijo */
+    display: flex;
+    flex-direction: column;
+}
