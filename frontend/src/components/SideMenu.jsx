@@ -19,7 +19,7 @@ const getMenuLinks = (role) => {
             ];
         case 'Instructor':
             return [
-                { to: "/inicioinstructor", icon: "fas fa-chalkboard-teacher", label: "Inicio" },
+                { to: "/instructor/inicio", icon: "fas fa-chalkboard-teacher", label: "Inicio" },
                 { to: "/instructor/registro", icon: "fas fa-plus", label: "Crear Contenido" },
                 { to: "/instructor/alumnos", icon: "fas fa-users", label: "Mis Aprendices" },
             ];
@@ -28,6 +28,13 @@ const getMenuLinks = (role) => {
                 { to: "/aprendiz/inicio", icon: "fas fa-graduation-cap", label: "Inicio" },
                 { to: "/Aprendiz/Solicitud", icon: "fas fa-book", label: "Nueva Solicitud" },
                 { to: "/aprendiz/mensajes", icon: "fas fa-comment", label: "Mensajes" },
+            ];
+
+            case 'Coordinacion':
+            return [
+                { to: "/coordinacion/inicio", icon: "fas fa-graduation-cap", label: "Inicio" },
+                { to: "/coordinacion/editarperfil", icon: "fas fa-book", label: "Editar Perfil" },
+                { to: "/coordinacion/historial", icon: "fas fa-comment", label: "Historial de salidas" },
             ];
 
         case 'Vigilante':
@@ -125,7 +132,7 @@ const SideMenu = ({ isOpen, user, closeMenu }) => {
                         <small className="programa-info"><strong>
                             {u.programa.nombre_programa && (<span><br />{u.programa.nombre_programa}</span>)}
                             {u.programa.numero_ficha && (<span> <br /> Ficha: {u.programa.numero_ficha}</span>)}
-</strong>
+                        </strong>
                         </small>
                     )}
                 </div>

@@ -19,6 +19,8 @@ import EditarPerfilAprendiz from "./pages/aprendiz/editar.jsx";
 import HistorialAprendiz from "./pages/aprendiz/historial.jsx";
 import HistorialInstructor from "./pages/instructor/historial.jsx";
 import EditarInstructor from "./pages/instructor/editar.jsx";
+import EditarCoordinacion from "./pages/coordinacion/editar.jsx";
+import HistorialCoordinacion from "./pages/coordinacion/historial.jsx";
 import { SoundProvider } from './contexts/SoundContext';
 
 
@@ -50,8 +52,8 @@ function App() {
         <Route path="/aprendiz/inicio" element={<InicioAprendiz />} />
         <Route path="/menu" element={<InicioAdmin />} />
         <Route path="/inicioaprendiz" element={<InicioAprendiz />} />
-        <Route path="/iniciocoordinacion" element={<InicioCoordinacion />} />
-        <Route path="/inicioinstructor" element={<InicioInstructor />} />
+        <Route path="/coordinacion/inicio" element={<InicioCoordinacion />} />
+        <Route path="/instructor/inicio" element={<InicioInstructor />} />
         <Route path="/Vigilante/Inicio" element={<InicioVigilante />} />
         <Route path="/registrarusuario" element={<RegistrarUsuario />} />
         <Route path="/BuscarUsuario" element={<BuscarUsuario />} />
@@ -67,6 +69,8 @@ function App() {
         <Route path="/aprendiz/historial" element={<HistorialAprendiz />} />
         <Route path="/instructor/historial" element={<HistorialInstructor />} />
         <Route path="/instructor/editarperfil" element={<EditarInstructor />} />
+        <Route path="/coordinacion/editarperfil" element={<EditarCoordinacion />} />
+        <Route path="/coordinacion/historial" element={<HistorialCoordinacion />} />
       </Routes>
     </SoundProvider>
   );

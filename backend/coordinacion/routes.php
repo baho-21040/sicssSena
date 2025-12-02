@@ -63,7 +63,7 @@ return function ($app) {
                     PF.nombre_programa, PF.numero_ficha, PF.nivel, PF.centro_formacion,
                     J.nombre_jornada, U_INST.nombre, U_INST.apellido
                 ORDER BY
-                    P.fecha_solicitud ASC
+                    P.fecha_solicitud DESC
             ";
             
             $stmt = $pdo->query($sql);
@@ -480,7 +480,10 @@ return function ($app) {
                     MAX(CASE WHEN a.rol_aprobador = 'Coordinacion' THEN a.qr ELSE NULL END) AS qr,
                     MAX(CASE WHEN a.rol_aprobador = 'Instructor' AND a.estado_aprobacion = 'Rechazado' THEN a.motivo ELSE NULL END) AS motivo_rechazo_instructor,
                     MAX(CASE WHEN a.rol_aprobador = 'Coordinacion' AND a.estado_aprobacion = 'Rechazado' THEN a.motivo ELSE NULL END) AS motivo_rechazo_coordinador,
-                    MAX(CASE WHEN a.rol_aprobador = 'Instructor' THEN a.estado_aprobacion ELSE NULL END) AS estado_instructor,
+                    MAX(CASE WHEN a.rol_aprobador = 'Instructor' THEN u_inst.nombre ELSE NULL END) AS nombre_instructor,
+                    MAX(CASE WHEN a.rol_aprobador = 'Instructor' THEN u_inst.apellido ELSE NULL END) AS apellido_instructor,
+                    MAX(CASE WHEN a.rol_aprobador = 'Instructor' THEN u_inst.documento ELSE NULL END) AS documento_instructor,
+                    'Aprobado' AS estado_instructor,
                     MAX(CASE WHEN a.rol_aprobador = 'Coordinacion' THEN a.estado_aprobacion ELSE NULL END) AS estado_coordinador
                 FROM 
                     permisos p
@@ -490,6 +493,8 @@ return function ($app) {
                     programas_formacion pf ON u_apz.id_programa = pf.id_programa
                 LEFT JOIN 
                     aprobaciones a ON p.id_permiso = a.id_permiso
+                LEFT JOIN
+                    usuarios u_inst ON a.id_usuario_aprobador = u_inst.id_usuario
                 WHERE 
                     p.oculto_coordinador = 0
                     AND p.estado_general != 'Pendiente Instructor'

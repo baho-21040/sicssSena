@@ -130,6 +130,13 @@ export default function InicioAprendiz() {
         return 'bg-gray-100 text-gray-700';
     };
 
+    const getEstadoDisplay = (estado) => {
+        if (estado === 'Pendiente Coordinador') {
+            return 'Pendiente Coordinación';
+        }
+        return estado;
+    };
+
     const formatFechaActual = () => {
         const hoy = new Date();
         const dia = String(hoy.getDate()).padStart(2, '0');
@@ -144,9 +151,11 @@ export default function InicioAprendiz() {
         const dia = String(fecha.getDate()).padStart(2, '0');
         const mes = String(fecha.getMonth() + 1).padStart(2, '0');
         const año = fecha.getFullYear();
-        const horas = String(fecha.getHours()).padStart(2, '0');
+        const horas = fecha.getHours();
         const minutos = String(fecha.getMinutes()).padStart(2, '0');
-        return `${dia}/${mes}/${año} - ${horas}:${minutos}`;
+        const ampm = horas >= 12 ? 'p.m.' : 'a.m.';
+        const horas12 = horas % 12 || 12;
+        return `${horas12}:${minutos} ${ampm} - ${dia}/${mes}/${año}`;
     };
 
     const getMotivoCompleto = (motivo, descripcion) => {
@@ -288,7 +297,7 @@ export default function InicioAprendiz() {
                                                 <td className="px-6 py-4 text-sm text-gray-700">{getMotivoCompleto(solicitud.motivo, solicitud.descripcion)}</td>
                                                 <td className="px-6 py-4">
                                                     <span className={`px-3 py-1 rounded-full text-xs font-bold inline-block ${getEstadoBadgeClass(solicitud.estado_display)}`}>
-                                                        {solicitud.estado_display}
+                                                        {getEstadoDisplay(solicitud.estado_display)}
                                                     </span>
                                                 </td>
                                                 <td className="px-6 py-4">
@@ -350,7 +359,7 @@ export default function InicioAprendiz() {
                                     <div className="bg-gray-50 p-4 rounded-lg">
                                         <p className="text-xs text-gray-500 uppercase font-semibold mb-1">Estado</p>
                                         <span className={`px-3 py-1 rounded-full text-xs font-bold inline-block ${getEstadoBadgeClass(selectedSolicitud.estado_display)}`}>
-                                            {selectedSolicitud.estado_display}
+                                            {getEstadoDisplay(selectedSolicitud.estado_display)}
                                         </span>
                                     </div>
                                 </div>

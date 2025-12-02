@@ -302,6 +302,12 @@ export default function EditarCoordinacion() {
                                         type="email"
                                         value={nuevoCorreo}
                                         onChange={(e) => setNuevoCorreo(e.target.value)}
+                                        onInput={(e) => {
+                                            // Solo permitir A-Za-z0-9@._-
+                                            e.target.value = e.target.value.replace(/[^A-Za-z0-9@._-]/g, '');
+                                        }}
+                                        pattern="[A-Za-z0-9@._-]+"
+                                        maxLength={100}
                                         className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#17a2b8]"
                                         placeholder="ejemplo@correo.com"
                                         required
@@ -380,6 +386,13 @@ export default function EditarCoordinacion() {
                                         type="password"
                                         value={contrasenaActual}
                                         onChange={(e) => setContrasenaActual(e.target.value)}
+                                        onInput={(e) => {
+                                            // Solo permitir A-Za-zÁ-Úá-úñÑ0-9@#$%&*\-_+
+                                            e.target.value = e.target.value.replace(/[^A-Za-zÁ-Úá-úñÑ0-9@#$%&*\-_+]/g, '');
+                                        }}
+                                        minLength={6}
+                                        maxLength={100}
+                                        pattern="[A-Za-zÁ-Úá-úñÑ0-9@#$%&*\-_+]{6,100}"
                                         className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#ffc107]"
                                         placeholder="Ingresa tu contraseña actual"
                                         required
@@ -394,12 +407,19 @@ export default function EditarCoordinacion() {
 
                                 <div className="mb-4">
                                     <label className="block text-sm font-semibold text-gray-700 mb-2">
-                                        Nueva Contraseña
+                                        Nueva Contraseña (Mínimo 6 caracteres)
                                     </label>
                                     <input
                                         type="password"
                                         value={contrasenaNueva}
                                         onChange={(e) => setContrasenaNueva(e.target.value)}
+                                        onInput={(e) => {
+                                            // Solo permitir A-Za-zÁ-Úá-úñÑ0-9@#$%&*\-_+
+                                            e.target.value = e.target.value.replace(/[^A-Za-zÁ-Úá-úñÑ0-9@#$%&*\-_+]/g, '');
+                                        }}
+                                        minLength={6}
+                                        maxLength={100}
+                                        pattern="[A-Za-zÁ-Úá-úñÑ0-9@#$%&*\-_+]{6,100}"
                                         className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#ffc107]"
                                         placeholder="Ingresa tu nueva contraseña"
                                         required

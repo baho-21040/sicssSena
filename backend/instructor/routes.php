@@ -275,6 +275,11 @@ return function ($app) {
 
         $id_instructor = $user['sub'];
 
+        // Obtener parámetros de filtro
+        $params = $request->getQueryParams();
+        $documento = $params['documento'] ?? '';
+        $fecha = $params['fecha'] ?? '';
+
         try {
             $pdo = conexion();
             
@@ -298,7 +303,7 @@ return function ($app) {
                     MAX(CASE WHEN a.rol_aprobador = 'Coordinacion' THEN a.qr ELSE NULL END) AS qr,
                     MAX(CASE WHEN a.rol_aprobador = 'Instructor' AND a.estado_aprobacion = 'Rechazado' THEN a.motivo ELSE NULL END) AS motivo_rechazo_instructor,
                     MAX(CASE WHEN a.rol_aprobador = 'Coordinacion' AND a.estado_aprobacion = 'Rechazado' THEN a.motivo ELSE NULL END) AS motivo_rechazo_coordinador,
-                    MAX(CASE WHEN a.rol_aprobador = 'Instructor' THEN a.estado_aprobacion ELSE NULL END) AS estado_instructor,
+                    'Aprobado' AS estado_instructor,
                     MAX(CASE WHEN a.rol_aprobador = 'Coordinacion' THEN a.estado_aprobacion ELSE NULL END) AS estado_coordinador
                 FROM 
                     permisos p
@@ -312,6 +317,22 @@ return function ($app) {
                     p.id_instructor_destino = :id_instructor
                     AND p.oculto_instructor = 0
                     AND p.estado_general != 'Pendiente Instructor'
+            ";
+
+            // Agregar filtros dinámicos
+            $sqlParams = [':id_instructor' => $id_instructor];
+            
+            if (!empty($documento)) {
+                $sql .= " AND u_apz.documento LIKE :documento";
+                $sqlParams[':documento'] = "%{$documento}%";
+            }
+            
+            if (!empty($fecha)) {
+                $sql .= " AND DATE(p.fecha_solicitud) = :fecha";
+                $sqlParams[':fecha'] = $fecha;
+            }
+
+            $sql .= "
                 GROUP BY
                     p.id_permiso, p.fecha_solicitud, p.motivo, p.descripcion, p.hora_salida, p.hora_regreso, p.soporte, p.estado_general,
                     u_apz.nombre, u_apz.apellido, u_apz.documento, pf.nombre_programa, pf.numero_ficha
@@ -320,7 +341,7 @@ return function ($app) {
             ";
             
             $stmt = $pdo->prepare($sql);
-            $stmt->execute([':id_instructor' => $id_instructor]);
+            $stmt->execute($sqlParams);
             $solicitudes = $stmt->fetchAll(PDO::FETCH_ASSOC);
             
             // Procesar estado_display

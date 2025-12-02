@@ -138,19 +138,33 @@ const InicioInstructor = () => {
     };
 
     // Formatear hora
-    const formatHora = (hora) => {
-        if (!hora) return '';
-        const [h, m] = hora.split(':');
-        const hour = parseInt(h);
-        const ampm = hour >= 12 ? 'PM' : 'AM';
-        const hour12 = hour % 12 || 12;
-        return `${hour12}:${m} ${ampm}`;
+    const formatTime12h = (timeStr) => {
+        if (!timeStr) return '';
+        const [hours, minutes] = timeStr.split(':');
+        const h = parseInt(hours, 10);
+        const ampm = h >= 12 ? 'PM' : 'AM';
+        const h12 = h % 12 || 12;
+        return `${h12}:${minutes} ${ampm}`;
     };
 
     // Formatear fecha
     const formatFecha = (fecha) => {
         const date = new Date(fecha);
         return date.toLocaleDateString('es-CO', { day: '2-digit', month: '2-digit', year: 'numeric' });
+    };
+
+    // Formatear fecha con hora
+    const formatFechaHora = (fechaStr) => {
+        if (!fechaStr) return '-';
+        const fecha = new Date(fechaStr);
+        const dia = String(fecha.getDate()).padStart(2, '0');
+        const mes = String(fecha.getMonth() + 1).padStart(2, '0');
+        const año = fecha.getFullYear();
+        const horas = fecha.getHours();
+        const minutos = String(fecha.getMinutes()).padStart(2, '0');
+        const ampm = horas >= 12 ? 'p.m.' : 'a.m.';
+        const horas12 = horas % 12 || 12;
+        return `${horas12}:${minutos} ${ampm} - ${dia}/${mes}/${año}`;
     };
 
     // Aprobar solicitud
@@ -336,7 +350,7 @@ const InicioInstructor = () => {
 
             {/* Modal de Detalles */}
             {showDetallesModal && selectedSolicitud && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[1000] backdrop-blur-sm p-4" onClick={() => !procesando && setShowDetallesModal(false)}>
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[9999] pt-20 p-4" onClick={() => !procesando && setShowDetallesModal(false)}>
                     <div className="bg-white rounded-3xl shadow-2xl max-w-2xl w-full overflow-hidden animate-[modalAppear_0.3s_ease-out]" onClick={(e) => e.stopPropagation()}>
                         {/* Header */}
                         <div className="bg-gradient-to-r from-[#3498db] to-[#2980b9] p-6 text-white">
@@ -350,38 +364,26 @@ const InicioInstructor = () => {
 
                         {/* Contenido */}
                         <div className="p-6 space-y-4 max-h-[60vh] overflow-y-auto">
+                            {/* Aprendiz y Fecha de Solicitud */}
+                            <div className="grid grid-cols-2 gap-4">
+                                <div>
+                                    <p className="text-xs text-gray-500 uppercase font-semibold mb-2">Aprendiz</p>
+                                    <p className="font-bold text-gray-800">{selectedSolicitud.nombre_aprendiz} {selectedSolicitud.apellido_aprendiz}</p>
+                                    <p className="text-sm text-gray-600">Doc: {selectedSolicitud.documento_aprendiz}</p>
+                                    <p className="text-sm text-gray-600 mt-2">Programa: {selectedSolicitud.nombre_programa}</p>
+                                    <p className="text-sm text-gray-600">Ficha: {selectedSolicitud.numero_ficha}</p>
+                                    <p className="text-sm text-gray-600">Jornada: {selectedSolicitud.nombre_jornada || 'N/A'}</p>
+                                </div>
+                                <div className="text-right">
+                                    <p className="text-xs text-gray-500 uppercase font-semibold mb-2">Fecha de Solicitud</p>
+                                    <p className="font-bold text-gray-800">{formatFechaHora(selectedSolicitud.fecha_solicitud)}</p>
+                                </div>
+                            </div>
+
                             <div className="grid grid-cols-2 gap-4">
                                 <div className="bg-gray-50 p-4 rounded-lg">
-                                    <p className="text-xs text-gray-500 uppercase font-semibold mb-1">Aprendiz</p>
-                                    <p className="font-bold text-gray-800">{selectedSolicitud.nombre_aprendiz} {selectedSolicitud.apellido_aprendiz}</p>
-                                </div>
-                                <div className="bg-gray-50 p-4 rounded-lg">
-                                    <p className="text-xs text-gray-500 uppercase font-semibold mb-1">Documento</p>
-                                    <p className="font-semibold text-gray-800">{selectedSolicitud.documento_aprendiz}</p>
-                                </div>
-                                <div className="bg-gray-50 p-4 rounded-lg col-span-2">
-                                    <p className="text-xs text-gray-500 uppercase font-semibold mb-1">Formación</p>
-                                    <p className="font-semibold text-gray-800">{selectedSolicitud.nombre_programa}</p>
-                                </div>
-                                <div className="bg-gray-50 p-4 rounded-lg">
-                                    <p className="text-xs text-gray-500 uppercase font-semibold mb-1">Ficha</p>
-                                    <p className="font-semibold text-gray-800">{selectedSolicitud.numero_ficha}</p>
-                                </div>
-                                <div className="bg-gray-50 p-4 rounded-lg">
-                                    <p className="text-xs text-gray-500 uppercase font-semibold mb-1">Jornada</p>
-                                    <p className="font-semibold text-gray-800">{selectedSolicitud.nombre_jornada || 'N/A'}</p>
-                                </div>
-                                <div className="bg-gray-50 p-4 rounded-lg col-span-2">
-                                    <p className="text-xs text-gray-500 uppercase font-semibold mb-1">Centro de Formación</p>
-                                    <p className="font-semibold text-gray-800">{selectedSolicitud.centro_formacion || 'N/A'}</p>
-                                </div>
-                                <div className="bg-gray-50 p-4 rounded-lg">
-                                    <p className="text-xs text-gray-500 uppercase font-semibold mb-1">Fecha de Solicitud</p>
-                                    <p className="font-semibold text-gray-800">{formatFecha(selectedSolicitud.fecha_solicitud)}</p>
-                                </div>
-                                <div className="bg-gray-50 p-4 rounded-lg">
                                     <p className="text-xs text-gray-500 uppercase font-semibold mb-1">Hora de Salida</p>
-                                    <p className="font-semibold text-gray-800">{formatHora(selectedSolicitud.hora_salida)}</p>
+                                    <p className="font-semibold text-gray-800">{formatTime12h(selectedSolicitud.hora_salida)}</p>
                                 </div>
                                 <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded-lg col-span-2">
                                     <p className="text-xs text-gray-600 uppercase font-semibold mb-1">Motivo</p>

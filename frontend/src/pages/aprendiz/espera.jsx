@@ -157,6 +157,15 @@ const EsperaSolicitud = () => {
         return { texto: estado, color: 'gray', icono: '📋' };
     };
 
+    const formatTime12h = (timeStr) => {
+        if (!timeStr) return '';
+        const [hours, minutes] = timeStr.split(':');
+        const h = parseInt(hours, 10);
+        const ampm = h >= 12 ? 'PM' : 'AM';
+        const h12 = h % 12 || 12;
+        return `${h12}:${minutes} ${ampm}`;
+    };
+
     const estadoVisual = getEstadoVisual();
 
     return (
@@ -307,7 +316,7 @@ const EsperaSolicitud = () => {
                             <div className="flex flex-col">
                                 <span className="font-semibold text-gray-500 text-xs uppercase mb-1">Hora Salida:</span>
                                 <span className="text-gray-800 text-lg p-2 bg-gray-50 rounded border-l-4 border-l-blue-500">
-                                    {localSolicitudData.hora_salida}
+                                    {formatTime12h(localSolicitudData.hora_salida)}
                                 </span>
                             </div>
 

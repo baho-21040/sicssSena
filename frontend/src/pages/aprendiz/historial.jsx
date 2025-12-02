@@ -13,7 +13,10 @@ export default function HistorialAprendiz() {
     const [filteredSolicitudes, setFilteredSolicitudes] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+
+    // Filtros
     const [filter, setFilter] = useState('todas'); // todas, pendiente, aprobado, rechazado
+    const [fechaFilter, setFechaFilter] = useState('');
 
     // Modales
     const [showDetallesModal, setShowDetallesModal] = useState(false);
@@ -26,14 +29,13 @@ export default function HistorialAprendiz() {
 
     useEffect(() => {
         fetchHistorial();
-        // Polling cada 5 segundos para actualizaciones en tiempo real
         const interval = setInterval(fetchHistorial, 5000);
         return () => clearInterval(interval);
     }, []);
 
     useEffect(() => {
         filterSolicitudes();
-    }, [solicitudes, filter]);
+    }, [solicitudes, filter, fechaFilter]);
 
     const fetchHistorial = async () => {
         try {
@@ -59,18 +61,33 @@ export default function HistorialAprendiz() {
     };
 
     const filterSolicitudes = () => {
-        if (filter === 'todas') {
-            setFilteredSolicitudes(solicitudes);
-        } else {
-            const filtered = solicitudes.filter(solicitud => {
+        let filtered = [...solicitudes];
+
+        // Filtro por estado
+        if (filter !== 'todas') {
+            filtered = filtered.filter(solicitud => {
                 const estado = solicitud.estado_general.toLowerCase();
                 if (filter === 'pendiente') return estado.includes('pendiente');
                 if (filter === 'aprobado') return estado.includes('aprobado');
                 if (filter === 'rechazado') return estado.includes('rechazado');
                 return true;
             });
-            setFilteredSolicitudes(filtered);
         }
+
+        // Filtro por fecha
+        if (fechaFilter) {
+            filtered = filtered.filter(solicitud => {
+                const fechaSolicitud = new Date(solicitud.fecha_solicitud).toISOString().split('T')[0];
+                return fechaSolicitud === fechaFilter;
+            });
+        }
+
+        setFilteredSolicitudes(filtered);
+    };
+
+    const handleRestablecerFiltros = () => {
+        setFilter('todas');
+        setFechaFilter('');
     };
 
     const handleDeleteAll = async () => {
@@ -85,7 +102,7 @@ export default function HistorialAprendiz() {
             const data = await response.json();
 
             if (data.status === 'ok') {
-                fetchHistorial(); // Recargar para reflejar cambios
+                fetchHistorial();
                 setShowConfirmDeleteModal(false);
             } else {
                 alert(data.message || 'Error al eliminar el historial');
@@ -115,12 +132,12 @@ export default function HistorialAprendiz() {
             const data = await response.json();
 
             if (data.status === 'ok') {
-                setSolicitudes(prev => prev.filter(s => s.id_permiso !== solicitudToDelete.id_permiso));
+                fetchHistorial();
                 setShowConfirmDeleteOneModal(false);
                 setSolicitudToDelete(null);
-                // Si la solicitud eliminada estaba abierta en el modal de detalles, cerrarlo
                 if (selectedSolicitud && selectedSolicitud.id_permiso === solicitudToDelete.id_permiso) {
-                    closeDetallesModal();
+                    setShowDetallesModal(false);
+                    setSelectedSolicitud(null);
                 }
             } else {
                 alert(data.message || 'Error al eliminar la solicitud');
@@ -141,30 +158,7 @@ export default function HistorialAprendiz() {
         setSelectedSolicitud(null);
     };
 
-    const getEstadoBadgeClass = (estado) => {
-        const estadoNormalizado = estado.toLowerCase().replace(/\s/g, '');
-        if (estadoNormalizado.includes('aprobado') || estadoNormalizado.includes('qrgenerado')) {
-            return 'bg-[#e8f5e1] text-[#2A7D00]';
-        } else if (estadoNormalizado.includes('rechazad') || estadoNormalizado.includes('cancelad')) {
-            return 'bg-[#ffe0e0] text-[#b32a26]';
-        } else if (estadoNormalizado.includes('pendiente')) {
-            return 'bg-[#fffbe6] text-[#a07a00]';
-        }
-        return 'bg-gray-100 text-gray-700';
-    };
-
-    const formatFechaHora = (fechaStr) => {
-        if (!fechaStr) return '-';
-        const fecha = new Date(fechaStr);
-        const dia = String(fecha.getDate()).padStart(2, '0');
-        const mes = String(fecha.getMonth() + 1).padStart(2, '0');
-        const año = fecha.getFullYear();
-        const horas = String(fecha.getHours()).padStart(2, '0');
-        const minutos = String(fecha.getMinutes()).padStart(2, '0');
-        return `${dia}/${mes}/${año} - ${horas}:${minutos}`;
-    };
-
-    const getMotivoCompleto = (motivo, descripcion) => {
+    const getMotivoTexto = (motivo, descripcion) => {
         const motivoNormalizado = (motivo || '').toString().trim().toLowerCase();
         const motivos = {
             'cita_medica': 'Cita o incapacidad médica',
@@ -184,105 +178,192 @@ export default function HistorialAprendiz() {
         return texto;
     };
 
+    const formatTime12h = (timeStr) => {
+        if (!timeStr) return '';
+        const [hours, minutes] = timeStr.split(':');
+        const h = parseInt(hours, 10);
+        const ampm = h >= 12 ? 'p.m.' : 'a.m.';
+        const h12 = h % 12 || 12;
+        return `${h12}:${minutes} ${ampm}`;
+    };
+
+    const formatFechaHora = (fechaStr) => {
+        if (!fechaStr) return '-';
+        const fecha = new Date(fechaStr);
+        const dia = String(fecha.getDate()).padStart(2, '0');
+        const mes = String(fecha.getMonth() + 1).padStart(2, '0');
+        const año = fecha.getFullYear();
+        const horas = fecha.getHours();
+        const minutos = String(fecha.getMinutes()).padStart(2, '0');
+        const ampm = horas >= 12 ? 'p.m.' : 'a.m.';
+        const horas12 = horas % 12 || 12;
+        return `${horas12}:${minutos} ${ampm} - ${dia}/${mes}/${año}`;
+    };
+
+    const getEstadoBadge = (solicitud) => {
+        let estado = solicitud.estado_display || solicitud.estado_general;
+
+        if (estado === 'Pendiente Coordinador') {
+            estado = 'Pendiente Coordinación';
+        }
+
+        if (estado.includes('Aprobado') || estado.includes('QR')) {
+            return <span className="px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm font-semibold">✓ {estado}</span>;
+        } else if (estado.includes('Rechazado')) {
+            return <span className="px-3 py-1 bg-red-100 text-red-800 rounded-full text-sm font-semibold">✗ {estado}</span>;
+        } else if (estado.includes('Pendiente')) {
+            return <span className="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-sm font-semibold">⏳ {estado}</span>;
+        }
+        return <span className="px-3 py-1 bg-gray-100 text-gray-800 rounded-full text-sm font-semibold">{estado}</span>;
+    };
+
+    if (loading) {
+        return (
+            <DashboardLayout title="Historial de Solicitudes">
+                <div className="min-h-screen flex items-center justify-center bg-gray-50">
+                    <i className="fas fa-spinner fa-spin text-4xl text-[#39A900]"></i>
+                </div>
+            </DashboardLayout>
+        );
+    }
+
     return (
         <DashboardLayout title="Historial de Solicitudes">
-            <div className="min-h-screen bg-[#f4f4f4] p-6 md:p-8">
+            <div className="min-h-screen bg-gradient-to-br from-green-50 to-emerald-50 p-6 pt-24">
                 <div className="max-w-7xl mx-auto">
-
-                    {/* Header y Filtros */}
-                    <div className="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
-                        <div>
-                            <h1 className="text-3xl font-bold text-[#2A7D00]">Historial de Solicitudes</h1>
-                            <p className="text-gray-600 mt-1">Consulta y gestiona todas tus solicitudes pasadas.</p>
+                    {/* Header */}
+                    <div className="bg-white rounded-xl shadow-lg p-6 mb-6">
+                        <div className="flex items-center justify-between mb-4">
+                            <div className="flex items-center gap-4">
+                                <div className="bg-gradient-to-br from-[#39A900] to-emerald-600 text-white p-4 rounded-full">
+                                    <i className="fas fa-history text-2xl"></i>
+                                </div>
+                                <div>
+                                    <h1 className="text-3xl font-bold bg-gradient-to-r from-[#39A900] to-emerald-600 bg-clip-text text-transparent">
+                                        Historial de Solicitudes
+                                    </h1>
+                                    <p className="text-gray-600">Consulta y gestiona todas tus solicitudes pasadas</p>
+                                </div>
+                            </div>
+                            <div className="text-right">
+                                <p className="text-sm text-gray-500">Total de solicitudes</p>
+                                <p className="text-3xl font-bold text-[#39A900]">{filteredSolicitudes.length}</p>
+                            </div>
                         </div>
 
-                        <div className="flex flex-wrap gap-3 items-center">
-                            <select
-                                value={filter}
-                                onChange={(e) => setFilter(e.target.value)}
-                                className="bg-white border border-gray-300 text-gray-700 py-2 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#39A900] focus:border-transparent shadow-sm"
-                            >
-                                <option value="todas">Todas las solicitudes</option>
-                                <option value="pendiente">En espera</option>
-                                <option value="aprobado">Aceptadas</option>
-                                <option value="rechazado">Rechazadas</option>
-                            </select>
+                        {/* Barra de Filtros */}
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                            {/* Filtro por Fecha */}
+                            <div>
+                                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                                    <i className="fas fa-calendar mr-2"></i>Filtrar por Fecha
+                                </label>
+                                <input
+                                    type="date"
+                                    value={fechaFilter}
+                                    onChange={(e) => setFechaFilter(e.target.value)}
+                                    className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#39A900]"
+                                />
+                            </div>
 
-                            <button
-                                onClick={() => setShowConfirmDeleteModal(true)}
-                                className="bg-red-50 text-red-600 border border-red-200 hover:bg-red-100 font-semibold py-2 px-4 rounded-lg transition flex items-center gap-2"
-                            >
-                                <i className="fas fa-trash-alt"></i>
-                                Vaciar solicitudes
-                            </button>
+                            {/* Botón Restablecer */}
+                            <div className="flex items-end">
+                                <button
+                                    onClick={handleRestablecerFiltros}
+                                    className="w-full bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition font-semibold"
+                                >
+                                    <i className="fas fa-redo mr-2"></i>Restablecer
+                                </button>
+                            </div>
+
+                            {/* Botón Vaciar Historial */}
+                            <div className="flex items-end">
+                                <button
+                                    onClick={() => setShowConfirmDeleteModal(true)}
+                                    className="w-full bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition font-semibold"
+                                    disabled={solicitudes.length === 0}
+                                >
+                                    <i className="fas fa-trash mr-2"></i>Vaciar Historial
+                                </button>
+                            </div>
+                        </div>
+
+                        {/* Filtros por Estado (Tabs) */}
+                        <div className="flex gap-2 flex-wrap">
+                            {['todas', 'pendiente', 'aprobado', 'rechazado'].map((estado) => (
+                                <button
+                                    key={estado}
+                                    onClick={() => setFilter(estado)}
+                                    className={`px-4 py-2 rounded-full text-sm font-semibold transition-all duration-300 ${filter === estado
+                                        ? 'bg-[#39A900] text-white shadow-md transform scale-105'
+                                        : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                                        }`}
+                                >
+                                    {estado.charAt(0).toUpperCase() + estado.slice(1)}
+                                </button>
+                            ))}
                         </div>
                     </div>
 
-                    {/* Lista de Solicitudes */}
-                    <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-                        {loading ? (
-                            <div className="p-12 text-center">
-                                <i className="fas fa-spinner fa-spin text-4xl text-[#39A900] mb-4"></i>
-                                <p className="text-gray-500">Cargando historial...</p>
-                            </div>
-                        ) : error ? (
-                            <div className="p-12 text-center text-red-500">
-                                <i className="fas fa-exclamation-triangle text-4xl mb-4"></i>
-                                <p>{error}</p>
-                            </div>
-                        ) : filteredSolicitudes.length === 0 ? (
-                            <div className="p-12 text-center text-gray-500">
-                                <div className="bg-gray-50 rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-4">
-                                    <i className="fas fa-history text-3xl text-gray-400"></i>
-                                </div>
-                                <h3 className="text-lg font-semibold text-gray-700 mb-1">No hay solicitudes</h3>
-                                <p className="text-sm">No se encontraron solicitudes con el filtro seleccionado.</p>
-                            </div>
-                        ) : (
+                    {/* Tabla de Solicitudes */}
+                    {error ? (
+                        <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 rounded">
+                            <p>{error}</p>
+                        </div>
+                    ) : filteredSolicitudes.length === 0 ? (
+                        <div className="bg-white rounded-xl shadow-lg p-12 text-center">
+                            <i className="fas fa-inbox text-6xl text-gray-300 mb-4"></i>
+                            <p className="text-xl text-gray-600">No hay solicitudes con el filtro seleccionado</p>
+                        </div>
+                    ) : (
+                        <div className="bg-white rounded-xl shadow-lg overflow-hidden">
                             <div className="overflow-x-auto">
-                                <table className="w-full text-left border-collapse">
-                                    <thead>
-                                        <tr className="bg-gray-50 border-b border-gray-200 text-xs uppercase text-gray-500 font-semibold tracking-wider">
-                                            <th className="px-6 py-4">Fecha y Hora</th>
-                                            <th className="px-6 py-4">Motivo</th>
-                                            <th className="px-6 py-4">Instructor</th>
-                                            <th className="px-6 py-4">Estado</th>
-                                            <th className="px-6 py-4 text-right">Acciones</th>
+                                <table className="w-full">
+                                    <thead className="bg-gradient-to-r from-[#39A900] to-emerald-600 text-white">
+                                        <tr>
+                                            <th className="px-4 py-3 text-left font-semibold">Fecha y Hora</th>
+                                            <th className="px-4 py-3 text-left font-semibold">Motivo</th>
+                                            <th className="px-4 py-3 text-left font-semibold">Instructor</th>
+                                            <th className="px-4 py-3 text-left font-semibold">Estado</th>
+                                            <th className="px-4 py-3 text-center font-semibold">Acciones</th>
                                         </tr>
                                     </thead>
-                                    <tbody className="divide-y divide-gray-100">
-                                        {filteredSolicitudes.map((solicitud) => (
-                                            <tr key={solicitud.id_permiso} className="hover:bg-gray-50 transition-colors duration-150">
-                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700 font-medium">
+                                    <tbody>
+                                        {filteredSolicitudes.map((solicitud, index) => (
+                                            <tr
+                                                key={solicitud.id_permiso}
+                                                className={`border-b hover:bg-green-50 transition ${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'
+                                                    }`}
+                                            >
+                                                <td className="px-4 py-3 text-sm font-medium text-gray-700">
                                                     {formatFechaHora(solicitud.fecha_solicitud)}
                                                 </td>
-                                                <td className="px-6 py-4 text-sm text-gray-600">
-                                                    {getMotivoCompleto(solicitud.motivo, solicitud.descripcion)}
+                                                <td className="px-4 py-3 text-sm text-gray-600">
+                                                    {getMotivoTexto(solicitud.motivo, solicitud.descripcion)}
                                                 </td>
-                                                <td className="px-6 py-4 text-sm text-gray-600">
+                                                <td className="px-4 py-3 text-sm text-gray-600">
                                                     {solicitud.nombre_instructor} {solicitud.apellido_instructor}
                                                 </td>
-                                                <td className="px-6 py-4 whitespace-nowrap">
-                                                    <span className={`px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${getEstadoBadgeClass(solicitud.estado_display)}`}>
-                                                        {solicitud.estado_display}
-                                                    </span>
+                                                <td className="px-4 py-3">
+                                                    {getEstadoBadge(solicitud)}
                                                 </td>
-                                                <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                                <td className="px-4 py-3 text-center">
                                                     <button
                                                         onClick={() => openDetallesModal(solicitud)}
-                                                        className="text-[#39A900] hover:text-[#2A7D00] bg-[#e8f5e1] hover:bg-[#d4edda] p-2 rounded-lg transition-colors"
+                                                        className="text-[#39A900] hover:text-[#2A7D00] bg-[#e8f5e1] hover:bg-[#d4edda] p-2 rounded-lg transition-colors mx-1"
                                                         title="Ver detalles"
                                                     >
                                                         <i className="fas fa-eye"></i>
                                                     </button>
+
                                                 </td>
                                             </tr>
                                         ))}
                                     </tbody>
                                 </table>
                             </div>
-                        )}
-                    </div>
+                        </div>
+                    )}
                 </div>
 
                 {/* Modal de Detalles */}
@@ -298,15 +379,16 @@ export default function HistorialAprendiz() {
                                         <h3 className="text-xl leading-6 font-bold text-[#2A7D00]" id="modal-title">
                                             Detalles de la Solicitud
                                         </h3>
-                                        <div className="flex items-center gap-2">
-                                            {/* Solo mostrar botón de eliminar si NO está pendiente */}
+                                        <div className="flex items-center gap-4">
                                             {!selectedSolicitud.estado_general.toLowerCase().includes('pendiente') && (
                                                 <button
-                                                    onClick={() => confirmDeleteOne(selectedSolicitud)}
-                                                    className="text-red-500 hover:text-red-700 p-2 rounded-full hover:bg-red-50 transition"
-                                                    title="Eliminar solicitud"
+                                                    onClick={() => {
+                                                        confirmDeleteOne(selectedSolicitud);
+                                                    }}
+                                                    className="text-gray-400 hover:text-red-500 text-xl transition-colors"
+                                                    title="Eliminar del historial"
                                                 >
-                                                    <i className="fas fa-trash-alt text-lg"></i>
+                                                    <i className="fas fa-trash"></i>
                                                 </button>
                                             )}
                                             <button onClick={closeDetallesModal} className="text-gray-400 hover:text-gray-500 focus:outline-none">
@@ -317,22 +399,22 @@ export default function HistorialAprendiz() {
                                     </div>
 
                                     <div className="space-y-4">
-                                        {/* Estado y Fecha */}
+                                        {/* Fecha y Estado */}
                                         <div className="flex justify-between items-center bg-gray-50 p-3 rounded-lg">
                                             <div>
                                                 <p className="text-xs text-gray-500 uppercase font-bold">Fecha Solicitud</p>
                                                 <p className="text-sm font-medium text-gray-900">{formatFechaHora(selectedSolicitud.fecha_solicitud)}</p>
                                             </div>
-                                            <span className={`px-3 py-1 rounded-full text-xs font-bold ${getEstadoBadgeClass(selectedSolicitud.estado_display)}`}>
-                                                {selectedSolicitud.estado_display}
-                                            </span>
+                                            <div>
+                                                {getEstadoBadge(selectedSolicitud)}
+                                            </div>
                                         </div>
 
                                         {/* Motivo */}
                                         <div>
                                             <p className="text-xs text-gray-500 uppercase font-bold mb-1">Motivo</p>
                                             <div className="bg-white border border-gray-200 p-3 rounded-lg text-sm text-gray-700">
-                                                {getMotivoCompleto(selectedSolicitud.motivo, selectedSolicitud.descripcion)}
+                                                {getMotivoTexto(selectedSolicitud.motivo, selectedSolicitud.descripcion)}
                                             </div>
                                         </div>
 
@@ -345,8 +427,8 @@ export default function HistorialAprendiz() {
                                             </div>
                                             <div>
                                                 <p className="text-xs text-gray-500 uppercase font-bold mb-1">Horario</p>
-                                                <p className="text-xs text-gray-600">Salida: <span className="font-medium text-gray-900">{selectedSolicitud.hora_salida}</span></p>
-                                                <p className="text-xs text-gray-600">Regreso: <span className="font-medium text-gray-900">{selectedSolicitud.hora_regreso || 'N/A'}</span></p>
+                                                <p className="text-xs text-gray-600">Salida: <span className="font-medium text-gray-900">{formatTime12h(selectedSolicitud.hora_salida)}</span></p>
+                                                <p className="text-xs text-gray-600">Regreso: <span className="font-medium text-gray-900">{selectedSolicitud.hora_regreso ? formatTime12h(selectedSolicitud.hora_regreso) : 'N/A'}</span></p>
                                             </div>
                                         </div>
 
@@ -399,7 +481,7 @@ export default function HistorialAprendiz() {
 
                 {/* Modal Confirmación Eliminar Todo */}
                 {showConfirmDeleteModal && (
-                    <div className="fixed inset-0 z-[1001] overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+                    <div className="fixed inset-0 z-[10000] overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
                         <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
                             <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true" onClick={() => setShowConfirmDeleteModal(false)}></div>
                             <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
@@ -445,7 +527,7 @@ export default function HistorialAprendiz() {
 
                 {/* Modal Confirmación Eliminar UNA */}
                 {showConfirmDeleteOneModal && (
-                    <div className="fixed inset-0 z-[1002] overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+                    <div className="fixed inset-0 z-[10000] overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
                         <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
                             <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true" onClick={() => setShowConfirmDeleteOneModal(false)}></div>
                             <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>

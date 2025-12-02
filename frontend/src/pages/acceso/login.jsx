@@ -25,8 +25,8 @@ export default function Login() {
         const r = (rol || '').toLowerCase();
         if (r.includes('administrador')) return '/inicioadmin';
         if (r.includes('aprendiz')) return '/aprendiz/inicio';
-        if (r.includes('instructor')) return '/inicioinstructor';
-        if (r.includes('coordinacion') || r.includes('coordinación')) return '/iniciocoordinacion';
+        if (r.includes('instructor')) return '/instructor/inicio';
+        if (r.includes('coordinacion') || r.includes('coordinación')) return '/coordinacion/inicio';
         if (r.includes('vigilante')) return '/Vigilante/Inicio';
         return '/login';
     };
@@ -139,7 +139,7 @@ export default function Login() {
                             />
                         </div>
                         <div className="input-group-v2">
-                            
+
                             <i className="fas fa-lock input-icon"></i>
                             <input
                                 type="password"
