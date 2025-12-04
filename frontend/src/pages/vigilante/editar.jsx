@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import DashboardLayout from '../../components/DashboardLayout';
 import { useUser } from '../../contexts/UserContext';
 import { API_BASE_URL } from '../../config/api.js';
 
-
 const API = API_BASE_URL;
 
-export default function EditarCoordinacion() {
+export default function EditarVigilante() {
     const { user, logout } = useUser();
     const navigate = useNavigate();
     const [loading, setLoading] = useState(true);
@@ -36,7 +35,7 @@ export default function EditarCoordinacion() {
     const fetchPerfilData = async () => {
         try {
             const token = localStorage.getItem('token');
-            const response = await fetch(`${API}/api/coordinacion/perfil`, {
+            const response = await fetch(`${API}/api/vigilante/perfil`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
@@ -73,7 +72,7 @@ export default function EditarCoordinacion() {
 
         try {
             const token = localStorage.getItem('token');
-            const response = await fetch(`${API}/api/coordinacion/actualizar-correo`, {
+            const response = await fetch(`${API}/api/vigilante/actualizar-correo`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -115,7 +114,7 @@ export default function EditarCoordinacion() {
 
         try {
             const token = localStorage.getItem('token');
-            const response = await fetch(`${API}/api/coordinacion/cambiar-contrasena`, {
+            const response = await fetch(`${API}/api/vigilante/cambiar-contrasena`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -155,7 +154,7 @@ export default function EditarCoordinacion() {
         return (
             <DashboardLayout title="Editar Perfil">
                 <div className="min-h-screen flex items-center justify-center bg-gray-50">
-                    <i className="fas fa-spinner fa-spin text-4xl text-indigo-600"></i>
+                    <i className="fas fa-spinner fa-spin text-4xl text-[#39A900]"></i>
                 </div>
             </DashboardLayout>
         );
@@ -167,21 +166,17 @@ export default function EditarCoordinacion() {
                 <div className="max-w-4xl mx-auto">
                     {/* Header */}
                     <div className="bg-white rounded-xl shadow-lg p-8 mb-6">
-                        <Link to="/coordinacion/inicio" className="btn-back">
-                            <i className="fas fa-chevron-left"></i> Volver al Inicio
-                        </Link>
-
                         <div className="flex items-center gap-4 mb-6">
-                            <div className="bg-gradient-to-br from-indigo-500 to-purple-600 text-white p-4 rounded-full">
+                            <div className="bg-[#39A900] text-white p-4 rounded-full">
                                 <i className="fas fa-user-edit text-3xl"></i>
                             </div>
                             <div>
-                                <h1 className="text-3xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">Mi Perfil</h1>
+                                <h1 className="text-3xl font-bold text-[#2A7D00]">Mi Perfil</h1>
                                 <p className="text-gray-600">Gestiona tu información personal</p>
                             </div>
                         </div>
 
-                        {/* Datos del Coordinador - Solo Lectura */}
+                        {/* Datos del Vigilante - Solo Lectura */}
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div className="bg-gray-50 p-4 rounded-lg">
                                 <label className="block text-sm font-semibold text-gray-600 mb-2">
@@ -223,7 +218,7 @@ export default function EditarCoordinacion() {
 
                     {/* Opciones de Edición */}
                     <div className="bg-white rounded-xl shadow-lg p-8">
-                        <h2 className="text-2xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent mb-6">
+                        <h2 className="text-2xl font-bold text-[#2A7D00] mb-6">
                             <i className="fas fa-cog mr-2"></i>Configuración de Cuenta
                         </h2>
 
@@ -270,7 +265,7 @@ export default function EditarCoordinacion() {
                     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
                         <div className="bg-white rounded-xl shadow-2xl max-w-md w-full p-6">
                             <div className="flex items-center justify-between mb-6">
-                                <h3 className="text-2xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+                                <h3 className="text-2xl font-bold text-[#2A7D00]">
                                     <i className="fas fa-envelope mr-2"></i>Actualizar Correo
                                 </h3>
                                 <button
@@ -308,7 +303,6 @@ export default function EditarCoordinacion() {
                                         value={nuevoCorreo}
                                         onChange={(e) => setNuevoCorreo(e.target.value)}
                                         onInput={(e) => {
-                                            // Solo permitir A-Za-z0-9@._-
                                             e.target.value = e.target.value.replace(/[^A-Za-z0-9@._-]/g, '');
                                         }}
                                         pattern="[A-Za-z0-9@._-]+"
@@ -366,7 +360,7 @@ export default function EditarCoordinacion() {
                     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
                         <div className="bg-white rounded-xl shadow-2xl max-w-md w-full p-6">
                             <div className="flex items-center justify-between mb-6">
-                                <h3 className="text-2xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+                                <h3 className="text-2xl font-bold text-[#2A7D00]">
                                     <i className="fas fa-lock mr-2"></i>Cambiar Contraseña
                                 </h3>
                                 <button
@@ -392,7 +386,6 @@ export default function EditarCoordinacion() {
                                         value={contrasenaActual}
                                         onChange={(e) => setContrasenaActual(e.target.value)}
                                         onInput={(e) => {
-                                            // Solo permitir A-Za-zÁ-Úá-úñÑ0-9@#$%&*\-_+
                                             e.target.value = e.target.value.replace(/[^A-Za-zÁ-Úá-úñÑ0-9@#$%&*\-_+]/g, '');
                                         }}
                                         minLength={6}
@@ -419,7 +412,6 @@ export default function EditarCoordinacion() {
                                         value={contrasenaNueva}
                                         onChange={(e) => setContrasenaNueva(e.target.value)}
                                         onInput={(e) => {
-                                            // Solo permitir A-Za-zÁ-Úá-úñÑ0-9@#$%&*\-_+
                                             e.target.value = e.target.value.replace(/[^A-Za-zÁ-Úá-úñÑ0-9@#$%&*\-_+]/g, '');
                                         }}
                                         minLength={6}

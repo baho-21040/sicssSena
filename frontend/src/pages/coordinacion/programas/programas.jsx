@@ -33,7 +33,7 @@ export default function Programas() {
         setError('');
         try {
             const token = localStorage.getItem('token');
-            const response = await fetch(`${API_URL}/api/programas?q=${term}&estado=${estado}&nivel=${nivel}`, {
+            const response = await fetch(`${API_URL}/api/coordinacion/programas?q=${term}&estado=${estado}&nivel=${nivel}`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
@@ -81,7 +81,7 @@ export default function Programas() {
 
         try {
             const token = localStorage.getItem('token');
-            const response = await fetch(`${API_URL}/api/programas/${programaToDelete.id_programa}`, {
+            const response = await fetch(`${API_URL}/api/coordinacion/programas/${programaToDelete.id_programa}`, {
                 method: 'DELETE',
                 headers: {
                     'Authorization': `Bearer ${token}`
@@ -121,7 +121,7 @@ export default function Programas() {
 
         try {
             const token = localStorage.getItem('token');
-            const response = await fetch(`${API_URL}/api/programas/${programaToToggle.id_programa}/estado`, {
+            const response = await fetch(`${API_URL}/api/coordinacion/programas/${programaToToggle.id_programa}/estado`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -213,7 +213,7 @@ export default function Programas() {
 
                             <div className="flex gap-3">
                                 <Link
-                                    to="/inicioadmin"
+                                    to="/coordinacion/inicio"
                                     className="bg-[#6c757d] text-white px-5 py-2.5 rounded-lg hover:bg-[#5a6268] transition-colors font-bold flex items-center gap-2"
                                     title="Volver al Dashboard"
                                 >
@@ -221,7 +221,7 @@ export default function Programas() {
                                 </Link>
 
                                 <Link
-                                    to="/agregarprograma"
+                                    to="/coordinacion/registrarprograma"
                                     className="bg-[#39A900] text-white px-5 py-2.5 rounded-lg hover:bg-[#2A7D00] transition-colors font-bold flex items-center gap-2"
                                     title="Registrar un nuevo Programa"
                                 >
@@ -283,7 +283,7 @@ export default function Programas() {
                                             <td className="p-3 text-center">
                                                 <div className="flex justify-center gap-2 min-w-[120px]">
                                                     <Link
-                                                        to={`/editarprograma/${programa.id_programa}`}
+                                                        to={`/coordinacion/editarprograma/${programa.id_programa}`}
                                                         className="w-[35px] h-[35px] rounded-full bg-[#ffc107] text-[#333] flex items-center justify-center shadow-sm hover:shadow-md hover:-translate-y-[1px] transition-all"
                                                         title="Editar Programa"
                                                     >

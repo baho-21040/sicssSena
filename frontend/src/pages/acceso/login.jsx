@@ -26,7 +26,7 @@ export default function Login() {
         if (r.includes('administrador')) return '/inicioadmin';
         if (r.includes('aprendiz')) return '/aprendiz/inicio';
         if (r.includes('instructor')) return '/instructor/inicio';
-        if (r.includes('coordinacion') || r.includes('coordinación')) return '/coordinacion/inicio';
+        if (r.includes('coordinacion') || r.includes('coordinación') || r.includes('coordinador')) return '/coordinacion/inicio';
         if (r.includes('vigilante')) return '/Vigilante/Inicio';
         return '/login';
     };
@@ -38,7 +38,8 @@ export default function Login() {
             const route = roleToRoute(user.profile.nombre_rol);
             navigate(route, { replace: true });
         }
-    }, [user.isAuthenticated, user.isLoading, user.profile, navigate]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [user.isAuthenticated, user.isLoading, user.profile]);
 
     const cerrarModalInactivo = () => {
         setShowInactiveModal(false);

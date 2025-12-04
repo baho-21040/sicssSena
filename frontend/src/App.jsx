@@ -19,9 +19,19 @@ import EditarPerfilAprendiz from "./pages/aprendiz/editar.jsx";
 import HistorialAprendiz from "./pages/aprendiz/historial.jsx";
 import HistorialInstructor from "./pages/instructor/historial.jsx";
 import EditarInstructor from "./pages/instructor/editar.jsx";
+import RegistrarUsuarioCoord from "./pages/coordinacion/usuario/registrar.jsx";
+import BuscarUsuarioCoord from "./pages/coordinacion/usuario/buscarusuario.jsx";
+import EditarUsuarioCoord from "./pages/coordinacion/usuario/editarusuario.jsx";
+import EstadoCoord from "./pages/coordinacion/usuario/estado.jsx";
+import ProgramasCoord from "./pages/coordinacion/programas/programas.jsx";
+import AgregarProgramaCoord from "./pages/coordinacion/programas/agregarprograma.jsx";
+import EditarProgramaCoord from "./pages/coordinacion/programas/editarprograma.jsx";
 import EditarCoordinacion from "./pages/coordinacion/editar.jsx";
 import HistorialCoordinacion from "./pages/coordinacion/historial.jsx";
+import HistorialVigilante from "./pages/vigilante/historial.jsx";
+import EditarVigilante from "./pages/vigilante/editar.jsx";
 import { SoundProvider } from './contexts/SoundContext';
+import ProtectedRoute from './components/ProtectedRoute.jsx';
 
 
 
@@ -46,31 +56,54 @@ function App() {
   return (
     <SoundProvider>
       <Routes>
+        {/* Rutas públicas */}
         <Route path="/" element={<Navigate to="/login" replace />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/inicioadmin" element={<InicioAdmin />} />
-        <Route path="/aprendiz/inicio" element={<InicioAprendiz />} />
-        <Route path="/menu" element={<InicioAdmin />} />
-        <Route path="/inicioaprendiz" element={<InicioAprendiz />} />
-        <Route path="/coordinacion/inicio" element={<InicioCoordinacion />} />
-        <Route path="/instructor/inicio" element={<InicioInstructor />} />
-        <Route path="/Vigilante/Inicio" element={<InicioVigilante />} />
-        <Route path="/registrarusuario" element={<RegistrarUsuario />} />
-        <Route path="/BuscarUsuario" element={<BuscarUsuario />} />
-        <Route path="/estado" element={<Estado />} />
-        <Route path="/editarusuario/:id" element={<EditarUsuario />} />
-        <Route path="/programas" element={<Programas />} />
-        <Route path="/editarprograma/:id" element={<EditarPrograma />} />
-        <Route path="/agregarprograma" element={<AgregarPrograma />} />
-        <Route path="/Aprendiz/Solicitud" element={<SolicitudPermiso />} />
-        <Route path="/Aprendiz/Espera" element={<EsperaSolicitud />} />
         <Route path="/login/claveolvidada" element={<ClaveOlvidada />} />
-        <Route path="/aprendiz/editarperfil" element={<EditarPerfilAprendiz />} />
-        <Route path="/aprendiz/historial" element={<HistorialAprendiz />} />
-        <Route path="/instructor/historial" element={<HistorialInstructor />} />
-        <Route path="/instructor/editarperfil" element={<EditarInstructor />} />
-        <Route path="/coordinacion/editarperfil" element={<EditarCoordinacion />} />
-        <Route path="/coordinacion/historial" element={<HistorialCoordinacion />} />
+
+        {/* Rutas de Administrador */}
+        <Route path="/inicioadmin" element={<ProtectedRoute allowedRoles={['Administrador']}><InicioAdmin /></ProtectedRoute>} />
+        <Route path="/menu" element={<ProtectedRoute allowedRoles={['Administrador']}><InicioAdmin /></ProtectedRoute>} />
+        <Route path="/registrarusuario" element={<ProtectedRoute allowedRoles={['Administrador']}><RegistrarUsuario /></ProtectedRoute>} />
+        <Route path="/BuscarUsuario" element={<ProtectedRoute allowedRoles={['Administrador']}><BuscarUsuario /></ProtectedRoute>} />
+        <Route path="/estado" element={<ProtectedRoute allowedRoles={['Administrador']}><Estado /></ProtectedRoute>} />
+        <Route path="/editarusuario/:id" element={<ProtectedRoute allowedRoles={['Administrador']}><EditarUsuario /></ProtectedRoute>} />
+        <Route path="/programas" element={<ProtectedRoute allowedRoles={['Administrador']}><Programas /></ProtectedRoute>} />
+        <Route path="/editarprograma/:id" element={<ProtectedRoute allowedRoles={['Administrador']}><EditarPrograma /></ProtectedRoute>} />
+        <Route path="/agregarprograma" element={<ProtectedRoute allowedRoles={['Administrador']}><AgregarPrograma /></ProtectedRoute>} />
+
+        {/* Rutas de Aprendiz */}
+        <Route path="/aprendiz/inicio" element={<ProtectedRoute allowedRoles={['Aprendiz']}><InicioAprendiz /></ProtectedRoute>} />
+        <Route path="/inicioaprendiz" element={<ProtectedRoute allowedRoles={['Aprendiz']}><InicioAprendiz /></ProtectedRoute>} />
+        <Route path="/Aprendiz/Solicitud" element={<ProtectedRoute allowedRoles={['Aprendiz']}><SolicitudPermiso /></ProtectedRoute>} />
+        <Route path="/Aprendiz/Espera" element={<ProtectedRoute allowedRoles={['Aprendiz']}><EsperaSolicitud /></ProtectedRoute>} />
+        <Route path="/aprendiz/editarperfil" element={<ProtectedRoute allowedRoles={['Aprendiz']}><EditarPerfilAprendiz /></ProtectedRoute>} />
+        <Route path="/aprendiz/historial" element={<ProtectedRoute allowedRoles={['Aprendiz']}><HistorialAprendiz /></ProtectedRoute>} />
+
+        {/* Rutas de Instructor */}
+        <Route path="/instructor/inicio" element={<ProtectedRoute allowedRoles={['Instructor']}><InicioInstructor /></ProtectedRoute>} />
+        <Route path="/instructor/historial" element={<ProtectedRoute allowedRoles={['Instructor']}><HistorialInstructor /></ProtectedRoute>} />
+        <Route path="/instructor/editarperfil" element={<ProtectedRoute allowedRoles={['Instructor']}><EditarInstructor /></ProtectedRoute>} />
+
+        {/* Rutas de Coordinación */}
+        <Route path="/coordinacion/inicio" element={<ProtectedRoute allowedRoles={['Coordinacion']}><InicioCoordinacion /></ProtectedRoute>} />
+        <Route path="/coordinacion/editarperfil" element={<ProtectedRoute allowedRoles={['Coordinacion']}><EditarCoordinacion /></ProtectedRoute>} />
+        <Route path="/coordinacion/historial" element={<ProtectedRoute allowedRoles={['Coordinacion']}><HistorialCoordinacion /></ProtectedRoute>} />
+
+        {/* Rutas de Gestión Coordinación */}
+        <Route path="/coordinacion/registrarusuario" element={<ProtectedRoute allowedRoles={['Coordinacion']}><RegistrarUsuarioCoord /></ProtectedRoute>} />
+        <Route path="/coordinacion/busquedadeusuario" element={<ProtectedRoute allowedRoles={['Coordinacion']}><BuscarUsuarioCoord /></ProtectedRoute>} />
+        <Route path="/coordinacion/editarusuario/:id" element={<ProtectedRoute allowedRoles={['Coordinacion']}><EditarUsuarioCoord /></ProtectedRoute>} />
+        <Route path="/coordinacion/estado" element={<ProtectedRoute allowedRoles={['Coordinacion']}><EstadoCoord /></ProtectedRoute>} />
+
+        <Route path="/coordinacion/programas" element={<ProtectedRoute allowedRoles={['Coordinacion']}><ProgramasCoord /></ProtectedRoute>} />
+        <Route path="/coordinacion/registrarprograma" element={<ProtectedRoute allowedRoles={['Coordinacion']}><AgregarProgramaCoord /></ProtectedRoute>} />
+        <Route path="/coordinacion/editarprograma/:id" element={<ProtectedRoute allowedRoles={['Coordinacion']}><EditarProgramaCoord /></ProtectedRoute>} />
+
+        {/* Rutas de Vigilante */}
+        <Route path="/Vigilante/Inicio" element={<ProtectedRoute allowedRoles={['Vigilante']}><InicioVigilante /></ProtectedRoute>} />
+        <Route path="/vigilante/historial" element={<ProtectedRoute allowedRoles={['Vigilante']}><HistorialVigilante /></ProtectedRoute>} />
+        <Route path="/vigilante/editarperfil" element={<ProtectedRoute allowedRoles={['Vigilante']}><EditarVigilante /></ProtectedRoute>} />
       </Routes>
     </SoundProvider>
   );

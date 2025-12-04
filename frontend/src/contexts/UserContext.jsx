@@ -51,7 +51,8 @@ export function UserProvider({ children }) {
           }
         } catch (error) {
           console.error('Error verificando sesión:', error);
-          // No borrar token preventivamente
+          // Eliminar token corrupto para evitar bucles infinitos
+          localStorage.removeItem('token');
           setUser({ isAuthenticated: false, profile: null, token: null, isLoading: false });
         }
       } else {
@@ -161,7 +162,7 @@ export function UserProvider({ children }) {
         left: 0,
         width: '100%',
         height: '100%',
-        backgroundColor: 'rgba(0,0,0,0.85)',
+        backgroundColor: 'rgba(0, 0, 0, 0.39)',
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
@@ -175,7 +176,7 @@ export function UserProvider({ children }) {
           maxWidth: '400px',
           boxShadow: '0 4px 6px rgba(0,0,0,0.1)'
         }}>
-          <h2 style={{ color: '#e74c3c', marginBottom: '1rem' }}>Cuenta Desactivada</h2>
+          <h2 style={{ color: '#ff1900ff', marginBottom: '1rem' }}>Cuenta Desactivada</h2>
           <p style={{ marginBottom: '1.5rem', color: '#333' }}>
             Tu cuenta ha sido desactivada por la administración.
             Por favor contacta al soporte si crees que es un error.

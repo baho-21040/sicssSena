@@ -21,6 +21,22 @@ const InicioCoordinacion = () => {
     const [motivoRechazo, setMotivoRechazo] = useState('');
     const [procesando, setProcesando] = useState(false);
     const [notification, setNotification] = useState(null);
+    const [stats, setStats] = useState({
+        activeUsers: 0,
+        activePrograms: 0,
+        totalRequests: 0,
+        apprenticesCount: 0,
+        instructorsCount: 0,
+        inactiveUsers: 0,
+        programasActivos: 0,
+        programasInactivos: 0,
+        totalUsers: 0,
+        totalPrograms: 0,
+        coordinadoresCount: 0,
+        vigilantesCount: 0,
+        administradoresCount: 0
+    });
+    const [statsLoading, setStatsLoading] = useState(true);
 
     const { playNotificationSound, soundEnabled } = useSound();
     const previousCountRef = useRef(-1);
@@ -62,6 +78,36 @@ const InicioCoordinacion = () => {
         cargarSolicitudes();
         const interval = setInterval(cargarSolicitudes, 5000);
         return () => clearInterval(interval);
+    }, []);
+
+    useEffect(() => {
+        const fetchStats = async () => {
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch(`${API}/api/admin/stats`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                const contentType = response.headers.get('content-type');
+                if (!contentType || !contentType.includes('application/json')) {
+                    console.error('Error: La respuesta del servidor no es JSON');
+                    return;
+                }
+
+                const data = await response.json();
+                if (data.status === 'ok') {
+                    setStats(data.stats);
+                }
+            } catch (error) {
+                console.error('Error al cargar estadísticas:', error);
+            } finally {
+                setStatsLoading(false);
+            }
+        };
+
+        fetchStats();
     }, []);
 
     const getTimeAgo = (fecha) => {
@@ -213,38 +259,123 @@ const InicioCoordinacion = () => {
                 </div>
             )}
 
-            <div className="flex gap-6 p-6 bg-gradient-to-br from-blue-50 to-indigo-50 min-h-screen">
-
-                <div className="flex-1">
-                    <div className="bg-white rounded-2xl shadow-xl p-6 mb-6 border-l-4 border-l-indigo-600">
-                        <div className="flex items-center justify-between">
-                            <div>
-                                <h2 className="text-3xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent mb-2">
-                                    Solicitudes Pendientes de Aprobación Final
-                                </h2>
-                                <p className="text-gray-600">Gestiona las solicitudes aprobadas por instructores</p>
+            <div className="p-5 bg-gradient-to-br from-blue-50 to-indigo-50 min-h-screen">
+                {/* Fila superior - 4 botones de acción */}
+                {/* Grid de Tarjetas de Acción */}
+                <section className="flex justify-between flex-wrap mb-8 gap-1">
+                    {/* TARJETA 1: Crear Nuevo Usuario */}
+                    <Link
+                        to="/coordinacion/registrarusuario"
+                        className="rounded-[60px] w-[24%] shadow-[0_4px_10px_rgba(0,0,0,0.05)] no-underline text-[#333] transition-all duration-300 ease-in-out flex items-center p-6 bg-gradient-to-br from-white via-white to-[#e8f5e9] border-l-[5px] border-l-[#39A900] hover:-translate-y-1.5 hover:shadow-[0_10px_25px_rgba(0,0,0,0.15)] hover:border-l-[#2A7D00]"
+                    >
+                        <div className="flex items-center w-full">
+                            <div className="text-[2.5em] mr-5 min-w-[50px] text-center text-[#39A900]">
+                                <i className="fas fa-user-plus"></i>
                             </div>
-                            <div className="bg-gradient-to-br from-indigo-500 to-purple-600 text-white rounded-full w-20 h-20 flex items-center justify-center shadow-2xl">
+                            <div>
+                                <h3 className="m-0 text-xl font-bold text-[#2A7D00]">Crear Nuevo Usuario</h3>
+                                <p className="mt-1 mb-0 text-[0.85em] text-[#777]">Registro rápido de Usuario con su rol asignado.</p>
+                            </div>
+                        </div>
+                    </Link>
+
+                    {/* TARJETA 2: Buscar Usuario */}
+                    <Link
+                        to="/coordinacion/busquedadeusuario"
+                        className="rounded-[60px] w-[24%] shadow-[0_4px_10px_rgba(0,0,0,0.05)] no-underline text-[#333] transition-all duration-300 ease-in-out flex items-center p-6 bg-white border-l-[5px] border-l-[#ccc] hover:-translate-y-1.5 hover:shadow-[0_10px_25px_rgba(0,0,0,0.15)] hover:border-l-[#007bff]"
+                    >
+                        <div className="flex items-center w-full">
+                            <div className="text-[2.5em] mr-5 min-w-[50px] text-center text-[#007bff]">
+                                <i className="fas fa-search"></i>
+                            </div>
+                            <div>
+                                <h3 className="m-0 text-xl font-bold text-[#2A7D00]">Gestión y Búsqueda</h3>
+                                <p className="mt-1 mb-0 text-[0.85em] text-[#777]">Buscar, editar, actualizar o eliminar cuentas existentes.</p>
+                            </div>
+                        </div>
+                    </Link>
+
+                    {/* TARJETA 3: Control de Acceso (Status) */}
+                    <Link
+                        to="/coordinacion/estado"
+                        className="rounded-[60px] w-[24%] shadow-[0_4px_10px_rgba(0,0,0,0.05)] no-underline text-[#333] transition-all duration-300 ease-in-out flex items-center p-6 bg-white border-l-[5px] border-l-[#ccc] hover:-translate-y-1.5 hover:shadow-[0_10px_25px_rgba(0,0,0,0.15)] hover:border-l-[#007bff]"
+                    >
+                        <div className="flex items-center w-full">
+                            <div className="text-[2.5em] mr-5 min-w-[50px] text-center text-[#ffc107]">
+                                <i className="fas fa-toggle-off"></i>
+                            </div>
+                            <div>
+                                <h3 className="m-0 text-xl font-bold text-[#2A7D00]">Control de Acceso</h3>
+                                <p className="mt-1 mb-0 text-[0.85em] text-[#777]">Activar o desactivar temporalmente el acceso al sistema.</p>
+                            </div>
+                        </div>
+                    </Link>
+
+                    {/* TARJETA 4: Control de Programas de Formación */}
+                    <Link
+                        to="/coordinacion/programas"
+                        className="rounded-[60px] w-[24%] shadow-[0_4px_10px_rgba(0,0,0,0.05)] no-underline text-[#333] transition-all duration-300 ease-in-out flex items-center p-6 bg-white border-l-[5px] border-l-[#ccc] hover:-translate-y-1.5 hover:shadow-[0_10px_25px_rgba(0,0,0,0.15)] hover:border-l-[#007bff]"
+                    >
+                        <div className="flex items-center w-full">
+                            <div className="text-[2.5em] mr-5 min-w-[50px] text-center text-[#17a2b8]">
+                                <i className="fas fa-list-check"></i>
+                            </div>
+                            <div>
+                                <h3 className="m-0 text-xl font-bold text-[#2A7D00]">Programas de Formación</h3>
+                                <p className="mt-1 mb-0 text-[0.85em] text-[#777]">Consulta y controla los programas.</p>
+                            </div>
+                        </div>
+                    </Link>
+                </section>
+
+                {/* Fila media - Solicitudes pendientes + Historial + Editar perfil */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                    <div className="rounded-[30px] bg-white p-6 rounded-xl shadow-lg border-l-4 border-indigo-600 flex items-center justify-between">
+
+                        <div className="flex items-center justify-between gap-8 ">
+                            <div>
+                                <h2 className="text-3xl font-bold text-gray-800 mb-2">
+                                    Solicitudes Pendientes
+                                </h2>
+                                <p className="text-gray-600">Gestiona las solicitudes de tus aprendices</p>
+                            </div>
+                            <div className="bg-gradient-to-br from-[#39A900] to-[#2A7D00] text-white rounded-full w-12 h-12 flex items-center justify-center shadow-xl">
                                 <span className="text-3xl font-bold">{solicitudes.length}</span>
                             </div>
                         </div>
-
                     </div>
 
+                    <Link to="/coordinacion/historial" className="bg-gradient-to-br from-gray-200 to-gray-300 text-gray-800 p-6 rounded-[30px] shadow-lg hover:shadow-2xl transition-all duration-300 flex items-center justify-center">
+                        <div className="text-center">
+                            <i className="fas fa-history text-3xl mb-2"></i>
+                            <p className="font-semibold">Historial de salida</p>
+                        </div>
+                    </Link>
+                    <Link to="/coordinacion/editarperfil" className="bg-gradient-to-br from-gray-200 to-gray-300 text-gray-800 p-6 rounded-[30px] shadow-lg hover:shadow-2xl transition-all duration-300 flex items-center justify-center">
+                        <div className="text-center">
+                            <i className="fas fa-user-edit text-3xl mb-2"></i>
+                            <p className="font-semibold">Editar mi perfil</p>
+                        </div>
+                    </Link>
+                </div>
+
+                {/* Área central - Solicitudes enviadas */}
+                <div className="bg-white rounded-2xl shadow-xl p-6 mb-6">
+                    <h3 className="text-2xl font-bold text-gray-800 mb-4">Solicitudes enviadas</h3>
                     {loading ? (
                         <div className="flex justify-center items-center py-20">
                             <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-indigo-600"></div>
                         </div>
                     ) : solicitudes.length === 0 ? (
-                        <div className="bg-white rounded-2xl shadow-xl p-12 text-center">
-                            <i className="fas fa-check-circle text-6xl text-indigo-600 mb-4"></i>
-                            <p className="text-xl text-gray-600">No hay solicitudes pendientes de aprobación final</p>
+                        <div className="text-center py-12">
+                            <i className="fas fa-inbox text-6xl text-gray-300 mb-4"></i>
+                            <p className="text-xl text-gray-500">No hay solicitudes</p>
                         </div>
                     ) : (
-                        <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
-                            <table className="w-full">
-                                <thead className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white">
-                                    <tr>
+                        <div className="overflow-hidden">
+                            <table className=" w-full border border-gray-400 rounded-[20px] overflow-hidden w-full" >
+                                <thead className=" bg-gradient-to-r from-indigo-600 to-purple-600 text-white">
+                                    <tr className="rounded-[60px]">
                                         <th className="px-6 py-4 text-left font-semibold">Aprendiz</th>
                                         <th className="px-6 py-4 text-left font-semibold">Formación</th>
                                         <th className="px-6 py-4 text-left font-semibold">Instructor</th>
@@ -258,11 +389,9 @@ const InicioCoordinacion = () => {
                                             key={solicitud.id_permiso}
                                             className={`border-b hover:bg-indigo-50 transition-colors ${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}`}
                                         >
-                                            <td className="px-6 py-4">
+                                            <td className="0 px-6 py-4">
                                                 <div className="flex items-center gap-3">
-                                                    <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-full flex items-center justify-center text-white font-bold">
-                                                        {solicitud.nombre_aprendiz.charAt(0)}
-                                                    </div>
+                                                    
                                                     <div>
                                                         <p className="font-semibold text-gray-800">
                                                             {solicitud.nombre_aprendiz} {solicitud.apellido_aprendiz}
@@ -312,20 +441,120 @@ const InicioCoordinacion = () => {
                     )}
                 </div>
 
-                <div className="w-[35%] space-y-4">
+                {/* Fila inferior - 3 bloques de estadísticas */}
+                <div className="grid grid-cols-1 gap-4">
+                    {/* Estadísticas de Usuarios */}
+                    <div className="bg-white rounded-xl shadow-lg p-6 border-t-4 border-t-indigo-600">
+                        <h4 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+                            <i className="fas fa-users text-indigo-600"></i>
+                            Estadísticas de Usuarios
+                        </h4>
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                            <div className="text-center">
+                                <i className="fas fa-users text-3xl text-indigo-600 mb-2"></i>
+                                <span className="block text-3xl font-bold text-gray-800">
+                                    {statsLoading ? <i className="fas fa-spinner fa-spin text-sm"></i> : stats.totalUsers}
+                                </span>
+                                <span className="block text-sm text-gray-600">Usuarios Totales</span>
+                            </div>
+                            <div className="text-center">
+                                <i className="fas fa-user-check text-3xl text-green-600 mb-2"></i>
+                                <span className="block text-3xl font-bold text-gray-800">
+                                    {statsLoading ? <i className="fas fa-spinner fa-spin text-sm"></i> : stats.activeUsers}
+                                </span>
+                                <span className="block text-sm text-gray-600">Usuarios Activos</span>
+                            </div>
+                            <div className="text-center">
+                                <i className="fas fa-user-slash text-3xl text-red-600 mb-2"></i>
+                                <span className="block text-3xl font-bold text-gray-800">
+                                    {statsLoading ? <i className="fas fa-spinner fa-spin text-sm"></i> : stats.inactiveUsers}
+                                </span>
+                                <span className="block text-sm text-gray-600">Usuarios Desactivados</span>
+                            </div>
+                            <div className="text-center">
+                                <i className="fas fa-clock text-3xl text-yellow-600 mb-2"></i>
+                                <span className="block text-3xl font-bold text-gray-800">
+                                    {statsLoading ? <i className="fas fa-spinner fa-spin text-sm"></i> : stats.totalRequests}
+                                </span>
+                                <span className="block text-sm text-gray-600">Solicitudes Generadas</span>
+                            </div>
+                        </div>
+                    </div>
 
-                    <Link to="/coordinacion/editarperfil" className="block w-full bg-gradient-to-r from-purple-500 to-purple-600 text-white py-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 font-semibold text-lg text-center">
-                        <i className="fas fa-user-edit mr-2"></i>
-                        Editar Perfil
-                    </Link>
-                    <Link to="/coordinacion/historial" className="block w-full bg-gradient-to-r from-indigo-500 to-indigo-600 text-white py-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 font-semibold text-lg text-center">
-                        <i className="fas fa-history mr-2"></i>
-                        Historial de Salidas
-                    </Link>
-                    <div className="bg-white rounded-xl shadow-lg p-6">
-                        <h3 className="font-bold text-gray-800 mb-2">Solicitudes Recibidas</h3>
-                        <p className="text-4xl font-bold text-indigo-600">{solicitudes.length}</p>
-                        <p className="text-sm text-gray-500 mt-1">Pendientes de aprobación</p>
+                    {/* Estadísticas por Rol */}
+                    <div className="bg-white rounded-xl shadow-lg p-6 border-t-4 border-t-purple-600">
+                        <h4 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+                            <i className="fas fa-user-tag text-purple-600"></i>
+                            Estadísticas por Rol
+                        </h4>
+                        <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+                            <div className="text-center">
+                                <i className="fas fa-user-graduate text-3xl text-blue-600 mb-2"></i>
+                                <span className="block text-3xl font-bold text-gray-800">
+                                    {statsLoading ? <i className="fas fa-spinner fa-spin text-sm"></i> : stats.apprenticesCount}
+                                </span>
+                                <span className="block text-sm text-gray-600">Aprendices</span>
+                            </div>
+                            <div className="text-center">
+                                <i className="fa-solid fa-person-chalkboard text-3xl text-green-600 mb-2"></i>
+                                <span className="block text-3xl font-bold text-gray-800">
+                                    {statsLoading ? <i className="fas fa-spinner fa-spin text-sm"></i> : stats.instructorsCount}
+                                </span>
+                                <span className="block text-sm text-gray-600">Instructores</span>
+                            </div>
+                            <div className="text-center">
+                                <i className="fas fa-user-tie text-3xl text-purple-600 mb-2"></i>
+                                <span className="block text-3xl font-bold text-gray-800">
+                                    {statsLoading ? <i className="fas fa-spinner fa-spin text-sm"></i> : stats.coordinadoresCount}
+                                </span>
+                                <span className="block text-sm text-gray-600">Coordinadores</span>
+                            </div>
+                            <div className="text-center">
+                                <i className="fas fa-user-shield text-3xl text-orange-600 mb-2"></i>
+                                <span className="block text-3xl font-bold text-gray-800">
+                                    {statsLoading ? <i className="fas fa-spinner fa-spin text-sm"></i> : stats.vigilantesCount}
+                                </span>
+                                <span className="block text-sm text-gray-600">Vigilantes</span>
+                            </div>
+                            <div className="text-center">
+                                <i className="fa-solid fa-user-gear text-3xl text-red-600 mb-2"></i>
+                                <span className="block text-3xl font-bold text-gray-800">
+                                    {statsLoading ? <i className="fas fa-spinner fa-spin text-sm"></i> : stats.administradoresCount}
+                                </span>
+                                <span className="block text-sm text-gray-600">Administradores</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Estadísticas de Programas */}
+                    <div className="bg-white rounded-xl shadow-lg p-6 border-t-4 border-t-green-600">
+                        <h4 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+                            <i className="fas fa-graduation-cap text-green-600"></i>
+                            Estadísticas de Programas de Formación
+                        </h4>
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div className="text-center">
+                                <i className="fas fa-book text-3xl text-indigo-600 mb-2"></i>
+                                <span className="block text-3xl font-bold text-gray-800">
+                                    {statsLoading ? <i className="fas fa-spinner fa-spin text-sm"></i> : stats.totalPrograms}
+                                </span>
+                                <span className="block text-sm text-gray-600">Programas Totales</span>
+                            </div>
+                            <div className="text-center">
+                                <i className="fas fa-check-circle text-3xl text-green-600 mb-2"></i>
+                                <span className="block text-3xl font-bold text-gray-800">
+                                    {statsLoading ? <i className="fas fa-spinner fa-spin text-sm"></i> : stats.programasActivos}
+                                </span>
+                                <span className="block text-sm text-gray-600">Programas Activos</span>
+                            </div>
+                            <div className="text-center">
+                                <i className="fas fa-ban text-3xl text-red-600 mb-2"></i>
+                                <span className="block text-3xl font-bold text-gray-800">
+                                    {statsLoading ? <i className="fas fa-spinner fa-spin text-sm"></i> : stats.programasInactivos}
+                                </span>
+                                <span className="block text-sm text-gray-600">Programas Inactivos</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -473,7 +702,7 @@ const InicioCoordinacion = () => {
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[9999] pt-20 p-4" onClick={() => !procesando && setShowRechazarModal(false)}>
                     <div className="bg-white rounded-3xl shadow-2xl max-w-md w-full overflow-hidden animate-[modalAppear_0.3s_ease-out]" onClick={(e) => e.stopPropagation()}>
                         <div className="bg-gradient-to-r from-red-500 to-red-600 p-6 text-white">
-                            <div className="flex items-center justify-between">
+                            <div className="flex-items-center justify-between">
                                 <h2 className="text-2xl font-bold">Motivo de Rechazo</h2>
                                 {!procesando && (
                                     <button onClick={() => setShowRechazarModal(false)} className="text-white hover:text-gray-200 text-3xl">&times;</button>

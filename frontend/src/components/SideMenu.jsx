@@ -20,7 +20,7 @@ const getMenuLinks = (role) => {
         case 'Instructor':
             return [
                 { to: "/instructor/inicio", icon: "fas fa-chalkboard-teacher", label: "Inicio" },
-                { to: "/instructor/registro", icon: "fas fa-plus", label: "Crear Contenido" },
+                { to: "/instructor/editarperfil", icon: "fas fa-plus", label: "Editar Mi Perfil" },
                 { to: "/instructor/alumnos", icon: "fas fa-users", label: "Mis Aprendices" },
             ];
         case 'Aprendiz':
@@ -30,11 +30,17 @@ const getMenuLinks = (role) => {
                 { to: "/aprendiz/mensajes", icon: "fas fa-comment", label: "Mensajes" },
             ];
 
-            case 'Coordinacion':
+        case 'Coordinacion':
             return [
                 { to: "/coordinacion/inicio", icon: "fas fa-graduation-cap", label: "Inicio" },
                 { to: "/coordinacion/editarperfil", icon: "fas fa-book", label: "Editar Perfil" },
                 { to: "/coordinacion/historial", icon: "fas fa-comment", label: "Historial de salidas" },
+                { to: "/coordinacion/registrarusuario", icon: "fa-solid fa-user-plus", label: "Registrar usuario" },
+                { to: "/coordinacion/busquedadeusuario", icon: "fas fa-users-cog", label: "Gestionar usuario" },
+                { to: "/coordinacion/estado", icon: "fa-solid fa-user-lock", label: "Estado de cuenta" },
+                { to: "/coordinacion/registrarprograma", icon: "fa-solid fa-chalkboard", label: "Crear Formación" },
+                { to: "/coordinacion/programas", icon: "fas fa-chalkboard-teacher", label: "Formaciones" },
+
             ];
 
         case 'Vigilante':

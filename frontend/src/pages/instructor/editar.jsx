@@ -167,7 +167,7 @@ export default function EditarInstructor() {
 
     return (
         <DashboardLayout title="Editar Perfil">
-            <div className="min-h-screen bg-gray-50 p-8 pt-24">
+            <div className="min-h-screen bg-gray-50 p-8 pt-18">
                 <div className="max-w-4xl mx-auto">
                     {/* Header */}
                     <div className="bg-white rounded-xl shadow-lg p-8 mb-6">
@@ -176,7 +176,7 @@ export default function EditarInstructor() {
                                 <i className="fas fa-user-edit text-3xl"></i>
                             </div>
                             <div>
-                                <h1 className="text-3xl font-bold text-[#2A7D00]">Mi Perfil</h1>
+                                <h1 className="text-2xl font-bold text-[#2A7D00]">Mi Perfil</h1>
                                 <p className="text-gray-600">Gestiona tu información personal</p>
                             </div>
                         </div>
@@ -223,14 +223,14 @@ export default function EditarInstructor() {
 
                     {/* Opciones de Edición */}
                     <div className="bg-white rounded-xl shadow-lg p-8">
-                        <h2 className="text-2xl font-bold text-[#2A7D00] mb-6">
+                        <h2 className="text-2xl font-bold text-[#2A7D00] mb-4">
                             <i className="fas fa-cog mr-2"></i>Configuración de Cuenta
                         </h2>
 
                         <div className="space-y-4">
                             {/* Actualizar Correo */}
-                            <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition">
-                                <div>
+                            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition gap-4">
+                                <div className="w-full sm:w-auto">
                                     <h3 className="font-semibold text-gray-800">
                                         <i className="fas fa-envelope text-[#17a2b8] mr-2"></i>
                                         Actualizar Correo Electrónico
@@ -239,15 +239,15 @@ export default function EditarInstructor() {
                                 </div>
                                 <button
                                     onClick={() => setShowEmailModal(true)}
-                                    className="bg-[#17a2b8] text-white px-6 py-2 rounded-lg hover:bg-[#138496] transition font-semibold"
+                                    className="w-full sm:w-auto bg-[#17a2b8] text-white px-6 py-2 rounded-lg hover:bg-[#138496] transition font-semibold"
                                 >
                                     Actualizar
                                 </button>
                             </div>
 
                             {/* Cambiar Contraseña */}
-                            <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition">
-                                <div>
+                            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition gap-4">
+                                <div className="w-full sm:w-auto">
                                     <h3 className="font-semibold text-gray-800">
                                         <i className="fas fa-lock text-[#ffc107] mr-2"></i>
                                         Cambiar Contraseña
@@ -256,7 +256,7 @@ export default function EditarInstructor() {
                                 </div>
                                 <button
                                     onClick={() => setShowPasswordModal(true)}
-                                    className="bg-[#ffc107] text-white px-6 py-2 rounded-lg hover:bg-[#e0a800] transition font-semibold"
+                                    className="w-full sm:w-auto bg-[#ffc107] text-white px-6 py-2 rounded-lg hover:bg-[#e0a800] transition font-semibold"
                                 >
                                     Cambiar
                                 </button>

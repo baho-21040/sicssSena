@@ -202,7 +202,14 @@ const InicioVigilante = () => {
                         </h1>
                         <div className="flex gap-3">
                             <Link
-                                to="/vigilante/perfil"
+                                to="/vigilante/historial"
+                                className="bg-white text-[#2A7D00] px-6 py-3 rounded-lg font-semibold hover:bg-gray-50 transition shadow-md flex items-center gap-2 no-underline"
+                            >
+                                <i className="fas fa-history"></i>
+                                Historial
+                            </Link>
+                            <Link
+                                to="/vigilante/editarperfil"
                                 className="bg-white text-[#2A7D00] px-6 py-3 rounded-lg font-semibold hover:bg-gray-50 transition shadow-md flex items-center gap-2 no-underline"
                             >
                                 <i className="fas fa-user-edit"></i>

@@ -243,44 +243,79 @@ const InicioInstructor = () => {
 
     return (
         <DashboardLayout title="Portal de Instructor">
-            <div className="flex gap-6 p-6 bg-gradient-to-br from-gray-50 to-gray-100 min-h-screen">
+            <div className="p-6 bg-gradient-to-br from-gray-50 to-gray-100 min-h-screen">
 
-                {/* Área principal - 65% */}
-                <div className="flex-1">
-                    {/* Header */}
-                    <div className="bg-white rounded-2xl shadow-lg p-6 mb-6 border-l-4 border-l-[#39A900]">
-                        <div className="flex items-center justify-between">
+                {/* Fila superior: 3 Tarjetas en una fila */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+
+                    {/* TARJETA 1: Solicitudes Pendientes */}
+                    <div className="bg-white rounded-2xl shadow-md p-6 relative overflow-hidden border-l-4 border-l-[#39A900] hover:-translate-y-1 transition-transform duration-300">
+                        <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-green-100 to-green-50 rounded-bl-full opacity-50"></div>
+                        <div className="flex items-center justify-between relative z-10 h-full">
                             <div>
-                                <h2 className="text-3xl font-bold text-gray-800 mb-2">
+                                <h2 className="text-xl font-bold text-gray-800 mb-1">
                                     Solicitudes Pendientes
                                 </h2>
-                                <p className="text-gray-600">Gestiona las solicitudes de tus aprendices</p>
+                                <p className="text-gray-500 text-sm">Gestiona las solicitudes</p>
                             </div>
-                            <div className="bg-gradient-to-br from-[#39A900] to-[#2A7D00] text-white rounded-full w-20 h-20 flex items-center justify-center shadow-xl">
-                                <span className="text-3xl font-bold">{solicitudes.length}</span>
+                            <div className="bg-gradient-to-br from-[#39A900] to-[#2A7D00] text-white rounded-full w-14 h-14 flex items-center justify-center shadow-lg">
+                                <span className="text-2xl font-bold">{solicitudes.length}</span>
                             </div>
                         </div>
                     </div>
 
-                    {/* Tabla de solicitudes */}
-                    {loading ? (
-                        <div className="flex justify-center items-center py-20">
-                            <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-[#39A900]"></div>
+                    {/* TARJETA 2: Historial de salida */}
+                    <Link to="/instructor/historial" className="block">
+                        <div className="bg-white rounded-2xl shadow-md p-6 h-full flex items-center border-l-4 border-l-gray-300 hover:border-l-[#5856D6] hover:-translate-y-1 transition-all duration-300 group">
+                            <div className="w-14 h-14 bg-gray-100 rounded-full flex items-center justify-center mr-4 group-hover:bg-[#5856D6] transition-colors">
+                                <i className="fas fa-history text-gray-500 text-xl group-hover:text-white"></i>
+                            </div>
+                            <div>
+                                <h3 className="text-lg font-bold text-gray-800 group-hover:text-[#5856D6]">Historial de salida</h3>
+                                <p className="text-gray-500 text-sm">Ver registros pasados</p>
+                            </div>
                         </div>
-                    ) : solicitudes.length === 0 ? (
-                        <div className="bg-white rounded-2xl shadow-lg p-12 text-center">
-                            <i className="fas fa-check-circle text-6xl text-[#39A900] mb-4"></i>
-                            <p className="text-xl text-gray-600">No hay solicitudes pendientes</p>
+                    </Link>
+
+                    {/* TARJETA 3: Editar mi perfil */}
+                    <Link to="/instructor/editarperfil" className="block">
+                        <div className="bg-white rounded-2xl shadow-md p-6 h-full flex items-center border-l-4 border-l-gray-300 hover:border-l-purple-600 hover:-translate-y-1 transition-all duration-300 group">
+                            <div className="w-14 h-14 bg-gray-100 rounded-full flex items-center justify-center mr-4 group-hover:bg-purple-600 transition-colors">
+                                <i className="fas fa-user-edit text-gray-500 text-xl group-hover:text-white"></i>
+                            </div>
+                            <div>
+                                <h3 className="text-lg font-bold text-gray-800 group-hover:text-purple-600">Editar mi perfil</h3>
+                                <p className="text-gray-500 text-sm">Actualizar datos</p>
+                            </div>
                         </div>
-                    ) : (
-                        <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
+                    </Link>
+                </div>
+
+                {/* Tabla de solicitudes - Ancho completo */}
+                {loading ? (
+                    <div className="flex justify-center items-center py-20">
+                        <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-[#39A900]"></div>
+                    </div>
+                ) : solicitudes.length === 0 ? (
+                    <div className="bg-white rounded-2xl shadow-lg p-12 text-center">
+                        <i className="fas fa-check-circle text-6xl text-[#39A900] mb-4"></i>
+                        <p className="text-xl text-gray-600">No hay solicitudes pendientes</p>
+                    </div>
+                ) : (
+                    <div className="bg-white rounded-2xl shadow-md overflow-hidden">
+                        <div className="bg-gradient-to-r from-[#5856E7] to-[#4A49B8] text-white px-6 py-4">
+                            <h3 className="text-lg md:text-xl lg:text-2xl font-bold">Solicitudes enviadas</h3>
+                        </div>
+
+                        {/* Vista de tabla para pantallas grandes (>= 1024px) */}
+                        <div className="hidden lg:block">
                             <table className="w-full">
-                                <thead className="bg-gradient-to-r from-[#39A900] to-[#2A7D00] text-white">
+                                <thead className="bg-[#5856D6] text-white">
                                     <tr>
-                                        <th className="px-6 py-4 text-left font-semibold">Aprendiz</th>
-                                        <th className="px-6 py-4 text-left font-semibold">Formación</th>
-                                        <th className="px-6 py-4 text-left font-semibold">Tiempo</th>
-                                        <th className="px-6 py-4 text-center font-semibold">Acciones</th>
+                                        <th className="px-6 py-3 text-left font-semibold text-base lg:text-lg">Aprendiz</th>
+                                        <th className="px-6 py-3 text-left font-semibold text-base lg:text-lg">Formación</th>
+                                        <th className="px-6 py-3 text-left font-semibold text-base lg:text-lg">Tiempo</th>
+                                        <th className="px-6 py-3 text-center font-semibold text-base lg:text-lg">Acciones</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -290,27 +325,30 @@ const InicioInstructor = () => {
                                             className={`border-b hover:bg-gray-50 transition-colors ${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}`}
                                         >
                                             <td className="px-6 py-4">
-                                                <div className="flex items-center gap-3">
-                                                    <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center text-white font-bold">
-                                                        {solicitud.nombre_aprendiz.charAt(0)}
-                                                    </div>
-                                                    <div>
-                                                        <p className="font-semibold text-gray-800">
-                                                            {solicitud.nombre_aprendiz} {solicitud.apellido_aprendiz}
-                                                        </p>
-                                                        <p className="text-sm text-gray-500">Doc: {solicitud.documento_aprendiz}</p>
-                                                    </div>
+                                                <div>
+                                                    <p className=" text-gray-800 text-base lg:text-sm">
+                                                        {solicitud.nombre_aprendiz} {solicitud.apellido_aprendiz}
+                                                    </p>
+                                                    <p className="text-sm lg:text-base text-gray-500">
+                                                        Doc: {solicitud.documento_aprendiz}
+                                                    </p>
                                                 </div>
                                             </td>
                                             <td className="px-6 py-4">
-                                                <p className="font-medium text-gray-800">{solicitud.nombre_programa}</p>
-                                                <p className="text-sm text-gray-500">Ficha: {solicitud.numero_ficha}</p>
+                                                <div>
+                                                    <p className="font-medium text-gray-800 text-base lg:text-sm">
+                                                        {solicitud.nombre_programa || 'Sin programa'}
+                                                    </p>
+                                                    <p className="text-sm lg:text-base text-gray-500">
+                                                        Ficha: {solicitud.numero_ficha || 'N/A'}
+                                                    </p>
+                                                </div>
                                             </td>
                                             <td className="px-6 py-4">
-                                                <span className="inline-flex items-center gap-1 text-sm text-gray-600">
-                                                    <i className="fas fa-clock text-gray-400"></i>
-                                                    {getTimeAgo(solicitud.fecha_solicitud)}
-                                                </span>
+                                                <div className="flex items-center gap-2 text-gray-600">
+                                                    <i className="fas fa-clock text-sm lg:text-base"></i>
+                                                    <span className="text-sm lg:text-xs">{getTimeAgo(solicitud.fecha_solicitud)}</span>
+                                                </div>
                                             </td>
                                             <td className="px-6 py-4 text-center">
                                                 <button
@@ -318,10 +356,9 @@ const InicioInstructor = () => {
                                                         setSelectedSolicitud(solicitud);
                                                         setShowDetallesModal(true);
                                                     }}
-                                                    className="bg-gradient-to-r from-blue-500 to-blue-600 text-white px-4 py-2 rounded-lg hover:shadow-lg transition-all duration-300 font-medium"
+                                                    className="bg-[#5856D6] text-white px-2 py-2 rounded-lg hover:bg-[#4A49B8] transition-all duration-300 font-medium inline-flex items-center gap-2 text-base lg:text-sm"
                                                 >
-                                                    <i className="fas fa-eye mr-2"></i>
-                                                    Ver detalles
+                                                    Ver más
                                                 </button>
                                             </td>
                                         </tr>
@@ -329,23 +366,154 @@ const InicioInstructor = () => {
                                 </tbody>
                             </table>
                         </div>
-                    )}
-                </div>
 
-                {/* Panel lateral - 35% */}
-                <div className="w-[35%] space-y-4">
+                        {/* Vista de 2 columnas para tablets (700px - 1023px) */}
+                        <div className="hidden sm:block lg:hidden p-4 space-y-4">
+                            {solicitudes.map((solicitud, index) => (
+                                <div
+                                    key={solicitud.id_permiso}
+                                    className="bg-white border-2 border-gray-300 rounded-xl shadow-md p-5 hover:border-[#5856D6] hover:shadow-lg transition-all duration-300"
+                                >
+                                    <div className="space-y-4">
+                                        {/* Fila 1: Documento (60%) | Nombre (40%) */}
+                                        <div className="flex gap-4">
+                                            <div className="w-[60%]">
+                                                <p className="text-sm md:text-base font-semibold text-gray-600 mb-2">Documento</p>
+                                                <p className="text-base md:text-lg text-gray-800 font-medium">{solicitud.documento_aprendiz}</p>
+                                            </div>
+                                            <div className="w-[40%]">
+                                                <p className="text-sm md:text-base font-semibold text-gray-600 mb-2">Nombre</p>
+                                                <p className="text-base md:text-sm text-gray-800 font-medium">
+                                                    {solicitud.nombre_aprendiz} {solicitud.apellido_aprendiz}
+                                                </p>
+                                            </div>
+                                        </div>
 
+                                        {/* Fila 2: Programa (60%) | Ficha (40%) */}
+                                        <div className="flex gap-4 pt-3 border-t border-gray-200">
+                                            <div className="w-[60%]">
+                                                <p className="text-sm md:text-base font-semibold text-gray-600 mb-2">Programa</p>
+                                                <p className="text-sm md:text-lg text-gray-800 font-medium">
+                                                    {solicitud.nombre_programa || 'Sin programa'}
+                                                </p>
+                                            </div>
+                                            <div className="w-[40%]">
+                                                <p className="text-sm md:text-base font-semibold text-gray-600 mb-2">Ficha</p>
+                                                <p className="text-base md:text-lg text-gray-800 font-medium">
+                                                    {solicitud.numero_ficha || 'N/A'}
+                                                </p>
+                                            </div>
+                                        </div>
 
-                    <Link to="/instructor/editarperfil" className="w-full bg-gradient-to-r from-purple-500 to-purple-600 text-white py-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 font-semibold text-lg">
-                        <i className="fas fa-user-edit mr-2"></i>
-                        Editar Perfil
-                    </Link>
+                                        {/* Fila 3: Tiempo (ancho completo) */}
+                                        <div className="pt-3 border-t border-gray-200">
+                                            <p className="text-sm md:text-base font-semibold text-gray-600 mb-2">Tiempo</p>
+                                            <div className="flex items-center gap-2">
+                                                <i className="fas fa-clock text-sm md:text-base text-gray-600"></i>
+                                                <span className="text-base md:text-lg text-gray-800 font-medium">{getTimeAgo(solicitud.fecha_solicitud)}</span>
+                                            </div>
+                                        </div>
 
-                    <Link to="/instructor/historial" className="w-full bg-gradient-to-r from-indigo-500 to-indigo-600 text-white py-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 font-semibold text-lg">
-                        <i className="fas fa-inbox mr-2"></i>
-                        Solicitudes Recibidas ({solicitudes.length})
-                    </Link>
-                </div>
+                                        {/* Botón de acción */}
+                                        <div className="pt-3">
+                                            <button
+                                                onClick={() => {
+                                                    setSelectedSolicitud(solicitud);
+                                                    setShowDetallesModal(true);
+                                                }}
+                                                className="w-full bg-[#5856D6] text-white px-4 py-3 rounded-lg hover:bg-[#4A49B8] transition-all duration-300 font-medium inline-flex items-center justify-center gap-2 text-base md:text-lg"
+                                            >
+                                                <i className="fas fa-eye"></i>
+                                                Ver detalles
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+
+                        {/* Vista de 1 columna para móviles (< 700px) */}
+                        <div className="sm:hidden p-4 space-y-4">
+                            {solicitudes.map((solicitud, index) => (
+                                <div
+                                    key={solicitud.id_permiso}
+                                    className="bg-white border-2 border-gray-300 rounded-xl shadow-md p-4 hover:border-[#5856D6] hover:shadow-lg transition-all duration-300"
+                                >
+                                    <div className="space-y-3">
+                                        {/* Documento */}
+                                        <div className="border-b border-gray-200 pb-3">
+                                            <p className="text-sm font-semibold text-gray-600 mb-1">Documento</p>
+                                            <p className="text-base text-gray-800 font-medium">{solicitud.documento_aprendiz}</p>
+                                        </div>
+
+                                        {/* Nombre */}
+                                        <div className="border-b border-gray-200 pb-3">
+                                            <p className="text-sm font-semibold text-gray-600 mb-1">Nombre</p>
+                                            <p className="text-base text-gray-800 font-medium">
+                                                {solicitud.nombre_aprendiz} {solicitud.apellido_aprendiz}
+                                            </p>
+                                        </div>
+
+                                        {/* Teléfono - if available */}
+                                        {solicitud.telefono && (
+                                            <div className="border-b border-gray-200 pb-3">
+                                                <p className="text-sm font-semibold text-gray-600 mb-1">Teléfono</p>
+                                                <p className="text-base text-gray-800 font-medium">{solicitud.telefono}</p>
+                                            </div>
+                                        )}
+
+                                        {/* Correo - if available */}
+                                        {solicitud.correo && (
+                                            <div className="border-b border-gray-200 pb-3">
+                                                <p className="text-sm font-semibold text-gray-600 mb-1">Correo</p>
+                                                <p className="text-base text-gray-800 font-medium break-all">{solicitud.correo}</p>
+                                            </div>
+                                        )}
+
+                                        {/* Programa */}
+                                        <div className="border-b border-gray-200 pb-3">
+                                            <p className="text-sm font-semibold text-gray-600 mb-1">Programa</p>
+                                            <p className="text-base text-gray-800 font-medium">
+                                                {solicitud.nombre_programa || 'Sin programa'}
+                                            </p>
+                                        </div>
+
+                                        {/* Ficha */}
+                                        <div className="border-b border-gray-200 pb-3">
+                                            <p className="text-sm font-semibold text-gray-600 mb-1">Ficha</p>
+                                            <p className="text-base text-gray-800 font-medium">
+                                                {solicitud.numero_ficha || 'N/A'}
+                                            </p>
+                                        </div>
+
+                                        {/* Tiempo */}
+                                        <div className="border-b border-gray-200 pb-3">
+                                            <p className="text-sm font-semibold text-gray-600 mb-1">Tiempo</p>
+                                            <div className="flex items-center gap-2">
+                                                <i className="fas fa-clock text-sm text-gray-600"></i>
+                                                <span className="text-base text-gray-800 font-medium">{getTimeAgo(solicitud.fecha_solicitud)}</span>
+                                            </div>
+                                        </div>
+
+                                        {/* Botón de acción */}
+                                        <div className="pt-2">
+                                            <button
+                                                onClick={() => {
+                                                    setSelectedSolicitud(solicitud);
+                                                    setShowDetallesModal(true);
+                                                }}
+                                                className="w-full bg-[#5856D6] text-white px-4 py-3 rounded-lg hover:bg-[#4A49B8] transition-all duration-300 font-medium inline-flex items-center justify-center gap-2 text-base"
+                                            >
+                                                <i className="fas fa-eye"></i>
+                                                Ver detalles
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                )}
             </div>
 
             {/* Modal de Detalles */}
@@ -353,62 +521,90 @@ const InicioInstructor = () => {
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[9999] pt-20 p-4" onClick={() => !procesando && setShowDetallesModal(false)}>
                     <div className="bg-white rounded-3xl shadow-2xl max-w-2xl w-full overflow-hidden animate-[modalAppear_0.3s_ease-out]" onClick={(e) => e.stopPropagation()}>
                         {/* Header */}
-                        <div className="bg-gradient-to-r from-[#3498db] to-[#2980b9] p-6 text-white">
-                            <div className="flex items-center justify-between">
-                                <h2 className="text-2xl font-bold">Detalles de la Solicitud</h2>
-                                {!procesando && (
-                                    <button onClick={() => setShowDetallesModal(false)} className="text-white hover:text-gray-200 text-3xl">&times;</button>
-                                )}
+                        <div className="bg-gradient-to-r from-[#3498db] to-[#2980b9] p-4 text-white">
+                            <div className="flex items-start justify-between">
+                                <h2 className="text-xl sm:text-2xl md:text-3xl font-bold">Detalles</h2>
+                                
+                                <div className="flex flex-col items-end gap-2">
+                                    {!procesando && (
+                                        <button onClick={() => setShowDetallesModal(false)} className="text-white hover:text-gray-200 text-3xl leading-none">&times;</button>
+                                    )}
+                                    <p className="text-xs sm:text-sm md:text-base font-medium">{formatFechaHora(selectedSolicitud.fecha_solicitud)}</p>
+                                </div>
                             </div>
                         </div>
 
                         {/* Contenido */}
-                        <div className="p-6 space-y-4 max-h-[60vh] overflow-y-auto">
-                            {/* Aprendiz y Fecha de Solicitud */}
-                            <div className="grid grid-cols-2 gap-4">
-                                <div>
-                                    <p className="text-xs text-gray-500 uppercase font-semibold mb-2">Aprendiz</p>
-                                    <p className="font-bold text-gray-800">{selectedSolicitud.nombre_aprendiz} {selectedSolicitud.apellido_aprendiz}</p>
-                                    <p className="text-sm text-gray-600">Doc: {selectedSolicitud.documento_aprendiz}</p>
-                                    <p className="text-sm text-gray-600 mt-2">Programa: {selectedSolicitud.nombre_programa}</p>
-                                    <p className="text-sm text-gray-600">Ficha: {selectedSolicitud.numero_ficha}</p>
-                                    <p className="text-sm text-gray-600">Jornada: {selectedSolicitud.nombre_jornada || 'N/A'}</p>
+                        <div className="p-4 sm:p-6 space-y-3 sm:space-y-4 max-h-[60vh] overflow-y-auto">
+                            {/* Fila 1: Documento | Aprendiz (2 columnas en >600px, 1 columna en <600px) */}
+                            <div className="grid grid-cols-1 min-[600px]:grid-cols-2 gap-3 sm:gap-4">
+                                <div className="bg-gray-50 p-3 sm:p-4 rounded-lg">
+                                    <p className="text-xs sm:text-sm text-gray-500 uppercase font-semibold mb-1 sm:mb-2">Documento</p>
+                                    <p className="font-bold text-gray-800 text-sm sm:text-base md:text-lg">{selectedSolicitud.documento_aprendiz}</p>
                                 </div>
-                                <div className="text-right">
-                                    <p className="text-xs text-gray-500 uppercase font-semibold mb-2">Fecha de Solicitud</p>
-                                    <p className="font-bold text-gray-800">{formatFechaHora(selectedSolicitud.fecha_solicitud)}</p>
+                                <div className="bg-gray-50 p-3 sm:p-4 rounded-lg">
+                                    <p className="text-xs sm:text-sm text-gray-500 uppercase font-semibold mb-1 sm:mb-2">Aprendiz</p>
+                                    <p className="font-bold text-gray-800 text-sm sm:text-base md:text-lg">{selectedSolicitud.nombre_aprendiz} {selectedSolicitud.apellido_aprendiz}</p>
                                 </div>
                             </div>
 
-                            <div className="grid grid-cols-2 gap-4">
-                                <div className="bg-gray-50 p-4 rounded-lg">
-                                    <p className="text-xs text-gray-500 uppercase font-semibold mb-1">Hora de Salida</p>
-                                    <p className="font-semibold text-gray-800">{formatTime12h(selectedSolicitud.hora_salida)}</p>
-                                </div>
-                                <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded-lg col-span-2">
-                                    <p className="text-xs text-gray-600 uppercase font-semibold mb-1">Motivo</p>
-                                    <p className="text-sm text-gray-800 italic">{getMotivoTexto(selectedSolicitud.motivo, selectedSolicitud.motivo_otros)}</p>
-                                </div>
+                            {/* Fila 2: Programa (100% ancho) */}
+                            <div className="bg-gray-50 p-3 sm:p-4 rounded-lg">
+                                <p className="text-xs sm:text-sm text-gray-500 uppercase font-semibold mb-1 sm:mb-2">Programa</p>
+                                <p className="font-bold text-gray-800 text-sm sm:text-base md:text-lg">{selectedSolicitud.nombre_programa || 'Sin programa'}</p>
+                            </div>
 
-                                {selectedSolicitud.soporte && (
-                                    <div className="col-span-2">
-                                        <button
-                                            onClick={() => setShowSoporteModal(true)}
-                                            className="w-full bg-white text-blue-600 border border-blue-600 py-2 rounded-lg font-bold hover:bg-blue-50 transition-all duration-300 flex items-center justify-center gap-2"
-                                        >
-                                            <span>📎</span> Visualizar Soporte Adjunto
-                                        </button>
+                            {/* Fila 3: Ficha | Jornada */}
+                            <div className="grid grid-cols-2 gap-3 sm:gap-4">
+                                <div className="bg-gray-50 p-3 sm:p-4 rounded-lg">
+                                    <p className="text-xs sm:text-sm text-gray-500 uppercase font-semibold mb-1 sm:mb-2">Ficha</p>
+                                    <p className="font-bold text-gray-800 text-sm sm:text-base md:text-lg">{selectedSolicitud.numero_ficha || 'N/A'}</p>
+                                </div>
+                                <div className="bg-gray-50 p-3 sm:p-4 rounded-lg">
+                                    <p className="text-xs sm:text-sm text-gray-500 uppercase font-semibold mb-1 sm:mb-2">Jornada</p>
+                                    <p className="font-bold text-gray-800 text-sm sm:text-base md:text-lg">{selectedSolicitud.nombre_jornada || 'N/A'}</p>
+                                </div>
+                            </div>
+
+                            {/* Fila 4: Hora de Salida | Hora de Regreso (2 columnas en >380px, 1 columna en <380px) */}
+                            <div className="grid grid-cols-1 min-[380px]:grid-cols-2 gap-3 sm:gap-4">
+                                <div className="bg-blue-50 p-3 sm:p-4 rounded-lg border-l-4 border-blue-400">
+                                    <p className="text-xs sm:text-sm text-gray-600 uppercase font-semibold mb-1 sm:mb-2">Hora de Salida</p>
+                                    <p className="font-bold text-gray-800 text-sm sm:text-base md:text-lg">{formatTime12h(selectedSolicitud.hora_salida)}</p>
+                                </div>
+                                {selectedSolicitud.hora_regreso && (
+                                    <div className="bg-green-50 p-3 sm:p-4 rounded-lg border-l-4 border-green-400">
+                                        <p className="text-xs sm:text-sm text-gray-600 uppercase font-semibold mb-1 sm:mb-2">Hora de Regreso</p>
+                                        <p className="font-bold text-gray-800 text-sm sm:text-base md:text-lg">{formatTime12h(selectedSolicitud.hora_regreso)}</p>
                                     </div>
                                 )}
                             </div>
+
+                            {/* Motivo */}
+                            <div className="bg-yellow-50 border-l-4 border-yellow-400 p-3 sm:p-4 rounded-lg">
+                                <p className="text-xs sm:text-sm text-gray-600 uppercase font-semibold mb-1 sm:mb-2">Motivo</p>
+                                <p className="text-sm sm:text-base text-gray-800 italic">{getMotivoTexto(selectedSolicitud.motivo, selectedSolicitud.motivo_otros)}</p>
+                            </div>
+
+                            {/* Soporte */}
+                            {selectedSolicitud.soporte && (
+                                <div>
+                                    <button
+                                        onClick={() => setShowSoporteModal(true)}
+                                        className="w-full bg-white text-blue-600 border-2 border-blue-600 py-2 sm:py-3 rounded-lg font-bold hover:bg-blue-50 transition-all duration-300 flex items-center justify-center gap-2 text-sm sm:text-base"
+                                    >
+                                        <span>📎</span> Visualizar Soporte Adjunto
+                                    </button>
+                                </div>
+                            )}
                         </div>
 
                         {/* Botones de acción */}
-                        <div className="p-6 bg-gray-50 flex gap-3">
+                        <div className="p-4 bg-gray-50 flex gap-3">
                             <button
                                 onClick={aprobarSolicitud}
                                 disabled={procesando}
-                                className="flex-1 bg-gradient-to-r from-[#39A900] to-[#2A7D00] text-white py-4 rounded-xl font-bold text-lg hover:shadow-xl transition-all duration-300 disabled:opacity-50"
+                                className="flex-1 bg-gradient-to-r from-[#39A900] to-[#2C5D00] text-white py-4 rounded-xl font-bold text-20 hover:shadow-xl transition-all duration-300 disabled:opacity-50"
                             >
                                 {procesando ? <><i className="fas fa-spinner fa-spin mr-2"></i>Procesando...</> : <><i className="fas fa-check mr-2"></i>Aprobar</>}
                             </button>
@@ -418,7 +614,7 @@ const InicioInstructor = () => {
                                     setShowRechazarModal(true);
                                 }}
                                 disabled={procesando}
-                                className="flex-1 bg-gradient-to-r from-red-500 to-red-600 text-white py-4 rounded-xl font-bold text-lg hover:shadow-xl transition-all duration-300 disabled:opacity-50"
+                                className="flex-1 bg-gradient-to-r from-red-500 to-red-600 text-white py-4 rounded-xl font-bold text-20 hover:shadow-xl transition-all duration-300 disabled:opacity-50"
                             >
                                 <i className="fas fa-times mr-2"></i>Rechazar
                             </button>
@@ -463,7 +659,7 @@ const InicioInstructor = () => {
 
             {/* Modal de Soporte */}
             {showSoporteModal && selectedSolicitud?.soporte && (
-                <div className="fixed inset-0 bg-black bg-opacity-90 z-[1100] flex justify-center items-center backdrop-blur-sm p-4" onClick={() => setShowSoporteModal(false)}>
+                <div className="fixed inset-0 bg-black bg-opacity-90 z-[10000] flex justify-center items-center backdrop-blur-sm p-4" onClick={() => setShowSoporteModal(false)}>
                     <div className="relative max-w-4xl w-full max-h-[90vh] flex justify-center items-center" onClick={(e) => e.stopPropagation()}>
                         <button
                             onClick={() => setShowSoporteModal(false)}

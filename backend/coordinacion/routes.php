@@ -681,4 +681,131 @@ return function ($app) {
             return $response->withStatus(500);
         }
     });
+
+    // ==================== GESTIÓN DE USUARIOS ====================
+    
+    // Crear Usuario
+    $app->post('/api/coordinacion/usuarios/crear', function (Request $request, Response $response) {
+        require __DIR__ . '/usuarios/agregarusuario.php';
+        return $response;
+    });
+
+    // Buscar Usuarios
+    $app->get('/api/coordinacion/usuarios', function (Request $request, Response $response) {
+        require __DIR__ . '/usuarios/buscarusuario.php';
+        return $response;
+    });
+
+    // Obtener Usuario por ID
+    $app->get('/api/coordinacion/usuarios/{id}', function (Request $request, Response $response, $args) {
+        $user = verifyJwtFromHeader($request);
+        if (!$user || !in_array($user['nombre_rol'] ?? '', ['Administrador', 'Coordinacion'])) {
+            $response->getBody()->write(json_encode(['status' => 'error', 'message' => 'No autorizado']));
+            return $response->withStatus(401);
+        }
+
+        $id_usuario = $args['id'];
+
+        try {
+            $pdo = conexion();
+            $stmt = $pdo->prepare("SELECT u.id_usuario, u.nombre, u.apellido, u.tipo_documento, u.documento, u.correo, u.estado, u.id_rol, u.id_programa,
+                                          p.nombre_programa, p.numero_ficha, p.nivel, p.centro_formacion, p.estado AS estado_programa, j.nombre_jornada
+                                   FROM usuarios u
+                                   LEFT JOIN programas_formacion p ON u.id_programa = p.id_programa
+                                   LEFT JOIN jornadas j ON p.id_jornada = j.id_jornada
+                                   WHERE u.id_usuario = ?");
+            $stmt->execute([$id_usuario]);
+            $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if ($usuario) {
+                $response->getBody()->write(json_encode(['status' => 'ok', 'usuario' => $usuario]));
+                return $response->withStatus(200);
+            } else {
+                $response->getBody()->write(json_encode(['status' => 'error', 'message' => 'Usuario no encontrado']));
+                return $response->withStatus(404);
+            }
+        } catch (Throwable $e) {
+            $response->getBody()->write(json_encode(['status' => 'error', 'message' => 'Error al obtener usuario']));
+            return $response->withStatus(500);
+        }
+    });
+
+    // Editar Usuario
+    $app->put('/api/coordinacion/usuarios/{id}', function (Request $request, Response $response, $args) {
+        require __DIR__ . '/usuarios/editarusuario.php';
+        return $response;
+    });
+
+    // Eliminar Usuario
+    $app->delete('/api/coordinacion/usuarios/{id}', function (Request $request, Response $response, $args) {
+        require __DIR__ . '/usuarios/eliminarusuario.php';
+        return $response;
+    });
+
+    // Cambiar Estado de Usuario
+    $app->put('/api/coordinacion/usuarios/{id}/estado', function (Request $request, Response $response, $args) {
+        require __DIR__ . '/usuarios/cambiarestado.php';
+        return $response;
+    });
+
+    // ==================== GESTIÓN DE PROGRAMAS ====================
+    
+    // Crear Programa
+    $app->post('/api/coordinacion/programas', function (Request $request, Response $response) {
+        require __DIR__ . '/programas/agregarprograma.php';
+        return $response;
+    });
+
+    // Buscar Programas
+    $app->get('/api/coordinacion/programas', function (Request $request, Response $response) {
+        require __DIR__ . '/programas/buscarprogramas.php';
+        return $response;
+    });
+
+    // Obtener Programa por ID
+    $app->get('/api/coordinacion/programas/{id}', function (Request $request, Response $response, $args) {
+        $user = verifyJwtFromHeader($request);
+        if (!$user || !in_array($user['nombre_rol'] ?? '', ['Administrador', 'Coordinacion'])) {
+            $response->getBody()->write(json_encode(['status' => 'error', 'message' => 'No autorizado']));
+            return $response->withStatus(401);
+        }
+
+        $id_programa = $args['id'];
+
+        try {
+            $pdo = conexion();
+            $stmt = $pdo->prepare("SELECT * FROM programas_formacion WHERE id_programa = ?");
+            $stmt->execute([$id_programa]);
+            $programa = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if ($programa) {
+                $response->getBody()->write(json_encode(['status' => 'ok', 'programa' => $programa]));
+                return $response->withStatus(200);
+            } else {
+                $response->getBody()->write(json_encode(['status' => 'error', 'message' => 'Programa no encontrado']));
+                return $response->withStatus(404);
+            }
+        } catch (Throwable $e) {
+            $response->getBody()->write(json_encode(['status' => 'error', 'message' => 'Error al obtener programa']));
+            return $response->withStatus(500);
+        }
+    });
+
+    // Editar Programa
+    $app->put('/api/coordinacion/programas/{id}', function (Request $request, Response $response, $args) {
+        require __DIR__ . '/programas/editarprograma.php';
+        return $response;
+    });
+
+    // Eliminar Programa
+    $app->delete('/api/coordinacion/programas/{id}', function (Request $request, Response $response, $args) {
+        require __DIR__ . '/programas/eliminarprograma.php';
+        return $response;
+    });
+
+    // Cambiar Estado de Programa
+    $app->put('/api/coordinacion/programas/{id}/estado', function (Request $request, Response $response, $args) {
+        require __DIR__ . '/programas/cambiarestado.php';
+        return $response;
+    });
 };

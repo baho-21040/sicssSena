@@ -321,6 +321,10 @@ export default function HistorialCoordinacion() {
                 <div className="max-w-7xl mx-auto">
                     {/* Header */}
                     <div className="bg-white rounded-xl shadow-lg p-6 mb-6">
+                        <Link to="/coordinacion/inicio" className="btn-back">
+                            <i className="fas fa-chevron-left"></i> Volver al Inicio
+                        </Link>
+
                         <div className="flex items-center justify-between mb-4">
                             <div className="flex items-center gap-4">
                                 <div className="bg-gradient-to-br from-indigo-500 to-purple-600 text-white p-4 rounded-full">

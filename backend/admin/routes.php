@@ -161,6 +161,12 @@ return function ($app) {
             $stmt = $pdo->prepare("UPDATE programas_formacion SET estado = ? WHERE id_programa = ?");
             $stmt->execute([$nuevo_estado, $id_programa]);
 
+            // Si el programa se desactiva, quitar el programa a todos los aprendices asociados
+            if ($nuevo_estado === 'Inactivo') {
+                $stmtUsers = $pdo->prepare("UPDATE usuarios SET id_programa = NULL WHERE id_programa = ?");
+                $stmtUsers->execute([$id_programa]);
+            }
+
             if ($stmt->rowCount() > 0) {
                 $response->getBody()->write(json_encode(['status' => 'ok', 'message' => 'Estado actualizado']));
                 return $response->withStatus(200);
@@ -273,17 +279,47 @@ return function ($app) {
             return $response->withStatus(400);
         }
 
+        if (strlen($data['documento']) < 6 || strlen($data['documento']) > 15) {
+            $response->getBody()->write(json_encode(['status' => 'error', 'message' => 'El documento debe tener entre 6 y 15 números']));
+            return $response->withStatus(400);
+        }
+
+        if (strlen($data['clave']) < 6 || strlen($data['clave']) > 100) {
+            $response->getBody()->write(json_encode(['status' => 'error', 'message' => 'La contraseña debe tener entre 6 y 100 caracteres']));
+            return $response->withStatus(400);
+        }
+
         try {
             $pdo = conexion();
 
-            // Verificar duplicados (Mismo documento con mismo rol NO permitido)
-            // Permitimos mismo documento con diferente rol.
-            $stmt = $pdo->prepare("SELECT id_usuario FROM usuarios WHERE (documento = ? AND id_rol = ?) OR (correo = ? AND id_rol = ?)");
-            $stmt->execute([$data['documento'], $data['id_rol'], $data['correo'], $data['id_rol']]);
+            // 1. Verificar si el documento ya existe
+            $stmt = $pdo->prepare("SELECT correo, id_rol FROM usuarios WHERE documento = ?");
+            $stmt->execute([$data['documento']]);
+            $existing_users = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-            if ($stmt->fetch()) {
-                $response->getBody()->write(json_encode(['status' => 'error', 'message' => 'El usuario ya tiene una cuenta registrada con este rol']));
-                return $response->withStatus(400);
+            if (!empty($existing_users)) {
+                // El documento existe. Verificar consistencia de correo.
+                $first_user = $existing_users[0];
+                if ($first_user['correo'] !== $data['correo']) {
+                     $response->getBody()->write(json_encode(['status' => 'error', 'message' => 'Este documento ya está registrado con otro correo electrónico']));
+                     return $response->withHeader('Content-Type', 'application/json')->withStatus(400);
+                }
+
+                // El correo coincide. Verificar si ya tiene el rol solicitado.
+                foreach ($existing_users as $u) {
+                    if ($u['id_rol'] == $data['id_rol']) {
+                        $response->getBody()->write(json_encode(['status' => 'error', 'message' => 'El usuario ya tiene este rol asignado']));
+                        return $response->withHeader('Content-Type', 'application/json')->withStatus(400);
+                    }
+                }
+            } else {
+                // El documento NO existe. Verificar si el correo existe.
+                $stmt = $pdo->prepare("SELECT id_usuario FROM usuarios WHERE correo = ?");
+                $stmt->execute([$data['correo']]);
+                if ($stmt->fetch()) {
+                     $response->getBody()->write(json_encode(['status' => 'error', 'message' => 'Este correo electrónico ya está registrado con otro documento']));
+                     return $response->withHeader('Content-Type', 'application/json')->withStatus(400);
+                }
             }
 
             $sql = "INSERT INTO usuarios (nombre, apellido, tipo_documento, documento, correo, contrasena, id_rol, id_programa, estado) 
@@ -458,6 +494,16 @@ return function ($app) {
             return $response->withStatus(400);
         }
 
+        if (strlen($data['documento']) < 6 || strlen($data['documento']) > 15) {
+            $response->getBody()->write(json_encode(['status' => 'error', 'message' => 'El documento debe tener entre 6 y 15 números']));
+            return $response->withStatus(400);
+        }
+
+        if (!empty($data['clave']) && (strlen($data['clave']) < 6 || strlen($data['clave']) > 100)) {
+            $response->getBody()->write(json_encode(['status' => 'error', 'message' => 'La contraseña debe tener entre 6 y 100 caracteres']));
+            return $response->withStatus(400);
+        }
+
         try {
             $pdo = conexion();
 
@@ -532,6 +578,12 @@ return function ($app) {
             $stmt = $pdo->prepare("UPDATE usuarios SET estado = ? WHERE id_usuario = ?");
             $stmt->execute([$nuevo_estado, $id_usuario]);
 
+            // Si el usuario se desactiva, quitar el programa de formación
+            if ($nuevo_estado === 'Inactivo') {
+                $stmtProgram = $pdo->prepare("UPDATE usuarios SET id_programa = NULL WHERE id_usuario = ?");
+                $stmtProgram->execute([$id_usuario]);
+            }
+
             if ($stmt->rowCount() > 0) {
                 // Enviar correo de notificación
                 if ($usuarioDestino && !empty($usuarioDestino['correo'])) {
@@ -560,7 +612,10 @@ return function ($app) {
     // Obtener Estadísticas para Dashboard Admin
     $app->get('/api/admin/stats', function ($request, $response) {
         $user = verifyJwtFromHeader($request);
-        if (!$user || strcasecmp($user['nombre_rol'] ?? '', 'Administrador') !== 0) {
+        $allowedRoles = ['Administrador', 'Coordinacion'];
+        $userRole = $user['nombre_rol'] ?? '';
+        
+        if (!$user || !in_array($userRole, $allowedRoles)) {
             $response->getBody()->write(json_encode(['status' => 'error', 'message' => 'No autorizado']));
             return $response->withStatus(401);
         }
