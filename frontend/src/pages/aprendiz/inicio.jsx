@@ -19,6 +19,9 @@ export default function InicioAprendiz() {
     const [showQRModal, setShowQRModal] = useState(false);
     const [showSoporteModal, setShowSoporteModal] = useState(false);
     const [selectedSolicitud, setSelectedSolicitud] = useState(null);
+    const [showCancelModal, setShowCancelModal] = useState(false);
+    const [showSuccessMessage, setShowSuccessMessage] = useState(false);
+    const [solicitudToCancel, setSolicitudToCancel] = useState(null);
 
     useEffect(() => {
         fetchSolicitudesHoy();
@@ -89,14 +92,22 @@ export default function InicioAprendiz() {
         setShowSoporteModal(false);
     };
 
-    const handleCancelarSolicitud = async (id_permiso) => {
-        if (!window.confirm('¿Estás seguro de que deseas cancelar esta solicitud?')) {
-            return;
-        }
+    const openCancelModal = (id_permiso) => {
+        setSolicitudToCancel(id_permiso);
+        setShowCancelModal(true);
+    };
+
+    const closeCancelModal = () => {
+        setShowCancelModal(false);
+        setSolicitudToCancel(null);
+    };
+
+    const handleCancelarSolicitud = async () => {
+        if (!solicitudToCancel) return;
 
         try {
             const token = localStorage.getItem('token');
-            const response = await fetch(`${API}/api/aprendiz/solicitud/${id_permiso}/cancelar`, {
+            const response = await fetch(`${API}/api/aprendiz/solicitud/${solicitudToCancel}/cancelar`, {
                 method: 'PUT',
                 headers: {
                     'Authorization': `Bearer ${token}`
@@ -105,9 +116,15 @@ export default function InicioAprendiz() {
             const data = await response.json();
 
             if (data.status === 'ok') {
-                alert('Solicitud cancelada correctamente');
+                closeCancelModal();
                 closeDetallesModal();
+                setShowSuccessMessage(true);
                 fetchSolicitudesHoy(); // Recargar lista
+
+                // Ocultar mensaje de éxito después de 3 segundos
+                setTimeout(() => {
+                    setShowSuccessMessage(false);
+                }, 3000);
             } else {
                 alert(data.message || 'Error al cancelar la solicitud');
             }
@@ -131,8 +148,29 @@ export default function InicioAprendiz() {
     };
 
     const getEstadoDisplay = (estado) => {
-        if (estado === 'Pendiente Coordinador') {
-            return 'Pendiente Coordinación';
+        if (estado === 'Aprobado QR Generado' || estado.toLowerCase().includes('qrgenerado')) {
+            return (
+                <span className="flex items-center gap-1">
+                    <i className="fas fa-qrcode"></i>
+                    Aprobado
+                </span>
+            );
+        }
+        if (estado === 'Pendiente Instructor') {
+            return (
+                <span className="flex items-center gap-1">
+                    <i className="fa-regular fa-clock fa-spin"></i>
+                    Instructor
+                </span>
+            );
+        }
+        if (estado === 'Pendiente Coordinador' || estado === 'Pendiente Coordinación') {
+            return (
+                <span className="flex items-center gap-1">
+                    <i className="fa-regular fa-clock fa-spin"></i>
+                    Coordinación
+                </span>
+            );
         }
         return estado;
     };
@@ -158,6 +196,25 @@ export default function InicioAprendiz() {
         return `${horas12}:${minutos} ${ampm} - ${dia}/${mes}/${año}`;
     };
 
+    const formatSoloHora = (fechaStr) => {
+        if (!fechaStr) return '-';
+        const fecha = new Date(fechaStr);
+        const horas = fecha.getHours();
+        const minutos = String(fecha.getMinutes()).padStart(2, '0');
+        const ampm = horas >= 12 ? 'p.m.' : 'a.m.';
+        const horas12 = horas % 12 || 12;
+        return `${horas12}:${minutos} ${ampm}`;
+    };
+
+    const formatTime12h = (timeStr) => {
+        if (!timeStr) return '-';
+        const [hours, minutes] = timeStr.split(':');
+        const hour = parseInt(hours);
+        const ampm = hour >= 12 ? 'p.m.' : 'a.m.';
+        const hour12 = hour % 12 || 12;
+        return `${hour12}:${minutes} ${ampm}`;
+    };
+
     const getMotivoCompleto = (motivo, descripcion) => {
         const motivoNormalizado = (motivo || '').toString().trim().toLowerCase();
         const motivos = {
@@ -178,19 +235,33 @@ export default function InicioAprendiz() {
         return texto;
     };
 
+    const timeAgo = (dateString) => {
+        if (!dateString) return '';
+        const date = new Date(dateString);
+        const now = new Date();
+        const seconds = Math.floor((now - date) / 1000);
+
+        if (seconds < 60) return 'Hace un momento';
+        const minutes = Math.floor(seconds / 60);
+        if (minutes < 60) return `Hace ${minutes} minuto${minutes !== 1 ? 's' : ''}`;
+        const hours = Math.floor(minutes / 60);
+        if (hours < 24) return `Hace ${hours} hora${hours !== 1 ? 's' : ''}`;
+        return formatFechaHora(dateString);
+    };
+
     return (
         <DashboardLayout title="Portal del Aprendiz | Dashboard">
             <div className="min-h-screen flex flex-col bg-[#f4f4f4]">
                 <main className="flex-1 p-6 md:p-8">
                     {/* Grid de Tarjetas de Acción */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 mb-8">
 
                         {/* Tarjeta 1: Crear Nueva Solicitud */}
                         <Link
                             data-aos="zoom-in"
                             data-aos-duration="400"
                             to="/Aprendiz/Solicitud"
-                            className="bg-gradient-to-br from-[#e8f5e1] to-white rounded-lg shadow-[0_4px_12px_rgba(0,0,0,0.05)] p-6 border-t-4 border-t-[#39A900] hover:!-translate-y-1 hover:!shadow-[0_10px_25px_rgba(0,0,0,0.15)] !transition-all !duration-300 no-underline"
+                            className="rounded-[60px]  bg-gradient-to-br from-[#e8f5e1] to-white  shadow-[0_4px_12px_rgba(0,0,0,0.05)] p-6 border-t-4 border-t-[#39A900] hover:!-translate-y-1 hover:!shadow-[0_10px_25px_rgba(0,0,0,0.15)] !transition-all !duration-300 no-underline"
                         >
                             <div className="flex items-start gap-4">
                                 <div className="bg-[#39A900] text-white p-4 rounded-full">
@@ -198,9 +269,9 @@ export default function InicioAprendiz() {
                                 </div>
                                 <div className="flex-1">
                                     <h2 className="text-xl font-bold text-[#2A7D00] mb-2">Permiso de Salida</h2>
-                                    <p className="text-gray-600 text-sm">¿Necesitas salir? Registra tu solicitud aquí para que sea aprobada por tu instructor o coordinador.</p>
+                                    <p className="text-gray-600 text-sm">¿Necesitas salir?</p>
                                     <div className="mt-4 inline-flex items-center gap-2 text-[#39A900] font-semibold">
-                                        Crear Nueva Solicitud
+                                        Nueva Solicitud
                                         <i className="fas fa-arrow-right"></i>
                                     </div>
                                 </div>
@@ -210,7 +281,7 @@ export default function InicioAprendiz() {
                         {/* Tarjeta 2: Editar Perfil */}
                         <Link
                             to="/aprendiz/editarperfil"
-                            className="bg-white rounded-lg shadow-[0_4px_12px_rgba(0,0,0,0.05)] p-6 border-t-4 border-t-[#17a2b8] hover:-translate-y-1 hover:shadow-[0_10px_25px_rgba(0,0,0,0.15)] transition-all duration-300 no-underline"
+                            className="bg-white rounded-[60px] shadow-[0_4px_12px_rgba(0,0,0,0.05)] p-6 border-t-4 border-t-[#17a2b8] hover:-translate-y-1 hover:shadow-[0_10px_25px_rgba(0,0,0,0.15)] transition-all duration-300 no-underline"
                         >
                             <div className="flex items-start gap-4">
                                 <div className="bg-[#17a2b8] text-white p-4 rounded-full">
@@ -218,7 +289,7 @@ export default function InicioAprendiz() {
                                 </div>
                                 <div className="flex-1">
                                     <h2 className="text-xl font-bold text-[#2A7D00] mb-2">Mi Perfil</h2>
-                                    <p className="text-gray-600 text-sm">Actualiza tu información personal, cambia tu contraseña y gestiona tus datos de contacto.</p>
+                                    <p className="text-gray-600 text-sm">Actualiza tu información personal.</p>
                                     <div className="mt-4 inline-flex items-center gap-2 text-[#17a2b8] font-semibold">
                                         Editar Perfil
                                         <i className="fas fa-arrow-right"></i>
@@ -230,7 +301,7 @@ export default function InicioAprendiz() {
                         {/* Tarjeta 3: Historial Completo */}
                         <Link
                             to="/aprendiz/historial"
-                            className="bg-white rounded-lg shadow-[0_4px_12px_rgba(0,0,0,0.05)] p-6 border-t-4 border-t-[#ffc107] hover:-translate-y-1 hover:shadow-[0_10px_25px_rgba(0,0,0,0.15)] transition-all duration-300 no-underline"
+                            className="bg-white rounded-[60px] shadow-[0_4px_12px_rgba(0,0,0,0.05)] p-6 border-t-4 border-t-[#ffc107] hover:-translate-y-1 hover:shadow-[0_10px_25px_rgba(0,0,0,0.15)] transition-all duration-300 no-underline"
                         >
                             <div className="flex items-start gap-4">
                                 <div className="bg-[#ffc107] text-white p-4 rounded-full">
@@ -238,7 +309,7 @@ export default function InicioAprendiz() {
                                 </div>
                                 <div className="flex-1">
                                     <h2 className="text-xl font-bold text-[#2A7D00] mb-2">Historial</h2>
-                                    <p className="text-gray-600 text-sm">Consulta todas tus solicitudes anteriores, aprobadas y rechazadas.</p>
+                                    <p className="text-gray-600 text-sm">Consulta todas tus solicitudes.</p>
                                     <div className="mt-4 inline-flex items-center gap-2 text-[#ffc107] font-semibold">
                                         Ver Historial
                                         <i className="fas fa-arrow-right"></i>
@@ -252,18 +323,19 @@ export default function InicioAprendiz() {
                     <div data-aos="fade-up"
                         data-aos-duration="500" className="bg-white rounded-lg shadow-[0_4px_12px_rgba(0,0,0,0.05)] border-t-4 border-t-[#39A900]">
                         <div className="p-6 border-b border-gray-200">
-                            <h2 className="text-2xl font-bold text-[#2A7D00] flex items-center gap-3">
+                            <h2 className="text-2xl max-[600px]:text-lg font-bold text-[#2A7D00] flex items-center gap-3">
                                 <i className="fas fa-calendar-day text-[#39A900]"></i>
                                 Mis Solicitudes de Hoy ({formatFechaActual()})
                             </h2>
                         </div>
 
-                        <div className="overflow-x-auto">
+                        {/* Vista de tabla para pantallas grandes */}
+                        <div className="overflow-x-auto max-[600px]:hidden">
                             <table className="w-full">
                                 <thead>
                                     <tr className="bg-gray-50 border-b border-gray-200">
-                                        <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">Fecha y Hora</th>
                                         <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">Motivo</th>
+                                        <th className="px-8 py-4 text-left text-sm font-semibold text-gray-700">Enviado</th>
                                         <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">Estado</th>
                                         <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">Acciones</th>
                                     </tr>
@@ -293,8 +365,13 @@ export default function InicioAprendiz() {
                                     ) : (
                                         solicitudes.map((solicitud) => (
                                             <tr key={solicitud.id_permiso} className="border-b border-gray-100 hover:bg-gray-50 transition">
-                                                <td className="px-6 py-4 text-sm text-gray-700">{formatFechaHora(solicitud.fecha_solicitud)}</td>
-                                                <td className="px-6 py-4 text-sm text-gray-700">{getMotivoCompleto(solicitud.motivo, solicitud.descripcion)}</td>
+                                                <td className="px-6 py-4 text-sm text-gray-700 font-medium">{getMotivoCompleto(solicitud.motivo, solicitud.descripcion)}</td>
+                                                <td className="px-6 py-4 text-xs text-gray-500">
+                                                    <div className="flex items-center gap-2">
+                                                        <i className="far fa-clock"></i>
+                                                        {timeAgo(solicitud.fecha_solicitud)}
+                                                    </div>
+                                                </td>
                                                 <td className="px-6 py-4">
                                                     <span className={`px-3 py-1 rounded-full text-xs font-bold inline-block ${getEstadoBadgeClass(solicitud.estado_display)}`}>
                                                         {getEstadoDisplay(solicitud.estado_display)}
@@ -303,10 +380,9 @@ export default function InicioAprendiz() {
                                                 <td className="px-6 py-4">
                                                     <button
                                                         onClick={() => openDetallesModal(solicitud)}
-                                                        className="bg-[#17a2b8] text-white px-4 py-2 rounded-md hover:bg-[#138496] transition inline-flex items-center gap-2 text-sm font-semibold"
+                                                        className="bg-[#17a2b8] text-white px-4 py-2 rounded-md hover:bg-[#138496] transition inline-flex items-center gap-2 text-xs font-semibold"
                                                     >
-                                                        <i className="fas fa-info-circle"></i>
-                                                        Ver más
+                                                        Detalles
                                                     </button>
                                                 </td>
                                             </tr>
@@ -314,6 +390,84 @@ export default function InicioAprendiz() {
                                     )}
                                 </tbody>
                             </table>
+                        </div>
+
+                        {/* Vista de tarjetas para móvil (< 600px) */}
+                        <div className="hidden max-[601px]:block p-4">
+                            {loading ? (
+                                <div className="py-8 text-center">
+                                    <i className="fas fa-spinner fa-spin text-3xl text-[#39A900]"></i>
+                                    <p className="mt-2 text-gray-600">Cargando solicitudes...</p>
+                                </div>
+                            ) : error ? (
+                                <div className="py-8 text-center text-red-600">
+                                    <i className="fas fa-exclamation-circle text-2xl"></i>
+                                    <p className="mt-2">{error}</p>
+                                </div>
+                            ) : solicitudes.length === 0 ? (
+                                <div className="py-8 text-center text-gray-500">
+                                    <i className="fas fa-inbox text-4xl mb-3 block"></i>
+                                    No hay solicitudes registradas para el día de hoy.
+                                </div>
+                            ) : (
+                                <div className="space-y-4">
+                                    {solicitudes.map((solicitud) => (
+                                        <div
+                                            key={solicitud.id_permiso}
+                                            className="bg-white rounded-2xl p-5 shadow-[0_2px_8px_rgba(0,0,0,0.08)] hover:shadow-[0_4px_16px_rgba(0,0,0,0.12)] transition-all duration-300 border border-gray-100 relative overflow-hidden"
+                                        >
+                                            {/* Barra de color superior según estado */}
+                                            <div className={`absolute top-0 left-0 right-0 h-1 ${solicitud.estado_display.toLowerCase().includes('aprobado') || solicitud.estado_display.toLowerCase().includes('qrgenerado')
+                                                ? 'bg-gradient-to-r from-[#2A7D00] to-[#39A900]'
+                                                : solicitud.estado_display.toLowerCase().includes('rechazad') || solicitud.estado_display.toLowerCase().includes('cancelad')
+                                                    ? 'bg-gradient-to-r from-[#b32a26] to-[#d63031]'
+                                                    : 'bg-gradient-to-r from-[#ffc107] to-[#ff9800]'
+                                                }`}></div>
+
+                                            {/* Motivo - Ocupa todo el ancho */}
+                                            <div className="mb-4 pt-2">
+                                                <div className="flex items-start gap-2">
+                                                    <div className="bg-[#e8f5e1] p-2 rounded-lg">
+                                                        <i className="fas fa-file-alt text-[#39A900] text-sm"></i>
+                                                    </div>
+                                                    <div className="flex-1">
+                                                        <p className="text-xs text-gray-500 uppercase font-semibold mb-1 tracking-wide">Motivo</p>
+                                                        <p className="text-sm text-gray-800 font-medium leading-snug">{getMotivoCompleto(solicitud.motivo, solicitud.descripcion)}</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            {/* Enviado y Estado en la misma fila */}
+                                            <div className="grid grid-cols-2 max-[350px]:grid-cols-1 gap-3 mb-4">
+                                                <div className="bg-gray-50 rounded-xl p-3">
+                                                    <p className="text-xs text-gray-500 uppercase font-semibold mb-1.5 tracking-wide">Enviado</p>
+                                                    <div className="flex items-center gap-1.5 text-xs text-gray-700 font-medium">
+                                                        <i className="far fa-clock text-[#39A900]"></i>
+                                                        {timeAgo(solicitud.fecha_solicitud)}
+                                                    </div>
+                                                </div>
+                                                <div className="bg-gray-50 rounded-xl p-3">
+                                                    <p className="text-xs text-gray-500 uppercase font-semibold mb-1.5 tracking-wide">Estado</p>
+                                                    <span className={`px-2.5 py-1 rounded-lg text-xs font-bold inline-flex items-center ${getEstadoBadgeClass(solicitud.estado_display)}`}>
+                                                        {getEstadoDisplay(solicitud.estado_display)}
+                                                    </span>
+                                                </div>
+                                            </div>
+
+                                            {/* Botón Detalles - Inferior derecha */}
+                                            <div className="flex justify-end pt-2 border-t border-gray-100">
+                                                <button
+                                                    onClick={() => openDetallesModal(solicitud)}
+                                                    className="bg-gradient-to-r from-[#17a2b8] to-[#138496] text-white px-4 py-2 rounded-xl hover:from-[#138496] hover:to-[#117a8b] transition-all duration-300 inline-flex items-center gap-2 text-xs font-semibold shadow-sm hover:shadow-md"
+                                                >
+                                                    <i className="fas fa-info-circle"></i>
+                                                    Detalles
+                                                </button>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
                         </div>
 
                         {/* Ver Historial Completo */}
@@ -346,15 +500,15 @@ export default function InicioAprendiz() {
                                 &times;
                             </button>
 
-                            <h3 className="text-2xl font-bold text-[#2A7D00] mb-4 pb-3 border-b border-gray-200">
+                            <h3 className="text-xl font-bold text-[#2A7D00] mb-4 pb-3 border-b border-gray-200">
                                 Detalles de la Solicitud
                             </h3>
 
                             <div className="space-y-4">
                                 <div className="grid grid-cols-2 gap-4">
                                     <div className="bg-gray-50 p-4 rounded-lg">
-                                        <p className="text-xs text-gray-500 uppercase font-semibold mb-1">Fecha y Hora</p>
-                                        <p className="font-semibold text-gray-800">{formatFechaHora(selectedSolicitud.fecha_solicitud)}</p>
+                                        <p className="text-xs text-gray-500 uppercase font-semibold mb-1">Hora</p>
+                                        <p className="font-semibold text-gray-800">{formatSoloHora(selectedSolicitud.fecha_solicitud)}</p>
                                     </div>
                                     <div className="bg-gray-50 p-4 rounded-lg">
                                         <p className="text-xs text-gray-500 uppercase font-semibold mb-1">Estado</p>
@@ -369,16 +523,32 @@ export default function InicioAprendiz() {
                                     <p className="text-sm text-gray-800">{getMotivoCompleto(selectedSolicitud.motivo, selectedSolicitud.descripcion)}</p>
                                 </div>
 
-                                <div className="grid grid-cols-2 gap-4">
-                                    <div className="bg-gray-50 p-4 rounded-lg">
+                                {/* Información de Rechazo */}
+                                {selectedSolicitud.estado_general.includes('Rechazado') && (
+                                    <div className="bg-red-50 border-l-4 border-red-500 p-4 rounded-lg">
+                                        <p className="text-xs text-red-600 uppercase font-bold mb-1">
+                                            Rechazado por: {
+                                                selectedSolicitud.rol_rechazo ||
+                                                (selectedSolicitud.estado_instructor === 'Rechazado' ? 'Instructor' :
+                                                    (selectedSolicitud.estado_coordinador === 'Rechazado' ? 'Coordinación' : 'Sistema'))
+                                            }
+                                        </p>
+                                        <p className="text-sm text-red-800 italic">
+                                            "{selectedSolicitud.observacion_rechazo || selectedSolicitud.motivo_rechazo_instructor || selectedSolicitud.motivo_rechazo_coordinador || 'Sin justificación'}"
+                                        </p>
+                                    </div>
+                                )}
+
+                                <div className="grid grid-cols-2 max-[760px]:grid-cols-1 gap-4">
+                                    <div className="bg-gray-50 p-4 rounded-lg max-[760px]:col-span-1">
                                         <p className="text-xs text-gray-500 uppercase font-semibold mb-1">Instructor</p>
                                         <p className="font-semibold text-gray-800">
                                             {selectedSolicitud.nombre_instructor} {selectedSolicitud.apellido_instructor}
                                         </p>
                                         <p className="text-xs text-gray-500">{selectedSolicitud.documento_instructor}</p>
                                     </div>
-                                    <div className="bg-gray-50 p-4 rounded-lg flex flex-col justify-center">
-                                        {/* Botón Ver Soporte Movido Aquí */}
+                                    <div className="bg-gray-50 p-4 rounded-lg flex flex-col justify-center max-[760px]:col-span-1">
+                                        {/* Botón Ver Soporte */}
                                         {selectedSolicitud.soporte ? (
                                             <button
                                                 onClick={openSoporteModal}
@@ -396,11 +566,11 @@ export default function InicioAprendiz() {
                                 <div className="grid grid-cols-2 gap-4">
                                     <div className="bg-gray-50 p-4 rounded-lg">
                                         <p className="text-xs text-gray-500 uppercase font-semibold mb-1">Hora de Salida</p>
-                                        <p className="font-semibold text-gray-800">{selectedSolicitud.hora_salida || '-'}</p>
+                                        <p className="font-semibold text-gray-800">{formatTime12h(selectedSolicitud.hora_salida)}</p>
                                     </div>
                                     <div className="bg-gray-50 p-4 rounded-lg">
                                         <p className="text-xs text-gray-500 uppercase font-semibold mb-1">Hora de Regreso</p>
-                                        <p className="font-semibold text-gray-800">{selectedSolicitud.hora_regreso || 'No aplica'}</p>
+                                        <p className="font-semibold text-gray-800">{selectedSolicitud.hora_regreso ? formatTime12h(selectedSolicitud.hora_regreso) : 'No aplica'}</p>
                                     </div>
                                 </div>
                             </div>
@@ -410,7 +580,7 @@ export default function InicioAprendiz() {
                                 {/* Botón Cancelar Solicitud (Solo si está pendiente) */}
                                 {selectedSolicitud.estado_display.toLowerCase().includes('pendiente') ? (
                                     <button
-                                        onClick={() => handleCancelarSolicitud(selectedSolicitud.id_permiso)}
+                                        onClick={() => openCancelModal(selectedSolicitud.id_permiso)}
                                         className="bg-red-500 text-white px-4 py-3 rounded-lg hover:bg-red-600 transition inline-flex items-center justify-center gap-2 text-sm font-semibold"
                                     >
                                         <i className="fas fa-times-circle"></i>
@@ -448,7 +618,7 @@ export default function InicioAprendiz() {
                                         className="bg-gray-300 text-gray-600 px-4 py-3 rounded-lg hover:bg-gray-400 transition inline-flex items-center justify-center gap-2 text-sm font-semibold col-start-2"
                                     >
                                         <i className="fas fa-clock"></i>
-                                        En espera (Ver Estado)
+                                        (Ver Estado)
                                     </button>
                                 ) : (
                                     <button
@@ -525,6 +695,70 @@ export default function InicioAprendiz() {
                                 <i className="fas fa-times"></i>
                             </button>
                             <img src={`${API}/${selectedSolicitud.soporte}`} alt="Soporte" className="max-w-full max-h-[85vh] object-contain rounded-lg shadow-2xl" />
+                        </div>
+                    </div>
+                )}
+
+                {/* Modal de Confirmación de Cancelación */}
+                {showCancelModal && (
+                    <div
+                        className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-[1003] p-4"
+                        onClick={closeCancelModal}
+                    >
+                        <div
+                            className="bg-white rounded-lg shadow-2xl max-w-md w-full p-6 relative border-t-4 border-t-red-500 animate-fade-in"
+                            onClick={(e) => e.stopPropagation()}
+                        >
+                            <div className="text-center">
+                                <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-red-100 mb-4">
+                                    <i className="fas fa-exclamation-triangle text-red-600 text-3xl"></i>
+                                </div>
+                                <h3 className="text-xl font-bold text-gray-900 mb-2">
+                                    ¿Estás seguro?
+                                </h3>
+                                <p className="text-gray-600 mb-6">
+                                    ¿Estás seguro de que deseas cancelar esta solicitud? Esta acción no se puede deshacer.
+                                </p>
+                            </div>
+
+                            <div className="grid grid-cols-2 gap-3">
+                                <button
+                                    onClick={closeCancelModal}
+                                    className="bg-gray-200 text-gray-700 px-4 py-3 rounded-lg hover:bg-gray-300 transition font-semibold"
+                                >
+                                    No, volver
+                                </button>
+                                <button
+                                    onClick={handleCancelarSolicitud}
+                                    className="bg-red-500 text-white px-4 py-3 rounded-lg hover:bg-red-600 transition font-semibold inline-flex items-center justify-center gap-2"
+                                >
+                                    <i className="fas fa-check"></i>
+                                    Sí, cancelar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+                {/* Mensaje de Éxito */}
+                {showSuccessMessage && (
+                    <div className="fixed top-4 right-4 z-[1004] animate-fade-in">
+                        <div className="bg-white rounded-lg shadow-2xl border-l-4 border-green-500 p-4 flex items-center gap-3 max-w-md">
+                            <div className="flex-shrink-0">
+                                <div className="h-10 w-10 rounded-full bg-green-100 flex items-center justify-center">
+                                    <i className="fas fa-check-circle text-green-600 text-xl"></i>
+                                </div>
+                            </div>
+                            <div className="flex-1">
+                                <h4 className="text-sm font-bold text-gray-900">¡Solicitud cancelada!</h4>
+                                <p className="text-xs text-gray-600 mt-1">La solicitud ha sido cancelada correctamente.</p>
+                            </div>
+                            <button
+                                onClick={() => setShowSuccessMessage(false)}
+                                className="flex-shrink-0 text-gray-400 hover:text-gray-600"
+                            >
+                                <i className="fas fa-times"></i>
+                            </button>
                         </div>
                     </div>
                 )}

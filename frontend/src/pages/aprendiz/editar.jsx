@@ -167,7 +167,7 @@ export default function EditarPerfilAprendiz() {
 
     return (
         <DashboardLayout title="Editar Perfil">
-            <div className="min-h-screen bg-gray-50 p-8 pt-24">
+            <div className="min-h-screen bg-gray-50 p-8 pt-18">
                 <div className="max-w-4xl mx-auto">
                     {/* Header */}
                     <div className="bg-white rounded-xl shadow-lg p-8 mb-6">
@@ -187,7 +187,7 @@ export default function EditarPerfilAprendiz() {
                                 <label className="block text-sm font-semibold text-gray-600 mb-2">
                                     <i className="fas fa-user mr-2"></i>Nombre Completo
                                 </label>
-                                <p className="text-lg font-semibold text-gray-800 break-words">
+                                <p className="text-sm font-semibold text-gray-800 break-words">
                                     {perfilData?.nombre} {perfilData?.apellido}
                                 </p>
                             </div>
@@ -196,7 +196,7 @@ export default function EditarPerfilAprendiz() {
                                 <label className="block text-sm font-semibold text-gray-600 mb-2">
                                     <i className="fas fa-id-card mr-2"></i>Documento
                                 </label>
-                                <p className="text-lg font-semibold text-gray-800 break-words">
+                                <p className="text-base font-semibold text-gray-800 break-words">
                                     {perfilData?.tipo_documento} {perfilData?.documento}
                                 </p>
                             </div>
@@ -205,14 +205,14 @@ export default function EditarPerfilAprendiz() {
                                 <label className="block text-sm font-semibold text-gray-600 mb-2">
                                     <i className="fas fa-envelope mr-2"></i>Correo Electrónico
                                 </label>
-                                <p className="text-lg font-semibold text-gray-800 break-words">
+                                <p className="text-sm sm:text-base  font-semibold text-gray-800 break-words">
                                     {perfilData?.correo}
                                 </p>
                             </div>
 
                             <div className="bg-gray-50 p-4 rounded-lg">
                                 <label className="block text-sm font-semibold text-gray-600 mb-2">
-                                    <i className="fas fa-user-tag mr-2"></i>Rol
+                                    <i className="fas fa-user-tag mr-2"></i>Perfil
                                 </label>
                                 <p className="text-lg font-semibold text-gray-800 break-words">
                                     {perfilData?.nombre_rol}
@@ -225,7 +225,7 @@ export default function EditarPerfilAprendiz() {
                                         <label className="block text-sm font-semibold text-gray-600 mb-2">
                                             <i className="fas fa-graduation-cap mr-2"></i>Programa de Formación
                                         </label>
-                                        <p className="text-lg font-semibold text-gray-800 break-words">
+                                        <p className="text-sm font-semibold text-gray-800 break-words text-xs">
                                             {perfilData.programa.nombre_programa}
                                         </p>
                                     </div>
@@ -251,8 +251,8 @@ export default function EditarPerfilAprendiz() {
 
                         <div className="space-y-4">
                             {/* Actualizar Correo */}
-                            <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition">
-                                <div>
+                            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition">
+                                <div className="w-full sm:w-auto">
                                     <h3 className="font-semibold text-gray-800">
                                         <i className="fas fa-envelope text-[#17a2b8] mr-2"></i>
                                         Actualizar Correo Electrónico
@@ -261,15 +261,15 @@ export default function EditarPerfilAprendiz() {
                                 </div>
                                 <button
                                     onClick={() => setShowEmailModal(true)}
-                                    className="bg-[#17a2b8] text-white px-6 py-2 rounded-lg hover:bg-[#138496] transition font-semibold"
+                                    className="w-full sm:w-auto bg-[#17a2b8] text-white px-6 py-2 rounded-lg hover:bg-[#138496] transition font-semibold"
                                 >
                                     Actualizar
                                 </button>
                             </div>
 
                             {/* Cambiar Contraseña */}
-                            <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition">
-                                <div>
+                            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition">
+                                <div className="w-full sm:w-auto">
                                     <h3 className="font-semibold text-gray-800">
                                         <i className="fas fa-lock text-[#ffc107] mr-2"></i>
                                         Cambiar Contraseña
@@ -278,7 +278,7 @@ export default function EditarPerfilAprendiz() {
                                 </div>
                                 <button
                                     onClick={() => setShowPasswordModal(true)}
-                                    className="bg-[#ffc107] text-white px-6 py-2 rounded-lg hover:bg-[#e0a800] transition font-semibold"
+                                    className="w-full sm:w-auto bg-[#ffc107] text-white px-6 py-2 rounded-lg hover:bg-[#e0a800] transition font-semibold"
                                 >
                                     Cambiar
                                 </button>

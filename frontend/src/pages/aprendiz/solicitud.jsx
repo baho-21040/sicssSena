@@ -377,18 +377,19 @@ const SolicitudPermiso = () => {
     }, []);
 
     return (
+        
         <DashboardLayout title="Solicitud de Permiso de Salida">
             <div className="min-h-screen bg-[#f4f4f4] p-5">
                 <div className="max-w-[800px] mx-auto my-5 bg-white p-6 rounded-lg shadow-[0_4px_12px_rgba(0,0,0,0.05)]">
-                    <h2 className="text-center text-[#39A900] mb-6 text-2xl font-bold">
+                    <h2 className="text-center text-[#39A900] mb-6 text-lg sm:text-3xl font-bold">
                         Solicitud de Permiso de Salida
                     </h2>
                     <form onSubmit={handleSubmit}>
                         {/* Datos del Aprendiz */}
                         <fieldset className="border border-[#ccc] p-5 mb-6 rounded-md">
                             <legend className="text-lg font-bold text-[#39A900] px-2.5">Datos del Aprendiz</legend>
-                            <div className="flex flex-wrap gap-5 mb-4">
-                                <div className="flex-1 min-w-[250px]">
+                            <div className="flex flex-col sm:flex-row sm:flex-wrap gap-5 mb-4">
+                                <div className="flex-1 sm:min-w-[250px]">
                                     <label className="block mb-1 font-bold text-[#333] text-sm">
                                         Nombre del Aprendiz:
                                     </label>
@@ -396,10 +397,14 @@ const SolicitudPermiso = () => {
                                         type="text"
                                         value={formData.nombre_aprendiz}
                                         readOnly
-                                        className="w-full p-2.5 border border-[#ddd] rounded bg-[#f8f8f8] text-[#666] cursor-default"
+                                        className="hidden min-[776px]:block w-full p-2.5 border border-[#ddd] rounded bg-[#f8f8f8] text-[#666] cursor-default text-sm"
                                     />
+                                    {/* Texto para pantallas pequeñas */}
+                                    <p className="block min-[776px]:hidden w-full p-2.5 border border-[#ddd] rounded bg-[#f8f8f8] text-[#666] text-sm">
+                                        {formData.nombre_aprendiz}
+                                    </p>
                                 </div>
-                                <div className="flex-1 min-w-[250px]">
+                                <div className="flex-1 sm:min-w-[250px]">
                                     <label className="block mb-1 font-bold text-[#333] text-sm">
                                         Número de Documento:
                                     </label>
@@ -407,15 +412,19 @@ const SolicitudPermiso = () => {
                                         type="text"
                                         value={formData.documento_aprendiz}
                                         readOnly
-                                        className="w-full p-2.5 border border-[#ddd] rounded bg-[#f8f8f8] text-[#666] cursor-default"
+                                        className="hidden min-[776px]:block w-full p-2.5 border border-[#ddd] rounded bg-[#f8f8f8] text-[#666] cursor-default text-sm"
                                     />
+                                    {/* Texto para pantallas pequeñas */}
+                                    <p className="block min-[776px]:hidden w-full p-2.5 border border-[#ddd] rounded bg-[#f8f8f8] text-[#666] text-sm">
+                                        {formData.documento_aprendiz}
+                                    </p>
                                 </div>
                             </div>
                         </fieldset>
 
                         {/* Datos de la Formación */}
                         <fieldset className="border border-[#ccc] p-5 mb-6 rounded-md">
-                            <legend className="text-lg font-bold text-[#39A900] px-2.5">Datos de la Formación</legend>
+                            <legend className="font-bold text-[#39A900] px-2.5 text-base sm:text-lg">Datos de la Formación</legend>
                             <div className="mb-4">
                                 <label className="block mb-1 font-bold text-[#333] text-sm">
                                     Programa de Formación:
@@ -424,11 +433,15 @@ const SolicitudPermiso = () => {
                                     type="text"
                                     value={formData.nombre_programa}
                                     readOnly
-                                    className="w-full p-2.5 border border-[#ddd] rounded bg-[#f8f8f8] text-[#666] cursor-default"
+                                    className="hidden min-[776px]:block w-full p-2.5 border border-[#ddd] rounded bg-[#f8f8f8] text-[#666] cursor-default text-sm"
                                 />
+                                {/* Texto para pantallas pequeñas */}
+                                <p className="block min-[776px]:hidden w-full p-2.5 border border-[#ddd] rounded bg-[#f8f8f8] text-[#666] text-xs">
+                                    {formData.nombre_programa}
+                                </p>
                             </div>
-                            <div className="flex flex-wrap gap-5 mb-4">
-                                <div className="flex-1 min-w-[250px]">
+                            <div className="flex flex-col sm:flex-row sm:flex-wrap gap-5 mb-4">
+                                <div className="flex-1 sm:min-w-[250px]">
                                     <label className="block mb-1 font-bold text-[#333] text-sm">
                                         Número de Ficha:
                                     </label>
@@ -439,7 +452,7 @@ const SolicitudPermiso = () => {
                                         className="w-full p-2.5 border border-[#ddd] rounded bg-[#f8f8f8] text-[#666] cursor-default"
                                     />
                                 </div>
-                                <div className="flex-1 min-w-[250px]">
+                                <div className="flex-1 sm:min-w-[250px]">
                                     <label className="block mb-1 font-bold text-[#333] text-sm">
                                         Nivel de Formación:
                                     </label>
@@ -451,8 +464,8 @@ const SolicitudPermiso = () => {
                                     />
                                 </div>
                             </div>
-                            <div className="flex flex-wrap gap-5 mb-4">
-                                <div className="flex-1 min-w-[250px]">
+                            <div className="flex flex-col sm:flex-row sm:flex-wrap gap-5 mb-4">
+                                <div className="flex-1 sm:min-w-[250px]">
                                     <label className="block mb-1 font-bold text-[#333] text-sm">
                                         Jornada:
                                     </label>
@@ -463,7 +476,7 @@ const SolicitudPermiso = () => {
                                         className="w-full p-2.5 border border-[#ddd] rounded bg-[#f8f8f8] text-[#666] cursor-default"
                                     />
                                 </div>
-                                <div className="flex-1 min-w-[250px]">
+                                <div className="flex-1 sm:min-w-[250px]">
                                     <label className="block mb-1 font-bold text-[#333] text-sm">
                                         Centro de Formación:
                                     </label>
@@ -471,7 +484,7 @@ const SolicitudPermiso = () => {
                                         type="text"
                                         value={formData.centro_formacion}
                                         readOnly
-                                        className="w-full p-2.5 border border-[#ddd] rounded bg-[#f8f8f8] text-[#666] cursor-default"
+                                        className="w-full p-2.5 border border-[#ddd] rounded bg-[#f8f8f8] text-[#666] cursor-default text-xs"
                                     />
                                 </div>
                             </div>
@@ -482,7 +495,7 @@ const SolicitudPermiso = () => {
                             <legend className="text-lg font-bold text-[#39A900] px-2.5">Datos del Instructor</legend>
                             <div className="mb-4 relative">
                                 <label className="block mb-1 font-bold text-[#333] text-sm">
-                                    Buscar Instructor:
+                                    Buscar al Instructor por:
                                 </label>
                                 <div className="relative">
                                     <input
@@ -490,7 +503,7 @@ const SolicitudPermiso = () => {
                                         type="text"
                                         value={instructorQuery}
                                         onChange={handleInstructorInput}
-                                        placeholder="Documento o Nombre del Instructor"
+                                        placeholder="Documento o Nombre"
                                         className="w-full p-2.5 border border-[#ddd] rounded"
                                         required
                                     />
@@ -508,7 +521,7 @@ const SolicitudPermiso = () => {
                                                     <li
                                                         key={inst.id_usuario}
                                                         onClick={() => selectInstructor(inst)}
-                                                        className="p-2.5 border-b border-[#eee] cursor-pointer hover:bg-[#e8f5e1] flex flex-col transition-colors"
+                                                        className="p-2.5 border-b border-[#eee] cursor-pointer hover:bg-[#e8f5e1] flex flex-col transition-colors duration-200 text-sm"
                                                     >
                                                         <strong className="font-bold text-[#333]">
                                                             {inst.nombre} {inst.apellido}
@@ -523,8 +536,8 @@ const SolicitudPermiso = () => {
                                     )}
                                 </div>
                             </div>
-                            <div className="flex flex-wrap gap-5 mb-4">
-                                <div className="flex-1 min-w-[250px]">
+                            <div className="flex flex-col sm:flex-row sm:flex-wrap gap-5 mb-4">
+                                <div className="flex-1 sm:min-w-[250px]">
                                     <label className="block mb-1 font-bold text-[#333] text-sm">
                                         Número de Documento:
                                     </label>
@@ -532,11 +545,11 @@ const SolicitudPermiso = () => {
                                         type="text"
                                         value={formData.documento_instructor}
                                         readOnly
-                                        placeholder="Documento del Instructor"
+                                        placeholder="Documento "
                                         className="w-full p-2.5 border border-[#ddd] rounded bg-[#f8f8f8] text-[#666] cursor-default"
                                     />
                                 </div>
-                                <div className="flex-1 min-w-[250px]">
+                                <div className="flex-1 sm:min-w-[250px]">
                                     <label className="block mb-1 font-bold text-[#333] text-sm">
                                         Nombre del Instructor:
                                     </label>
@@ -544,7 +557,7 @@ const SolicitudPermiso = () => {
                                         type="text"
                                         value={formData.nombre_instructor}
                                         readOnly
-                                        placeholder="Nombre del Instructor"
+                                        placeholder="Nombre"
                                         className="w-full p-2.5 border border-[#ddd] rounded bg-[#f8f8f8] text-[#666] cursor-default"
                                     />
                                 </div>
@@ -553,11 +566,11 @@ const SolicitudPermiso = () => {
 
                         {/* Motivo de Salida */}
                         <fieldset className="border border-[#ccc] p-5 mb-6 rounded-md">
-                            <legend className="text-lg font-bold text-[#39A900] px-2.5">
+                            <legend className="font-bold text-[#39A900] px-2.5 text-base sm:text-lg">
                                 Motivo de Salida (Seleccione solo uno)
                             </legend>
-                            <div className="flex flex-wrap gap-5 mb-4">
-                                <div className="flex-1 min-w-[250px]">
+                            <div className="flex flex-col sm:flex-row sm:flex-wrap gap-5 mb-4">
+                                <div className="flex-1 sm:min-w-[250px]">
                                     <div className="flex flex-col gap-2">
                                         <label className="flex items-center font-normal cursor-pointer">
                                             <input
@@ -606,7 +619,7 @@ const SolicitudPermiso = () => {
                                         </label>
                                     </div>
                                 </div>
-                                <div className="flex-1 min-w-[250px]">
+                                <div className="flex-1 sm:min-w-[250px]">
                                     <div className="flex flex-col gap-2">
                                         <label className="flex items-center font-normal cursor-pointer">
                                             <input
@@ -662,6 +675,10 @@ const SolicitudPermiso = () => {
                                         name="otros_motivo"
                                         value={formData.otros_motivo}
                                         onChange={handleChange}
+                                        onInput={(e) => {
+                                            // Solo permitir letras, números, paréntesis, comas y puntos
+                                            e.target.value = e.target.value.replace(/[^A-Za-zÁ-Úá-úñÑ0-9(),. ]/g, '');
+                                        }}
                                         placeholder="Especifique el motivo"
                                         className="w-full p-2.5 border border-[#ddd] rounded"
                                         required
@@ -712,9 +729,9 @@ const SolicitudPermiso = () => {
 
                         {/* Horario de Salida */}
                         <fieldset className="border border-[#ccc] p-5 mb-6 rounded-md">
-                            <legend className="text-lg font-bold text-[#39A900] px-2.5">Horario de Salida</legend>
-                            <div className="flex flex-wrap gap-5 mb-4">
-                                <div className="flex-1 min-w-[250px]">
+                            <legend className="font-bold text-[#39A900] px-2.5 text-base sm:text-lg">Horario de Salida</legend>
+                            <div className="flex flex-col sm:flex-row sm:flex-wrap gap-5 mb-4">
+                                <div className="flex-1 sm:min-w-[250px]">
                                     <label className="block mb-1 font-bold text-[#333] text-sm">
                                         Fecha de Salida:
                                     </label>
@@ -725,7 +742,7 @@ const SolicitudPermiso = () => {
                                         className="w-full p-2.5 border border-[#ddd] rounded bg-[#f8f8f8] text-[#666] cursor-default"
                                     />
                                 </div>
-                                <div className="flex-1 min-w-[250px]">
+                                <div className="flex-1 sm:min-w-[250px]">
                                     <label className="block mb-1 font-bold text-[#333] text-sm">
                                         Hora de Salida:
                                     </label>
@@ -739,33 +756,35 @@ const SolicitudPermiso = () => {
                                     />
                                 </div>
                             </div>
-                            <div className="flex flex-wrap gap-5 mb-4">
-                                <div className="flex-1 min-w-[250px]">
+                            <div className="flex flex-col sm:flex-row sm:flex-wrap gap-5 mb-4">
+                                <div className="flex-1 sm:min-w-[250px]">
                                     <p className="font-bold mb-1 text-sm">¿Reingresa?</p>
-                                    <label className="flex items-center font-normal cursor-pointer mr-4">
-                                        <input
-                                            type="radio"
-                                            name="reingresa"
-                                            value="no"
-                                            checked={formData.reingresa === 'no'}
-                                            onChange={handleChange}
-                                            className="mr-2"
-                                        />
-                                        No
-                                    </label>
-                                    <label className="flex items-center font-normal cursor-pointer">
-                                        <input
-                                            type="radio"
-                                            name="reingresa"
-                                            value="si"
-                                            checked={formData.reingresa === 'si'}
-                                            onChange={handleChange}
-                                            className="mr-2"
-                                        />
-                                        Sí
-                                    </label>
+                                    <div className='flex'>
+                                        <label className="flex items-center font-normal cursor-pointer mr-4">
+                                            <input
+                                                type="radio"
+                                                name="reingresa"
+                                                value="no"
+                                                checked={formData.reingresa === 'no'}
+                                                onChange={handleChange}
+                                                className="mr-2"
+                                            />
+                                            No
+                                        </label>
+                                        <label className="flex items-center font-normal cursor-pointer">
+                                            <input
+                                                type="radio"
+                                                name="reingresa"
+                                                value="si"
+                                                checked={formData.reingresa === 'si'}
+                                                onChange={handleChange}
+                                                className="mr-2"
+                                            />
+                                            Sí
+                                        </label>
+                                    </div>
                                 </div>
-                                <div className="flex-1 min-w-[250px]">
+                                <div className="flex-1 sm:min-w-[250px]">
                                     {formData.reingresa === 'si' && (
                                         <div>
                                             <label className="block mb-1 font-bold text-[#333] text-sm">
@@ -801,9 +820,10 @@ const SolicitudPermiso = () => {
             {/* Modal de Carga */}
             {showLoadingModal && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-[200]">
-                    <div className="bg-white p-8 rounded-lg shadow-[0_5px_15px_rgba(0,0,0,0.3)] text-center max-w-[400px] w-[90%]">
-                        <div className="border-4 border-gray-200 w-9 h-9 rounded-full border-l-[#39A900] animate-spin mx-auto mb-5"></div>
-                        <h3 className="text-xl mb-2">Esperando solicitud de aprobamiento...</h3>
+                    <div className="bg-white p-8 rounded-lg shadow-[0_5px_15px_rgba(0,0,0,0.3)] text-center max-w-[400px] w-[90%  flex flex-col gap-10]">
+                        
+                        <div className="loader"></div>
+                        <h3 className="text-xl mb-2">Enviando solicitud de aprobamiento...</h3>
                         <p className="text-gray-600">Por favor, espere.</p>
                     </div>
                 </div>

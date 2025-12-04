@@ -57,7 +57,21 @@ return function ($app) {
                     u_inst.nombre AS nombre_instructor,
                     u_inst.apellido AS apellido_instructor,
                     u_inst.documento AS documento_instructor,
-                    MAX(CASE WHEN a.rol_aprobador = 'Coordinacion' THEN a.qr ELSE NULL END) AS qr
+                    MAX(CASE WHEN a.rol_aprobador = 'Coordinacion' THEN a.qr ELSE NULL END) AS qr,
+                    -- Estados individuales
+                    (SELECT estado_aprobacion FROM aprobaciones WHERE id_permiso = p.id_permiso AND rol_aprobador = 'Instructor' ORDER BY fecha_aprobacion DESC LIMIT 1) AS estado_instructor,
+                    (SELECT COALESCE(observaciones, motivo) FROM aprobaciones WHERE id_permiso = p.id_permiso AND rol_aprobador = 'Instructor' AND estado_aprobacion = 'Rechazado' ORDER BY fecha_aprobacion DESC LIMIT 1) AS motivo_rechazo_instructor,
+                    (SELECT estado_aprobacion FROM aprobaciones WHERE id_permiso = p.id_permiso AND rol_aprobador = 'Coordinacion' ORDER BY fecha_aprobacion DESC LIMIT 1) AS estado_coordinador,
+                    (SELECT COALESCE(observaciones, motivo) FROM aprobaciones WHERE id_permiso = p.id_permiso AND rol_aprobador = 'Coordinacion' AND estado_aprobacion = 'Rechazado' ORDER BY fecha_aprobacion DESC LIMIT 1) AS motivo_rechazo_coordinador,
+                    -- Información de rechazo
+                    (SELECT COALESCE(a_rech.observaciones, a_rech.motivo)
+                     FROM aprobaciones a_rech 
+                     WHERE a_rech.id_permiso = p.id_permiso AND a_rech.estado_aprobacion = 'Rechazado' 
+                     ORDER BY a_rech.fecha_aprobacion DESC LIMIT 1) AS observacion_rechazo,
+                    (SELECT a_rech.rol_aprobador 
+                     FROM aprobaciones a_rech 
+                     WHERE a_rech.id_permiso = p.id_permiso AND a_rech.estado_aprobacion = 'Rechazado' 
+                     ORDER BY a_rech.fecha_aprobacion DESC LIMIT 1) AS rol_rechazo
                 FROM 
                     permisos p
                 LEFT JOIN 
@@ -119,7 +133,6 @@ return function ($app) {
         try {
             $pdo = conexion();
             
-            // Consulta completa para el historial
             $sql = "
                 SELECT 
                     p.id_permiso,
@@ -135,8 +148,13 @@ return function ($app) {
                     u_inst.apellido AS apellido_instructor,
                     u_inst.documento AS documento_instructor,
                     MAX(CASE WHEN a.rol_aprobador = 'Coordinacion' THEN a.qr ELSE NULL END) AS qr,
+                    -- Estados individuales
+                    (SELECT estado_aprobacion FROM aprobaciones WHERE id_permiso = p.id_permiso AND rol_aprobador = 'Instructor' ORDER BY fecha_aprobacion DESC LIMIT 1) AS estado_instructor,
+                    (SELECT COALESCE(observaciones, motivo) FROM aprobaciones WHERE id_permiso = p.id_permiso AND rol_aprobador = 'Instructor' AND estado_aprobacion = 'Rechazado' ORDER BY fecha_aprobacion DESC LIMIT 1) AS motivo_rechazo_instructor,
+                    (SELECT estado_aprobacion FROM aprobaciones WHERE id_permiso = p.id_permiso AND rol_aprobador = 'Coordinacion' ORDER BY fecha_aprobacion DESC LIMIT 1) AS estado_coordinador,
+                    (SELECT COALESCE(observaciones, motivo) FROM aprobaciones WHERE id_permiso = p.id_permiso AND rol_aprobador = 'Coordinacion' AND estado_aprobacion = 'Rechazado' ORDER BY fecha_aprobacion DESC LIMIT 1) AS motivo_rechazo_coordinador,
                     -- Información de rechazo
-                    (SELECT a_rech.observaciones 
+                    (SELECT COALESCE(a_rech.observaciones, a_rech.motivo)
                      FROM aprobaciones a_rech 
                      WHERE a_rech.id_permiso = p.id_permiso AND a_rech.estado_aprobacion = 'Rechazado' 
                      ORDER BY a_rech.fecha_aprobacion DESC LIMIT 1) AS observacion_rechazo,

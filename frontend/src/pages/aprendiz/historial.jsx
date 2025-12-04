@@ -149,6 +149,7 @@ export default function HistorialAprendiz() {
     };
 
     const openDetallesModal = (solicitud) => {
+        console.log('Solicitud seleccionada:', solicitud);
         setSelectedSolicitud(solicitud);
         setShowDetallesModal(true);
     };
@@ -433,13 +434,17 @@ export default function HistorialAprendiz() {
                                         </div>
 
                                         {/* Información de Rechazo */}
-                                        {selectedSolicitud.estado_general === 'Rechazado' && (
+                                        {selectedSolicitud.estado_general.includes('Rechazado') && (
                                             <div className="bg-red-50 border border-red-100 p-3 rounded-lg mt-2">
                                                 <p className="text-xs text-red-600 uppercase font-bold mb-1">
-                                                    Rechazado por: {selectedSolicitud.rol_rechazo || 'Desconocido'}
+                                                    Rechazado por: {
+                                                        selectedSolicitud.rol_rechazo ||
+                                                        (selectedSolicitud.estado_instructor === 'Rechazado' ? 'Instructor' :
+                                                            (selectedSolicitud.estado_coordinador === 'Rechazado' ? 'Coordinación' : 'Sistema'))
+                                                    }
                                                 </p>
                                                 <p className="text-sm text-red-800 italic">
-                                                    "{selectedSolicitud.observacion_rechazo || 'Sin justificación'}"
+                                                    "{selectedSolicitud.observacion_rechazo || selectedSolicitud.motivo_rechazo_instructor || selectedSolicitud.motivo_rechazo_coordinador || 'Sin justificación'}"
                                                 </p>
                                             </div>
                                         )}

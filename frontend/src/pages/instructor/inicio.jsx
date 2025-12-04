@@ -540,29 +540,29 @@ const InicioInstructor = () => {
                             <div className="grid grid-cols-1 min-[600px]:grid-cols-2 gap-3 sm:gap-4">
                                 <div className="bg-gray-50 p-3 sm:p-4 rounded-lg">
                                     <p className="text-xs sm:text-sm text-gray-500 uppercase font-semibold mb-1 sm:mb-2">Documento</p>
-                                    <p className="font-bold text-gray-800 text-sm sm:text-base md:text-lg">{selectedSolicitud.documento_aprendiz}</p>
+                                    <p className="font-bold text-gray-800 text-sm sm:text-base md:text-base">{selectedSolicitud.documento_aprendiz}</p>
                                 </div>
-                                <div className="bg-gray-50 p-3 sm:p-4 rounded-lg">
+                                <div className="bg-gray-50 p-3 sm:p-2 rounded-lg">
                                     <p className="text-xs sm:text-sm text-gray-500 uppercase font-semibold mb-1 sm:mb-2">Aprendiz</p>
-                                    <p className="font-bold text-gray-800 text-sm sm:text-base md:text-lg">{selectedSolicitud.nombre_aprendiz} {selectedSolicitud.apellido_aprendiz}</p>
+                                    <p className="font-bold text-gray-800 text-xs sm:text-base md:text-sm">{selectedSolicitud.nombre_aprendiz} {selectedSolicitud.apellido_aprendiz}</p>
                                 </div>
                             </div>
 
                             {/* Fila 2: Programa (100% ancho) */}
                             <div className="bg-gray-50 p-3 sm:p-4 rounded-lg">
                                 <p className="text-xs sm:text-sm text-gray-500 uppercase font-semibold mb-1 sm:mb-2">Programa</p>
-                                <p className="font-bold text-gray-800 text-sm sm:text-base md:text-lg">{selectedSolicitud.nombre_programa || 'Sin programa'}</p>
+                                <p className="font-bold text-gray-800 text-sm sm:text-base md:text-sm">{selectedSolicitud.nombre_programa || 'Sin programa'}</p>
                             </div>
 
                             {/* Fila 3: Ficha | Jornada */}
                             <div className="grid grid-cols-2 gap-3 sm:gap-4">
                                 <div className="bg-gray-50 p-3 sm:p-4 rounded-lg">
                                     <p className="text-xs sm:text-sm text-gray-500 uppercase font-semibold mb-1 sm:mb-2">Ficha</p>
-                                    <p className="font-bold text-gray-800 text-sm sm:text-base md:text-lg">{selectedSolicitud.numero_ficha || 'N/A'}</p>
+                                    <p className="font-bold text-gray-800 text-sm sm:text-base md:text-base">{selectedSolicitud.numero_ficha || 'N/A'}</p>
                                 </div>
                                 <div className="bg-gray-50 p-3 sm:p-4 rounded-lg">
                                     <p className="text-xs sm:text-sm text-gray-500 uppercase font-semibold mb-1 sm:mb-2">Jornada</p>
-                                    <p className="font-bold text-gray-800 text-sm sm:text-base md:text-lg">{selectedSolicitud.nombre_jornada || 'N/A'}</p>
+                                    <p className="font-bold text-gray-800 text-sm sm:text-base md:text-base">{selectedSolicitud.nombre_jornada || 'N/A'}</p>
                                 </div>
                             </div>
 
@@ -570,12 +570,12 @@ const InicioInstructor = () => {
                             <div className="grid grid-cols-1 min-[380px]:grid-cols-2 gap-3 sm:gap-4">
                                 <div className="bg-blue-50 p-3 sm:p-4 rounded-lg border-l-4 border-blue-400">
                                     <p className="text-xs sm:text-sm text-gray-600 uppercase font-semibold mb-1 sm:mb-2">Hora de Salida</p>
-                                    <p className="font-bold text-gray-800 text-sm sm:text-base md:text-lg">{formatTime12h(selectedSolicitud.hora_salida)}</p>
+                                    <p className="font-bold text-gray-800 text-sm sm:text-base md:text-base">{formatTime12h(selectedSolicitud.hora_salida)}</p>
                                 </div>
                                 {selectedSolicitud.hora_regreso && (
                                     <div className="bg-green-50 p-3 sm:p-4 rounded-lg border-l-4 border-green-400">
                                         <p className="text-xs sm:text-sm text-gray-600 uppercase font-semibold mb-1 sm:mb-2">Hora de Regreso</p>
-                                        <p className="font-bold text-gray-800 text-sm sm:text-base md:text-lg">{formatTime12h(selectedSolicitud.hora_regreso)}</p>
+                                        <p className="font-bold text-gray-800 text-sm sm:text-base md:text-base">{formatTime12h(selectedSolicitud.hora_regreso)}</p>
                                     </div>
                                 )}
                             </div>
