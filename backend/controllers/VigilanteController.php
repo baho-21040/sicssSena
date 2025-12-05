@@ -22,13 +22,19 @@ class VigilanteController {
         // 1. Buscar la aprobación asociada al QR
         // Asumimos que el campo 'qr' en aprobaciones guarda el código único
         $sql = "SELECT a.id_aprobacion, a.estado_aprobacion, a.qr, 
-                       p.hora_salida, p.hora_regreso, p.motivo,
+                       p.hora_salida, p.hora_regreso, p.motivo, p.descripcion, p.soporte,
                        u.nombre, u.apellido, u.documento, u.id_usuario,
-                       pf.nombre_programa, pf.numero_ficha
+                       pf.nombre_programa, pf.numero_ficha,
+                       j.nombre_jornada,
+                       u_inst.nombre AS nombre_instructor, u_inst.apellido AS apellido_instructor,
+                       u_coord.nombre AS nombre_coordinador, u_coord.apellido AS apellido_coordinador
                 FROM aprobaciones a
                 JOIN permisos p ON a.id_permiso = p.id_permiso
                 JOIN usuarios u ON p.id_usuario = u.id_usuario
                 LEFT JOIN programas_formacion pf ON u.id_programa = pf.id_programa
+                LEFT JOIN jornadas j ON pf.id_jornada = j.id_jornada
+                LEFT JOIN usuarios u_inst ON p.id_instructor_destino = u_inst.id_usuario
+                LEFT JOIN usuarios u_coord ON a.id_usuario_aprobador = u_coord.id_usuario
                 WHERE a.qr = :qr";
         
         $stmt = $pdo->prepare($sql);
@@ -93,8 +99,13 @@ class VigilanteController {
                 'id_aprobacion' => $aprobacion['id_aprobacion'],
                 'aprendiz' => $aprobacion['nombre'] . ' ' . $aprobacion['apellido'],
                 'documento' => $aprobacion['documento'],
-                'programa' => $aprobacion['nombre_programa'] . ' (' . $aprobacion['numero_ficha'] . ')',
-                'motivo' => $aprobacion['motivo'],
+                'programa' => $aprobacion['nombre_programa'],
+                'ficha' => $aprobacion['numero_ficha'],
+                'jornada' => $aprobacion['nombre_jornada'],
+                'instructor' => $aprobacion['nombre_instructor'] . ' ' . $aprobacion['apellido_instructor'],
+                'coordinador' => $aprobacion['nombre_coordinador'] . ' ' . $aprobacion['apellido_coordinador'],
+                'motivo' => $aprobacion['descripcion'], // Usamos descripcion como motivo detallado
+                'soporte' => $aprobacion['soporte'],
                 'hora_salida' => $aprobacion['hora_salida'],
                 'hora_regreso' => $aprobacion['hora_regreso'] ?: 'No aplica',
                 'accesos_previos' => $conteoAccesos
@@ -153,7 +164,9 @@ class VigilanteController {
                         u.apellido,
                         CONCAT(u.nombre, ' ', u.apellido) AS aprendiz,
                         u.documento,
-                        p.motivo
+                        p.motivo,
+                        a.observaciones,
+                        p.hora_regreso
                     FROM accesos acc
                     JOIN aprobaciones a ON acc.id_aprobacion = a.id_aprobacion
                     JOIN permisos p ON a.id_permiso = p.id_permiso

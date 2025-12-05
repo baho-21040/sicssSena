@@ -16,11 +16,26 @@ function getAccesosHoy(Request $request, Response $response) {
                     u.apellido,
                     CONCAT(u.nombre, ' ', u.apellido) AS aprendiz,
                     u.documento,
-                    p.motivo
+                    u.documento,
+                    p.motivo,
+                    a.observaciones,
+                    p.hora_regreso,
+                    p.descripcion AS descripcion_permiso,
+                    p.soporte,
+                    p.hora_salida,
+                    pf.nombre_programa,
+                    pf.numero_ficha,
+                    j.nombre_jornada,
+                    CONCAT(u_inst.nombre, ' ', u_inst.apellido) AS instructor,
+                    CONCAT(u_coord.nombre, ' ', u_coord.apellido) AS coordinador
                 FROM accesos acc
                 JOIN aprobaciones a ON acc.id_aprobacion = a.id_aprobacion
                 JOIN permisos p ON a.id_permiso = p.id_permiso
                 JOIN usuarios u ON p.id_usuario = u.id_usuario
+                LEFT JOIN programas_formacion pf ON u.id_programa = pf.id_programa
+                LEFT JOIN jornadas j ON pf.id_jornada = j.id_jornada
+                LEFT JOIN usuarios u_inst ON p.id_instructor_destino = u_inst.id_usuario
+                LEFT JOIN usuarios u_coord ON a.id_usuario_aprobador = u_coord.id_usuario
                 WHERE DATE(acc.fecha_hora) = CURDATE()
                 ORDER BY acc.fecha_hora DESC";
         

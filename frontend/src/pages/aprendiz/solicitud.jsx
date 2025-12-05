@@ -293,10 +293,15 @@ const SolicitudPermiso = () => {
             // Usar FormData para enviar archivo + datos
             const formDataToSend = new FormData();
             formDataToSend.append('id_instructor_destino', formData.id_instructor_destino);
-            formDataToSend.append('motivo', formData.motivo === 'otros' ? formData.otros_motivo : formData.motivo);
+            formDataToSend.append('motivo', formData.motivo);
+
+            // Siempre enviar descripción
             if (formData.motivo === 'otros') {
                 formDataToSend.append('descripcion', formData.otros_motivo);
+            } else {
+                formDataToSend.append('descripcion', getMotivoTexto(formData.motivo));
             }
+
             formDataToSend.append('hora_salida', formData.hora_salida);
             formDataToSend.append('reingresa', formData.reingresa);
             if (formData.reingresa === 'si') {
@@ -377,7 +382,7 @@ const SolicitudPermiso = () => {
     }, []);
 
     return (
-        
+
         <DashboardLayout title="Solicitud de Permiso de Salida">
             <div className="min-h-screen bg-[#f4f4f4] p-5">
                 <div className="max-w-[800px] mx-auto my-5 bg-white p-6 rounded-lg shadow-[0_4px_12px_rgba(0,0,0,0.05)]">
@@ -821,7 +826,7 @@ const SolicitudPermiso = () => {
             {showLoadingModal && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-[200]">
                     <div className="bg-white p-8 rounded-lg shadow-[0_5px_15px_rgba(0,0,0,0.3)] text-center max-w-[400px] w-[90%  flex flex-col gap-10]">
-                        
+
                         <div className="loader"></div>
                         <h3 className="text-xl mb-2">Enviando solicitud de aprobamiento...</h3>
                         <p className="text-gray-600">Por favor, espere.</p>
