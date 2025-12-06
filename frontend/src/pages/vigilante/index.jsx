@@ -4,6 +4,9 @@ import { Link } from 'react-router-dom';
 import DashboardLayout from '../../components/DashboardLayout';
 import { API_BASE_URL } from '../../config/api.js';
 
+import "remixicon/fonts/remixicon.css";
+
+
 const InicioVigilante = () => {
     const [scanResult, setScanResult] = useState(null);
     const [error, setError] = useState(null);
@@ -40,7 +43,9 @@ const InicioVigilante = () => {
     // Cleanup al desmontar el componente
     useEffect(() => {
         return () => {
-            stopCamera();
+            if (scannerRef.current && scannerRef.current.isScanning) {
+                scannerRef.current.stop().catch(console.error);
+            }
         };
     }, []);
 
@@ -66,13 +71,16 @@ const InicioVigilante = () => {
         }
     };
 
-    const stopCamera = useCallback(() => {
+    const stopCamera = useCallback(async () => {
         if (scannerRef.current) {
             try {
                 if (scannerRef.current.isScanning) {
-                    scannerRef.current.stop().catch(() => { });
+                    await scannerRef.current.stop();
                 }
-            } catch (e) { /* ignore */ }
+                scannerRef.current.clear();
+            } catch (e) {
+                console.warn("Error stopping camera", e);
+            }
             scannerRef.current = null;
         }
         setCameraStarted(false);
@@ -85,8 +93,8 @@ const InicioVigilante = () => {
         setCameraStarted(false); // Reset camera state
     };
 
-    const closeScanner = () => {
-        stopCamera();
+    const closeScanner = async () => {
+        await stopCamera();
         setShowScanner(false);
         setScanResult(null);
         setError(null);
@@ -112,51 +120,65 @@ const InicioVigilante = () => {
         setSelectedImage(null);
     };
 
-    const resetScanner = () => {
-        stopCamera();
+    const resetScanner = async () => {
+        await stopCamera();
         setError(null);
         setScanResult(null);
         // Pequeño delay para asegurar que la cámara se detuvo completamente
         setTimeout(() => {
             setCameraStarted(false);
-        }, 100);
+        }, 300);
     };
 
     // Iniciar cámara cuando se abre el modal
     useEffect(() => {
         const readerElement = document.getElementById("reader");
 
-        if (showScanner && !scanResult && readerElement && !cameraStarted) {
-            stopCamera(); // Limpieza previa
+        // Solo intentar iniciar si el elemento existe y no hay resultado ni error pendiente
+        if (showScanner && !scanResult && !error && readerElement && !cameraStarted) {
+            const startScanner = async () => {
+                // Limpieza previa asegurada
+                await stopCamera();
 
-            const scanner = new Html5Qrcode("reader");
-            scannerRef.current = scanner;
+                // Delay para liberar hardware
+                await new Promise(resolve => setTimeout(resolve, 300));
 
-            const config = {
-                fps: 10,
-                qrbox: { width: 250, height: 250 },
-                aspectRatio: 1.0
+                // Verificar nuevamente si el componente sigue montado y en estado correcto
+                if (!document.getElementById("reader")) return;
+
+                const scanner = new Html5Qrcode("reader");
+                scannerRef.current = scanner;
+
+                const config = {
+                    fps: 10,
+                    qrbox: { width: 300, height: 300 },
+                    aspectRatio: 1.0
+                };
+
+                try {
+                    await scanner.start(
+                        { facingMode: "environment" },
+                        config,
+                        onScanSuccess,
+                        () => { }
+                    );
+                    console.log("Cámara iniciada");
+                    setCameraStarted(true);
+                } catch (err) {
+                    console.error("Error al iniciar cámara:", err);
+                    setError("No se pudo acceder a la cámara. Verifique permisos o cierre otras apps.");
+                    setCameraStarted(false);
+                }
             };
 
-            scanner.start(
-                { facingMode: "environment" },
-                config,
-                onScanSuccess,
-                () => { }
-            ).then(() => {
-                console.log("Cámara iniciada");
-                setCameraStarted(true);
-            }).catch((err) => {
-                console.error("Error al iniciar cámara:", err);
-                setError("No se pudo acceder a la cámara");
-            });
+            startScanner();
         }
-    }, [showScanner, scanResult, cameraStarted]);
+    }, [showScanner, scanResult, error, cameraStarted, stopCamera]);
 
     const onScanSuccess = useCallback(async (decodedText) => {
         if (loading) return;
 
-        stopCamera();
+        await stopCamera();
         setLoading(true);
         setError(null);
 
@@ -213,7 +235,7 @@ const InicioVigilante = () => {
 
             if (data.status === 'ok') {
                 // Cerrar modal y actualizar tabla
-                closeScanner();
+                await closeScanner();
                 fetchAccesosHoy();
                 // Mostrar notificación de éxito
                 alert('✅ Acceso registrado correctamente');
@@ -410,11 +432,11 @@ const InicioVigilante = () => {
                 {/* Modal de Detalles */}
                 {showDetailsModal && selectedAcceso && (
                     <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 py-26 px-4">
-                        <div className="bg-white rounded-2xl shadow-2xl max-w-lg w-full max-h-[80vh] overflow-y-auto relative mt-28">
+                        <div className="bg-white rounded-2xl shadow-2xl max-w-lg w-full max-h-[80vh] overflow-y-auto relative mt-[50px]">
                             {/* Botón cerrar */}
                             <button
                                 onClick={closeDetailsModal}
-                                className="absolute top-4 right-4 z-10 w-10 h-10 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-full flex items-center justify-center text-2xl font-bold transition shadow-lg"
+                                className="absolute top-2 right-2 z-10 w-10 h-10 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-[5px] rounded-tr-[12px] flex items-center justify-center text-2xl font-bold transition shadow-lg"
                                 title="Cerrar"
                             >
                                 ×
@@ -431,7 +453,7 @@ const InicioVigilante = () => {
                                     {/* Aprendiz */}
                                     <div className="bg-gray-50 p-4 rounded-lg md:col-span-2">
                                         <p className="text-xs text-gray-500 uppercase font-semibold mb-1">Aprendiz</p>
-                                        <p className="text-lg font-bold text-gray-900">{selectedAcceso.aprendiz}</p>
+                                        <p className="text-base font-bold text-gray-900">{selectedAcceso.aprendiz}</p>
                                         <p className="text-sm text-gray-600">{selectedAcceso.documento}</p>
                                     </div>
 
@@ -519,36 +541,54 @@ const InicioVigilante = () => {
                             {/* Botón cerrar */}
                             <button
                                 onClick={closeScanner}
-                                className="absolute top-4 right-4 z-10 w-10 h-10 bg-red-500 hover:bg-red-600 text-white rounded-full flex items-center justify-center text-2xl font-bold transition shadow-lg"
+                                className="absolute top-2 right-2 z-10 w-8 h-8 bg-red-500 hover:bg-red-600 text-white rounded-[5px] rounded-tr-[12px] flex items-center justify-center text-2xl font-bold transition shadow-lg"
                                 title="Cerrar"
                             >
                                 ×
                             </button>
 
                             {/* Contenido del modal */}
-                            <div className="p-8">
+                            <div className="p-4">
+                                {/* Título siempre visible */}
+                                {!scanResult && !error && (
+                                    <h2 className="text-2xl font-bold text-[#2A7D00] mb-6 text-center">
+                                        <i className="fas fa-qrcode mr-2"></i>
+                                        Escanear Código QR
+                                    </h2>
+                                )}
+
+                                {/* Contenedor del escáner - SIEMPRE RENDERIZADO pero oculto si hay resultado/error */}
+                                <div
+                                    style={{
+                                        display: (!scanResult && !error) ? 'flex' : 'none',
+                                        width: '100%',
+                                        justifyContent: 'center'
+                                    }}
+                                >
+                                    <div
+                                        id="reader"
+                                        style={{
+                                            width: '100%',
+                                            maxWidth: '300px',
+                                            aspectRatio: '1/1',
+                                            overflow: 'hidden',
+                                            borderRadius: '0.5rem',
+                                            border: '4px solid #39A900',
+                                            position: 'relative'
+                                        }}
+                                    ></div>
+                                </div>
+
                                 {!scanResult && !error && (
                                     <>
-                                        <h2 className="text-2xl font-bold text-[#2A7D00] mb-6 text-center">
-                                            <i className="fas fa-qrcode mr-2"></i>
-                                            Escanear Código QR
-                                        </h2>
-                                        <div
-                                            id="reader"
-                                            style={{
-                                                width: '100%',
-                                                minHeight: '400px',
-                                                position: 'relative'
-                                            }}
-                                            className="overflow-hidden rounded-lg border-4 border-[#39A900]"
-                                        ></div>
                                         <p className="text-center text-gray-500 mt-4">
                                             Apunta la cámara al código QR del permiso
                                         </p>
                                         <style>{`
                                             #reader video {
                                                 width: 100% !important;
-                                                height: auto !important;
+                                                height: 100% !important;
+                                                object-fit: cover !important;
                                                 display: block !important;
                                                 border-radius: 8px;
                                                 transform: scaleX(-1);
@@ -557,13 +597,22 @@ const InicioVigilante = () => {
                                                 display: none !important;
                                             }
                                             #reader__scan_region {
-                                                min-width: 250px !important;
-                                                min-height: 250px !important;
-                                                width: 250px !important;
-                                                height: 250px !important;
+                                                width: 75% !important;
+                                                max-width: 300px !important;
+                                                aspect-ratio: 1/1 !important;
+                                                min-width: unset !important;
+                                                min-height: unset !important;
+                                                height: auto !important;
+                                                box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.5), 0 0 0 1000px rgba(0, 0, 0, 0.5) !important;
+                                                border: 2px solid white !important;
                                             }
                                             #reader__dashboard_section_csr span {
                                                 display: none !important;
+                                            }
+                                            @media (max-width: 550px) {
+                                                #reader__scan_region {
+                                                    width: 85% !important;
+                                                }
                                             }
                                         `}</style>
                                     </>
@@ -581,7 +630,7 @@ const InicioVigilante = () => {
                                 {error && (
                                     <div className="text-center py-8">
                                         <div className="bg-red-100 p-4 rounded-full w-20 h-20 mx-auto mb-4 flex items-center justify-center">
-                                            <i className="fas fa-times-circle text-4xl text-red-500"></i>
+                                            <i class="ri-qr-scan-2-line text-4xl text-red-600"></i>
                                         </div>
                                         <h3 className="text-xl font-bold text-red-700 mb-2">Acceso Denegado</h3>
                                         <p className="text-red-600 mb-6">{error}</p>
@@ -597,18 +646,18 @@ const InicioVigilante = () => {
                                 {/* Resultado exitoso */}
                                 {scanResult && (
                                     <div>
-                                        <div className="bg-[#39A900] p-4 rounded-t-xl text-center -mx-8 -mt-8 mb-6">
-                                            <h2 className="text-2xl font-bold text-white flex items-center justify-center gap-2">
+                                        <div className="bg-[#39A900] py-3 px-8 rounded-t-xl -mx-4 -mt-4 mb-2">
+                                            <h2 className="text-xl font-bold text-white  justify-center gap-2">
                                                 <i className="fas fa-check-circle"></i>
                                                 {scanResult.mensaje}
                                             </h2>
                                         </div>
 
-                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mb-3">
                                             {/* Aprendiz */}
-                                            <div className="bg-gray-50 p-4 rounded-lg md:col-span-2">
+                                            <div className="bg-gray-50 p-2 rounded-lg md:col-span-2">
                                                 <p className="text-xs text-gray-500 uppercase font-semibold mb-1">Aprendiz</p>
-                                                <p className="text-lg font-bold text-gray-900">{scanResult.data.aprendiz}</p>
+                                                <p className="text-sm    font-bold text-gray-900">{scanResult.data.aprendiz}</p>
                                                 <p className="text-sm text-gray-600">{scanResult.data.documento}</p>
                                             </div>
 
@@ -625,7 +674,7 @@ const InicioVigilante = () => {
                                             {/* Programa, Ficha, Jornada */}
                                             <div className="bg-gray-50 p-4 rounded-lg md:col-span-2">
                                                 <p className="text-xs text-gray-500 uppercase font-semibold mb-1">Programa</p>
-                                                <p className="text-sm font-semibold text-gray-800">{scanResult.data.programa}</p>
+                                                <p className="text-xs font-semibold text-gray-800">{scanResult.data.programa}</p>
                                                 <div className="flex gap-4 mt-2">
                                                     <div>
                                                         <span className="text-xs text-gray-500 uppercase font-semibold">Ficha: </span>
@@ -664,24 +713,24 @@ const InicioVigilante = () => {
                                                 <div className="flex gap-4">
                                                     <div>
                                                         <span className="text-xs font-bold text-red-500 block">SALIDA</span>
-                                                        <span className="font-mono text-lg text-gray-900">{scanResult.data.hora_salida}</span>
+                                                        <span className="font-mono text-base text-gray-900">{scanResult.data.hora_salida}</span>
                                                     </div>
                                                     {scanResult.data.hora_regreso !== 'No aplica' && (
                                                         <div>
                                                             <span className="text-xs font-bold text-green-500 block">REGRESO</span>
-                                                            <span className="font-mono text-lg text-gray-900">{scanResult.data.hora_regreso}</span>
+                                                            <span className="font-mono text-base text-gray-900">{scanResult.data.hora_regreso}</span>
                                                         </div>
                                                     )}
                                                 </div>
                                             </div>
                                         </div>
 
-                                        <div className="flex gap-3">
+                                        <div className="flex gap-3 px-2">
                                             <button
                                                 onClick={handleRegistrarAcceso}
-                                                className="flex-1 bg-[#39A900] text-white py-4 rounded-xl font-bold text-lg hover:bg-[#2A7D00] transition shadow-lg flex items-center justify-center gap-2"
+                                                className="flex-1 bg-[#39A900] text-white py-2 max-[400px]:py-2 rounded-xl font-bold text-sm max-[400px]:text-xs hover:bg-[#2A7D00] transition shadow-lg flex items-center justify-center gap-1"
                                             >
-                                                <i className="fas fa-check"></i>
+                                                <i className="fas fa-check "></i>
                                                 Confirmar {scanResult.accion_requerida}
                                             </button>
                                             <button

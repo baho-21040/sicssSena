@@ -205,14 +205,15 @@ export default function EditarInstructor() {
                                 <label className="block text-sm font-semibold text-gray-600 mb-2">
                                     <i className="fas fa-envelope mr-2"></i>Correo Electrónico
                                 </label>
-                                <p className="text-lg font-semibold text-gray-800 break-words">
+                                <p className="text-xs sm:text-lg font-semibold text-gray-800 break-words">
+
                                     {perfilData?.correo}
                                 </p>
                             </div>
 
                             <div className="bg-gray-50 p-4 rounded-lg">
                                 <label className="block text-sm font-semibold text-gray-600 mb-2">
-                                    <i className="fas fa-user-tag mr-2"></i>Rol
+                                    <i className="fas fa-user-tag mr-2"></i>Perfil
                                 </label>
                                 <p className="text-lg font-semibold text-gray-800 break-words">
                                     {perfilData?.nombre_rol}

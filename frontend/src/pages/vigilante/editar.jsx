@@ -162,7 +162,7 @@ export default function EditarVigilante() {
 
     return (
         <DashboardLayout title="Editar Perfil">
-            <div className="min-h-screen bg-gray-50 p-8 pt-24">
+            <div className="min-h-screen bg-gray-50 p-8 pt-18">
                 <div className="max-w-4xl mx-auto">
                     {/* Header */}
                     <div className="bg-white rounded-xl shadow-lg p-8 mb-6">
@@ -171,12 +171,12 @@ export default function EditarVigilante() {
                                 <i className="fas fa-user-edit text-3xl"></i>
                             </div>
                             <div>
-                                <h1 className="text-3xl font-bold text-[#2A7D00]">Mi Perfil</h1>
+                                <h1 className="text-2xl font-bold text-[#2A7D00]">Mi Perfil</h1>
                                 <p className="text-gray-600">Gestiona tu información personal</p>
                             </div>
                         </div>
 
-                        {/* Datos del Vigilante - Solo Lectura */}
+                        {/* Datos del Instructor - Solo Lectura */}
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div className="bg-gray-50 p-4 rounded-lg">
                                 <label className="block text-sm font-semibold text-gray-600 mb-2">
@@ -200,14 +200,15 @@ export default function EditarVigilante() {
                                 <label className="block text-sm font-semibold text-gray-600 mb-2">
                                     <i className="fas fa-envelope mr-2"></i>Correo Electrónico
                                 </label>
-                                <p className="text-lg font-semibold text-gray-800 break-words">
+                                <p className="text-sm md:text-base font-semibold text-gray-800 break-words">
+
                                     {perfilData?.correo}
                                 </p>
                             </div>
 
                             <div className="bg-gray-50 p-4 rounded-lg">
                                 <label className="block text-sm font-semibold text-gray-600 mb-2">
-                                    <i className="fas fa-user-tag mr-2"></i>Rol
+                                    <i className="fas fa-user-tag mr-2"></i>Perfil
                                 </label>
                                 <p className="text-lg font-semibold text-gray-800 break-words">
                                     {perfilData?.nombre_rol}
@@ -218,14 +219,14 @@ export default function EditarVigilante() {
 
                     {/* Opciones de Edición */}
                     <div className="bg-white rounded-xl shadow-lg p-8">
-                        <h2 className="text-2xl font-bold text-[#2A7D00] mb-6">
+                        <h2 className="text-2xl font-bold text-[#2A7D00] mb-4">
                             <i className="fas fa-cog mr-2"></i>Configuración de Cuenta
                         </h2>
 
                         <div className="space-y-4">
                             {/* Actualizar Correo */}
-                            <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition">
-                                <div>
+                            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition gap-4">
+                                <div className="w-full sm:w-auto">
                                     <h3 className="font-semibold text-gray-800">
                                         <i className="fas fa-envelope text-[#17a2b8] mr-2"></i>
                                         Actualizar Correo Electrónico
@@ -234,15 +235,15 @@ export default function EditarVigilante() {
                                 </div>
                                 <button
                                     onClick={() => setShowEmailModal(true)}
-                                    className="bg-[#17a2b8] text-white px-6 py-2 rounded-lg hover:bg-[#138496] transition font-semibold"
+                                    className="w-full sm:w-auto bg-[#17a2b8] text-white px-6 py-2 rounded-lg hover:bg-[#138496] transition font-semibold"
                                 >
                                     Actualizar
                                 </button>
                             </div>
 
                             {/* Cambiar Contraseña */}
-                            <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition">
-                                <div>
+                            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition gap-4">
+                                <div className="w-full sm:w-auto">
                                     <h3 className="font-semibold text-gray-800">
                                         <i className="fas fa-lock text-[#ffc107] mr-2"></i>
                                         Cambiar Contraseña
@@ -251,7 +252,7 @@ export default function EditarVigilante() {
                                 </div>
                                 <button
                                     onClick={() => setShowPasswordModal(true)}
-                                    className="bg-[#ffc107] text-white px-6 py-2 rounded-lg hover:bg-[#e0a800] transition font-semibold"
+                                    className="w-full sm:w-auto bg-[#ffc107] text-white px-6 py-2 rounded-lg hover:bg-[#e0a800] transition font-semibold"
                                 >
                                     Cambiar
                                 </button>
@@ -282,6 +283,7 @@ export default function EditarVigilante() {
                             </div>
 
                             <form onSubmit={handleActualizarCorreo}>
+                                {/* Correo Actual */}
                                 <div className="mb-4">
                                     <label className="block text-sm font-semibold text-gray-700 mb-2">
                                         Correo Actual
@@ -294,6 +296,7 @@ export default function EditarVigilante() {
                                     />
                                 </div>
 
+                                {/* Nuevo Correo */}
                                 <div className="mb-4">
                                     <label className="block text-sm font-semibold text-gray-700 mb-2">
                                         Nuevo Correo Electrónico
@@ -303,6 +306,7 @@ export default function EditarVigilante() {
                                         value={nuevoCorreo}
                                         onChange={(e) => setNuevoCorreo(e.target.value)}
                                         onInput={(e) => {
+                                            // Solo permitir A-Za-z0-9@._-
                                             e.target.value = e.target.value.replace(/[^A-Za-z0-9@._-]/g, '');
                                         }}
                                         pattern="[A-Za-z0-9@._-]+"
@@ -313,6 +317,7 @@ export default function EditarVigilante() {
                                     />
                                 </div>
 
+                                {/* Mensajes */}
                                 {emailError && (
                                     <div className="mb-4 bg-red-100 border-l-4 border-red-500 text-red-700 p-3 rounded">
                                         <p className="text-sm">{emailError}</p>
@@ -325,6 +330,7 @@ export default function EditarVigilante() {
                                     </div>
                                 )}
 
+                                {/* Botones */}
                                 <div className="flex gap-3">
                                     <button
                                         type="button"
@@ -377,6 +383,7 @@ export default function EditarVigilante() {
                             </div>
 
                             <form onSubmit={handleCambiarContrasena}>
+                                {/* Contraseña Actual */}
                                 <div className="mb-4">
                                     <label className="block text-sm font-semibold text-gray-700 mb-2">
                                         Contraseña Actual
@@ -386,6 +393,7 @@ export default function EditarVigilante() {
                                         value={contrasenaActual}
                                         onChange={(e) => setContrasenaActual(e.target.value)}
                                         onInput={(e) => {
+                                            // Solo permitir A-Za-zÁ-Úá-úñÑ0-9@#$%&*\-_+
                                             e.target.value = e.target.value.replace(/[^A-Za-zÁ-Úá-úñÑ0-9@#$%&*\-_+]/g, '');
                                         }}
                                         minLength={6}
@@ -403,6 +411,7 @@ export default function EditarVigilante() {
                                     )}
                                 </div>
 
+                                {/* Contraseña Nueva */}
                                 <div className="mb-4">
                                     <label className="block text-sm font-semibold text-gray-700 mb-2">
                                         Nueva Contraseña (Mínimo 6 caracteres)
@@ -412,6 +421,7 @@ export default function EditarVigilante() {
                                         value={contrasenaNueva}
                                         onChange={(e) => setContrasenaNueva(e.target.value)}
                                         onInput={(e) => {
+                                            // Solo permitir A-Za-zÁ-Úá-úñÑ0-9@#$%&*\-_+
                                             e.target.value = e.target.value.replace(/[^A-Za-zÁ-Úá-úñÑ0-9@#$%&*\-_+]/g, '');
                                         }}
                                         minLength={6}
@@ -423,12 +433,14 @@ export default function EditarVigilante() {
                                     />
                                 </div>
 
+                                {/* Mensaje de Error General */}
                                 {passwordError && !passwordError.includes('incorrecta') && (
                                     <div className="mb-4 bg-red-100 border-l-4 border-red-500 text-red-700 p-3 rounded">
                                         <p className="text-sm">{passwordError}</p>
                                     </div>
                                 )}
 
+                                {/* Link Olvidó Contraseña */}
                                 <div className="mb-4 text-center">
                                     <a
                                         href="#"
@@ -442,6 +454,7 @@ export default function EditarVigilante() {
                                     </a>
                                 </div>
 
+                                {/* Botones */}
                                 <div className="flex gap-3">
                                     <button
                                         type="button"

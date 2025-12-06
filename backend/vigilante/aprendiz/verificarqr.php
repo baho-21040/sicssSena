@@ -70,7 +70,7 @@ function verificarQR(Request $request, Response $response) {
         if ($tieneRegreso) {
             // Si tiene hora de regreso, permitimos ENTRADA
             $accionPermitida = 'ENTRADA';
-            $mensaje = 'Reingreso autorizado';
+            $mensaje = 'Solicitud autorizada';
         } else {
             // No tiene regreso, así que ya gastó su único uso
             $payload = ['status' => 'error', 'message' => 'Este código ya fue utilizado para SALIDA y no tiene reingreso autorizado.'];
