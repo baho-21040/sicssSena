@@ -3,9 +3,7 @@ import { Html5Qrcode } from 'html5-qrcode';
 import { Link } from 'react-router-dom';
 import DashboardLayout from '../../components/DashboardLayout';
 import { API_BASE_URL } from '../../config/api.js';
-
 import "remixicon/fonts/remixicon.css";
-
 
 const InicioVigilante = () => {
     const [scanResult, setScanResult] = useState(null);
@@ -260,6 +258,21 @@ const InicioVigilante = () => {
         });
     };
 
+    const formatTime12h = (timeStr) => {
+        if (!timeStr) return 'N/A';
+        // Si viene como fecha completa
+        if (timeStr.includes('T') || timeStr.includes('-')) {
+            const d = new Date(timeStr);
+            return d.toLocaleTimeString('es-CO', { hour: '2-digit', minute: '2-digit', hour12: true });
+        }
+        // Si viene como HH:mm:ss
+        const [hours, minutes] = timeStr.split(':');
+        const h = parseInt(hours, 10);
+        const ampm = h >= 12 ? 'p.m.' : 'a.m.';
+        const h12 = h % 12 || 12;
+        return `${h12}:${minutes} ${ampm}`;
+    };
+
     return (
         <DashboardLayout headerTitle="Vigilancia SENA">
             <div className="min-h-screen bg-gray-100 p-6">
@@ -431,100 +444,133 @@ const InicioVigilante = () => {
 
                 {/* Modal de Detalles */}
                 {showDetailsModal && selectedAcceso && (
-                    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 py-26 px-4">
+                    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 py-26 px-2">
                         <div className="bg-white rounded-2xl shadow-2xl max-w-lg w-full max-h-[80vh] overflow-y-auto relative mt-[50px]">
                             {/* Botón cerrar */}
                             <button
                                 onClick={closeDetailsModal}
-                                className="absolute top-2 right-2 z-10 w-10 h-10 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-[5px] rounded-tr-[12px] flex items-center justify-center text-2xl font-bold transition shadow-lg"
+                                className="absolute top-2 right-2 z-10 w-8 h-8 bg-gray-200 hover:bg-gray-300 text-gray-900 rounded-[2px] rounded-tr-[12px] flex items-center justify-center text-2xl font-bold transition "
                                 title="Cerrar"
                             >
                                 ×
                             </button>
 
                             {/* Contenido del modal */}
-                            <div className="p-8">
-                                <h2 className="text-2xl font-bold text-[#2A7D00] mb-6 text-center">
+                            <div className="p-4">
+                                <h2 className="text-xl font-bold text-[#2A7D00] mb-3">
                                     <i className="fas fa-info-circle mr-2"></i>
                                     Detalles del Acceso
                                 </h2>
 
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mb-2">
                                     {/* Aprendiz */}
-                                    <div className="bg-gray-50 p-4 rounded-lg md:col-span-2">
-                                        <p className="text-xs text-gray-500 uppercase font-semibold mb-1">Aprendiz</p>
-                                        <p className="text-base font-bold text-gray-900">{selectedAcceso.aprendiz}</p>
-                                        <p className="text-sm text-gray-600">{selectedAcceso.documento}</p>
+                                    <div className="bg-gray-50 p-2.5 rounded-lg md:col-span-2 grid grid-cols-2 gap-4">
+                                        <div>
+                                            <p className="text-xs text-gray-500 uppercase font-semibold mb-1">Aprendiz</p>
+                                            <p className="text-xs font-bold text-gray-900">{selectedAcceso.aprendiz}</p>
+                                        </div>
+                                        <div>
+                                            <p className="text-xs text-gray-500 uppercase font-semibold mb-1 text-center">Documento</p>
+                                            <p className="text-xs text-gray-600 font-mono text-center">{selectedAcceso.documento}</p>
+                                        </div>
                                     </div>
 
-                                    {/* Instructor y Coordinación */}
-                                    <div className="bg-gray-50 p-4 rounded-lg">
-                                        <p className="text-xs text-gray-500 uppercase font-semibold mb-1">Instructor</p>
-                                        <p className="text-sm font-semibold text-gray-800">{selectedAcceso.instructor || 'N/A'}</p>
-                                    </div>
-                                    <div className="bg-gray-50 p-4 rounded-lg">
-                                        <p className="text-xs text-gray-500 uppercase font-semibold mb-1">Coordinación</p>
-                                        <p className="text-sm font-semibold text-gray-800">{selectedAcceso.coordinador || 'N/A'}</p>
+                                    {/* Instructor y Coordinación - En la misma fila siempre */}
+                                    <div className="md:col-span-2 grid grid-cols-2 gap-2">
+                                        <div className="bg-gray-50 p-2.5 rounded-lg">
+                                            <p className="text-xs text-gray-500 uppercase font-semibold mb-2">Instructor</p>
+                                            <div className="flex flex-col">
+                                                <span className="text-xs font-semibold text-gray-800">{selectedAcceso.nombre_instructor || 'N/A'}</span>
+                                                <span className="text-xs text-gray-700">{selectedAcceso.apellido_instructor || ''}</span>
+                                                <span className="text-xs text-gray-500 mt-1">{selectedAcceso.documento_instructor || ''}</span>
+                                            </div>
+                                        </div>
+                                        <div className="bg-gray-50 p-2.5 rounded-lg flex flex-col ">
+                                            <p className="text-xs text-gray-500 uppercase font-semibold mb-2 w-full text-left">Coordinación</p>
+                                            <div className="flex flex-col ">
+                                                <span className="text-xs font-semibold text-gray-800">{selectedAcceso.nombre_coordinador || 'N/A'}</span>
+                                                <span className="text-xs text-gray-700">{selectedAcceso.apellido_coordinador || ''}</span>
+                                                <span className="text-xs text-gray-500 mt-1">{selectedAcceso.documento_coordinador || ''}</span>
+                                            </div>
+                                        </div>
                                     </div>
 
                                     {/* Programa, Ficha, Jornada */}
-                                    <div className="bg-gray-50 p-4 rounded-lg md:col-span-2">
-                                        <p className="text-xs text-gray-500 uppercase font-semibold mb-1">Programa</p>
-                                        <p className="text-sm font-semibold text-gray-800">{selectedAcceso.nombre_programa || 'N/A'}</p>
-                                        <div className="flex gap-4 mt-2">
-                                            <div>
-                                                <span className="text-xs text-gray-500 uppercase font-semibold">Ficha: </span>
-                                                <span className="text-sm font-semibold text-gray-800">{selectedAcceso.numero_ficha || 'N/A'}</span>
+                                    <div className="bg-gray-50 p-2.5 rounded-lg md:col-span-2 grid grid-cols-10 gap-2">
+                                        <div className="col-span-6">
+                                            <p className="text-xs text-gray-500 uppercase font-semibold mb-1">Programa</p>
+                                            <p className="text-[10px] font-semibold text-gray-800">{selectedAcceso.nombre_programa || 'N/A'}</p>
+                                        </div>
+                                        <div className="flex flex-col gap-2 col-span-4">
+                                            <div className="flex gap-1">
+                                                <p className="text-xs text-gray-500 uppercase font-semibold mb-1">Ficha:</p>
+                                                <p className="text-xs font-semibold text-gray-800">{selectedAcceso.numero_ficha || 'N/A'}</p>
                                             </div>
-                                            <div>
-                                                <span className="text-xs text-gray-500 uppercase font-semibold">Jornada: </span>
-                                                <span className="text-sm font-semibold text-gray-800">{selectedAcceso.nombre_jornada || 'N/A'}</span>
+                                            <div className="flex gap-1">
+                                                <p className="text-xs text-gray-500 uppercase font-semibold mb-1">Jornada:</p>
+                                                <p className="text-xs font-semibold text-gray-800">{selectedAcceso.nombre_jornada || 'N/A'}</p>
                                             </div>
                                         </div>
                                     </div>
 
                                     {/* Motivo (Descripción) */}
-                                    <div className="bg-gray-50 p-4 rounded-lg md:col-span-2">
+                                    <div className="bg-gray-50 p-2.5 rounded-lg md:col-span-2">
                                         <p className="text-xs text-gray-500 uppercase font-semibold mb-1">Motivo</p>
-                                        <p className="text-sm text-gray-800">{getDescripcionCompleta(selectedAcceso)}</p>
+                                        <p className="text-xs text-gray-800">{getDescripcionCompleta(selectedAcceso)}</p>
                                     </div>
 
-                                    {/* Archivo Adjunto */}
-                                    {selectedAcceso.soporte && (
-                                        <div className="bg-gray-50 p-4 rounded-lg md:col-span-2">
-                                            <p className="text-xs text-gray-500 uppercase font-semibold mb-1">Archivo Adjunto</p>
-                                            <button
-                                                onClick={() => openImageModal(`${API_URL}/${selectedAcceso.soporte}`)}
-                                                className="text-blue-600 hover:text-blue-800 underline text-sm flex items-center gap-2 bg-transparent border-0 cursor-pointer"
-                                            >
-                                                <i className="fas fa-paperclip"></i>
-                                                Ver Soporte
-                                            </button>
+                                    {/* Soporte y Horarios */}
+                                    {selectedAcceso.soporte ? (
+                                        <div className="md:col-span-2 grid grid-cols-10 gap-2">
+                                            <div className="bg-gray-50 p-2.5 rounded-lg flex flex-col  col-span-4">
+                                                <p className="text-xs text-gray-500 uppercase font-semibold mb-2">Soporte</p>
+                                                <button
+                                                    onClick={() => openImageModal(`${API_URL}/${selectedAcceso.soporte}`)}
+                                                    className="text-blue-600 hover:text-blue-800 underline text-xs flex  gap-2 bg-transparent border-0 cursor-pointer"
+                                                >
+                                                    <i className="fas fa-paperclip"></i>
+                                                    Ver Soporte
+                                                </button>
+                                            </div>
+                                            <div className="bg-gray-50 p-2 rounded-lg flex flex-col  col-span-6">
+                                                <p className="text-xs text-gray-500 uppercase font-semibold mb-2 w-full text-left">Horarios</p>
+                                                <div className="flex flex-col gap-1 w-full max-w-[150px]">
+                                                    <div className="flex justify-between">
+                                                        <span className="text-[10px] font-bold text-red-500">SALIDA:</span>
+                                                        <span className="font-mono text-[12px] text-gray-900">{formatTime12h(selectedAcceso.hora_salida)}</span>
+                                                    </div>
+                                                    {selectedAcceso.hora_regreso && selectedAcceso.hora_regreso !== 'No aplica' && (
+                                                        <div className="flex justify-between">
+                                                            <span className="text-[10px] font-bold text-green-500">REGRESO:</span>
+                                                            <span className="font-mono text-[12px] text-gray-900">{formatTime12h(selectedAcceso.hora_regreso)}</span>
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ) : (
+                                        <div className="bg-gray-50 p-4 rounded-lg md:col-span-2 flex flex-col">
+                                            <p className="text-xs text-gray-500 uppercase font-semibold mb-2 w-full text-left">Horarios</p>
+                                            <div className="flex gap-4  w-full">
+                                                <div>
+                                                    <span className="text-[10px] font-bold text-red-500 block mb-1 ">SALIDA</span>
+                                                    <span className="font-mono text-sm text-gray-900">{formatTime12h(selectedAcceso.hora_salida)}</span>
+                                                </div>
+                                                {selectedAcceso.hora_regreso && selectedAcceso.hora_regreso !== 'No aplica' && (
+                                                    <div>
+                                                        <span className="text-xs font-bold text-green-500 block mb-1 ">REGRESO</span>
+                                                        <span className="font-mono text-sm text-gray-900">{formatTime12h(selectedAcceso.hora_regreso)}</span>
+                                                    </div>
+                                                )}
+                                            </div>
                                         </div>
                                     )}
-
-                                    {/* Horarios */}
-                                    <div className="bg-gray-50 p-4 rounded-lg md:col-span-2">
-                                        <p className="text-xs text-gray-500 uppercase font-semibold mb-2">Horarios</p>
-                                        <div className="flex gap-4">
-                                            <div>
-                                                <span className="text-xs font-bold text-red-500 block">SALIDA</span>
-                                                <span className="font-mono text-lg text-gray-900">{selectedAcceso.hora_salida || 'N/A'}</span>
-                                            </div>
-                                            {selectedAcceso.hora_regreso && selectedAcceso.hora_regreso !== 'No aplica' && (
-                                                <div>
-                                                    <span className="text-xs font-bold text-green-500 block">REGRESO</span>
-                                                    <span className="font-mono text-lg text-gray-900">{selectedAcceso.hora_regreso}</span>
-                                                </div>
-                                            )}
-                                        </div>
-                                    </div>
                                 </div>
 
                                 <div className="flex justify-end">
                                     <button
                                         onClick={closeDetailsModal}
-                                        className="px-6 bg-gray-200 text-gray-700 py-3 rounded-xl font-semibold hover:bg-gray-300 transition"
+                                        className="px-6 bg-gray-200 text-gray-700 py-2 rounded-xl font-semibold hover:bg-gray-300 transition text-xs"
                                     >
                                         Cerrar
                                     </button>
@@ -536,7 +582,7 @@ const InicioVigilante = () => {
 
                 {/* Modal del Escáner */}
                 {showScanner && (
-                    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50  py-26 px-4 ">
+                    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50  py-26 px-2 ">
                         <div className="bg-white rounded-2xl shadow-2xl max-w-lg w-full max-h-[80vh] overflow-y-auto relative mt-[50px]">
                             {/* Botón cerrar */}
                             <button
@@ -653,89 +699,117 @@ const InicioVigilante = () => {
                                             </h2>
                                         </div>
 
-                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mb-3">
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mb-2">
                                             {/* Aprendiz */}
-                                            <div className="bg-gray-50 p-2 rounded-lg md:col-span-2">
-                                                <p className="text-xs text-gray-500 uppercase font-semibold mb-1">Aprendiz</p>
-                                                <p className="text-sm    font-bold text-gray-900">{scanResult.data.aprendiz}</p>
-                                                <p className="text-sm text-gray-600">{scanResult.data.documento}</p>
+                                            <div className="bg-gray-50 p-2.5 rounded-lg md:col-span-2 grid grid-cols-2 gap-4">
+                                                <div>
+                                                    <p className="text-xs text-gray-500 uppercase font-semibold mb-1">Aprendiz</p>
+                                                    <p className="text-xs font-bold text-gray-900">{scanResult.data.aprendiz}</p>
+                                                </div>
+                                                <div>
+                                                    <p className="text-xs text-gray-500 uppercase font-semibold mb-1 text-center">Documento</p>
+                                                    <p className="text-xs text-gray-600 font-mono text-center">{scanResult.data.documento}</p>
+                                                </div>
                                             </div>
 
                                             {/* Instructor y Coordinación */}
-                                            <div className="bg-gray-50 p-4 rounded-lg">
-                                                <p className="text-xs text-gray-500 uppercase font-semibold mb-1">Instructor</p>
-                                                <p className="text-sm font-semibold text-gray-800">{scanResult.data.instructor}</p>
-                                            </div>
-                                            <div className="bg-gray-50 p-4 rounded-lg">
-                                                <p className="text-xs text-gray-500 uppercase font-semibold mb-1">Coordinación</p>
-                                                <p className="text-sm font-semibold text-gray-800">{scanResult.data.coordinador}</p>
+                                            <div className="md:col-span-2 grid grid-cols-2 gap-2">
+                                                <div className="bg-gray-50 p-2.5 rounded-lg">
+                                                    <p className="text-xs text-gray-500 uppercase font-semibold mb-2">Instructor</p>
+                                                    <div className="flex flex-col">
+                                                        <span className="text-xs font-semibold text-gray-800">{scanResult.data.instructor || 'N/A'}</span>
+                                                    </div>
+                                                </div>
+                                                <div className="bg-gray-50 p-2.5 rounded-lg flex flex-col ">
+                                                    <p className="text-xs text-gray-500 uppercase font-semibold mb-2 w-full text-left">Coordinación</p>
+                                                    <div className="flex flex-col ">
+                                                        <span className="text-xs font-semibold text-gray-800">{scanResult.data.coordinador || 'N/A'}</span>
+                                                    </div>
+                                                </div>
                                             </div>
 
                                             {/* Programa, Ficha, Jornada */}
-                                            <div className="bg-gray-50 p-4 rounded-lg md:col-span-2">
-                                                <p className="text-xs text-gray-500 uppercase font-semibold mb-1">Programa</p>
-                                                <p className="text-xs font-semibold text-gray-800">{scanResult.data.programa}</p>
-                                                <div className="flex gap-4 mt-2">
-                                                    <div>
-                                                        <span className="text-xs text-gray-500 uppercase font-semibold">Ficha: </span>
-                                                        <span className="text-sm font-semibold text-gray-800">{scanResult.data.ficha}</span>
+                                            <div className="bg-gray-50 p-2.5 rounded-lg md:col-span-2 grid grid-cols-10 gap-2">
+                                                <div className="col-span-6">
+                                                    <p className="text-xs text-gray-500 uppercase font-semibold mb-1">Programa</p>
+                                                    <p className="text-[10px] font-semibold text-gray-800">{scanResult.data.programa || 'N/A'}</p>
+                                                </div>
+                                                <div className="flex flex-col gap-2 col-span-4">
+                                                    <div className="flex gap-1">
+                                                        <p className="text-xs text-gray-500 uppercase font-semibold mb-1">Ficha:</p>
+                                                        <p className="text-xs font-semibold text-gray-800">{scanResult.data.ficha || 'N/A'}</p>
                                                     </div>
-                                                    <div>
-                                                        <span className="text-xs text-gray-500 uppercase font-semibold">Jornada: </span>
-                                                        <span className="text-sm font-semibold text-gray-800">{scanResult.data.jornada}</span>
+                                                    <div className="flex gap-1">
+                                                        <p className="text-xs text-gray-500 uppercase font-semibold mb-1">Jornada:</p>
+                                                        <p className="text-xs font-semibold text-gray-800">{scanResult.data.jornada || 'N/A'}</p>
                                                     </div>
                                                 </div>
                                             </div>
 
                                             {/* Motivo (Descripción) */}
-                                            <div className="bg-gray-50 p-4 rounded-lg md:col-span-2">
+                                            <div className="bg-gray-50 p-2.5 rounded-lg md:col-span-2">
                                                 <p className="text-xs text-gray-500 uppercase font-semibold mb-1">Motivo</p>
-                                                <p className="text-sm text-gray-800">{getDescripcionCompleta(scanResult.data)}</p>
+                                                <p className="text-xs text-gray-800">{getDescripcionCompleta(scanResult.data)}</p>
                                             </div>
 
-                                            {/* Archivo Adjunto */}
-                                            {scanResult.data.soporte && (
-                                                <div className="bg-gray-50 p-4 rounded-lg md:col-span-2">
-                                                    <p className="text-xs text-gray-500 uppercase font-semibold mb-1">Archivo Adjunto</p>
-                                                    <button
-                                                        onClick={() => openImageModal(`${API_URL}/${scanResult.data.soporte}`)}
-                                                        className="text-blue-600 hover:text-blue-800 underline text-sm flex items-center gap-2 bg-transparent border-0 cursor-pointer"
-                                                    >
-                                                        <i className="fas fa-paperclip"></i>
-                                                        Ver Soporte
-                                                    </button>
+                                            {/* Soporte y Horarios */}
+                                            {scanResult.data.soporte ? (
+                                                <div className="md:col-span-2 grid grid-cols-10 gap-2">
+                                                    <div className="bg-gray-50 p-2.5 rounded-lg flex flex-col  col-span-4">
+                                                        <p className="text-xs text-gray-500 uppercase font-semibold mb-2">Soporte</p>
+                                                        <button
+                                                            onClick={() => openImageModal(`${API_URL}/${scanResult.data.soporte}`)}
+                                                            className="text-blue-600 hover:text-blue-800 underline text-xs flex  gap-2 bg-transparent border-0 cursor-pointer"
+                                                        >
+                                                            <i className="fas fa-paperclip"></i>
+                                                            Ver Soporte
+                                                        </button>
+                                                    </div>
+                                                    <div className="bg-gray-50 p-2 rounded-lg flex flex-col  col-span-6">
+                                                        <p className="text-xs text-gray-500 uppercase font-semibold mb-2 w-full text-left">Horarios</p>
+                                                        <div className="flex flex-col gap-1 w-full max-w-[150px]">
+                                                            <div className="flex justify-between">
+                                                                <span className="text-[10px] font-bold text-red-500">SALIDA:</span>
+                                                                <span className="font-mono text-[12px] text-gray-900">{scanResult.data.hora_salida}</span>
+                                                            </div>
+                                                            {scanResult.data.hora_regreso !== 'No aplica' && (
+                                                                <div className="flex justify-between">
+                                                                    <span className="text-[10px] font-bold text-green-500">REGRESO:</span>
+                                                                    <span className="font-mono text-[12px] text-gray-900">{scanResult.data.hora_regreso}</span>
+                                                                </div>
+                                                            )}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            ) : (
+                                                <div className="bg-gray-50 p-4 rounded-lg md:col-span-2 flex flex-col">
+                                                    <p className="text-xs text-gray-500 uppercase font-semibold mb-2 w-full text-left">Horarios</p>
+                                                    <div className="flex gap-4  w-full">
+                                                        <div>
+                                                            <span className="text-[10px] font-bold text-red-500 block mb-1 ">SALIDA</span>
+                                                            <span className="font-mono text-[12px] text-gray-900">{scanResult.data.hora_salida}</span>
+                                                        </div>
+                                                        {scanResult.data.hora_regreso !== 'No aplica' && (
+                                                            <div>
+                                                                <span className="text-[10px] font-bold text-green-500 block mb-1 ">REGRESO</span>
+                                                                <span className="font-mono text-[12px] text-gray-900">{scanResult.data.hora_regreso}</span>
+                                                            </div>
+                                                        )}
+                                                    </div>
                                                 </div>
                                             )}
-
-                                            {/* Horarios */}
-                                            <div className="bg-gray-50 p-4 rounded-lg md:col-span-2">
-                                                <p className="text-xs text-gray-500 uppercase font-semibold mb-2">Horarios</p>
-                                                <div className="flex gap-4">
-                                                    <div>
-                                                        <span className="text-xs font-bold text-red-500 block">SALIDA</span>
-                                                        <span className="font-mono text-base text-gray-900">{scanResult.data.hora_salida}</span>
-                                                    </div>
-                                                    {scanResult.data.hora_regreso !== 'No aplica' && (
-                                                        <div>
-                                                            <span className="text-xs font-bold text-green-500 block">REGRESO</span>
-                                                            <span className="font-mono text-base text-gray-900">{scanResult.data.hora_regreso}</span>
-                                                        </div>
-                                                    )}
-                                                </div>
-                                            </div>
                                         </div>
 
                                         <div className="flex gap-3 px-2">
                                             <button
                                                 onClick={handleRegistrarAcceso}
-                                                className="flex-1 bg-[#39A900] text-white py-2 max-[400px]:py-2 rounded-xl font-bold text-sm max-[400px]:text-xs hover:bg-[#2A7D00] transition shadow-lg flex items-center justify-center gap-1"
+                                                className="flex-1 bg-[#39A900] text-white py-2 max-[400px]:py-2 rounded-xl font-bold text-xs max-[400px]:text-xs hover:bg-[#2A7D00] transition shadow-lg flex items-center justify-center gap-1"
                                             >
-                                                <i className="fas fa-check "></i>
                                                 Confirmar {scanResult.accion_requerida}
                                             </button>
                                             <button
                                                 onClick={closeScanner}
-                                                className="px-6 bg-gray-200 text-gray-700 py-4 rounded-xl font-semibold hover:bg-gray-300 transition"
+                                                className="px-4 bg-gray-200 text-gray-700 py-2 rounded-xl font-semibold hover:bg-gray-300 transition"
                                             >
                                                 Cancelar
                                             </button>
@@ -767,7 +841,7 @@ const InicioVigilante = () => {
                     </div>
                 )}
             </div>
-        </DashboardLayout >
+        </DashboardLayout>
     );
 };
 

@@ -240,10 +240,15 @@ export default function HistorialVigilante() {
                                                 </td>
                                                 <td className="px-4 py-3">
                                                     <span className={`px-3 py-1 rounded-full text-sm font-semibold ${registro.tipo_acceso === 'SALIDA'
-                                                            ? 'bg-yellow-100 text-yellow-800'
-                                                            : 'bg-green-100 text-green-800'
+                                                        ? 'bg-yellow-100 text-yellow-800'
+                                                        : 'bg-green-100 text-green-800'
                                                         }`}>
-                                                        {registro.tipo_acceso}
+                                                        {registro.tipo_acceso === 'ENTRADA'
+                                                            ? 'Salida/Entrada'
+                                                            : (registro.tipo_acceso === 'SALIDA' && registro.hora_regreso && registro.hora_regreso !== 'No aplica'
+                                                                ? 'Sale y regresa'
+                                                                : 'Salida')
+                                                        }
                                                     </span>
                                                 </td>
                                                 <td className="px-4 py-3 text-sm text-gray-600">
@@ -269,8 +274,8 @@ export default function HistorialVigilante() {
 
                 {/* Modal de Detalles */}
                 {showDetallesModal && selectedRegistro && (
-                    <div className="fixed inset-0 z-[1000] overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
-                        <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+                    <div className="fixed top-16 inset-x-0 bottom-0 z-[1000] overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+                        <div className=" flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
                             <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true" onClick={closeDetallesModal}></div>
                             <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
 
@@ -297,8 +302,8 @@ export default function HistorialVigilante() {
 
                                     <div className="space-y-4">
                                         {/* Estado QR */}
-                                        <div className="bg-gray-100 p-3 rounded-lg text-center font-bold text-lg">
-                                            <span className="text-gray-600">QR ESCANEADO</span>
+                                        <div className="bg-gray-100 p-2 rounded-lg text-center font-bold text-sm">
+                                            <span className="text-gray-600">QR YA ESCANEADO</span>
                                         </div>
 
                                         {/* Aprendiz y Fecha */}
@@ -306,11 +311,11 @@ export default function HistorialVigilante() {
                                             <div>
                                                 <p className="text-xs text-indigo-600 uppercase font-bold mb-1">Aprendiz</p>
                                                 <p className="text-sm font-medium text-gray-900">{selectedRegistro.nombre_aprendiz} {selectedRegistro.apellido_aprendiz}</p>
-                                                <p className="text-xs text-gray-500">{selectedRegistro.documento_aprendiz}</p>
+                                                <p className="text-sm text-gray-500">{selectedRegistro.documento_aprendiz}</p>
                                             </div>
                                             <div className="text-right">
-                                                <p className="text-xs text-gray-500 uppercase font-bold mb-1">Fecha y Hora</p>
-                                                <p className="text-sm font-medium text-gray-900">{formatFechaHora(selectedRegistro.fecha_acceso)}</p>
+                                                <p className="text-xs text-gray-500 uppercase font-bold mb-1">Hora - Fecha</p>
+                                                <p className="text-xs font-medium text-gray-900">{formatFechaHora(selectedRegistro.fecha_acceso)}</p>
                                             </div>
                                         </div>
 
@@ -318,28 +323,32 @@ export default function HistorialVigilante() {
                                         <div className="grid grid-cols-2 gap-4">
                                             <div>
                                                 <p className="text-xs text-gray-500 uppercase font-bold mb-1">Formación</p>
-                                                <p className="text-sm text-gray-900">{selectedRegistro.nombre_programa}</p>
-                                                <p className="text-xs text-gray-500">Ficha: {selectedRegistro.numero_ficha}</p>
+                                                <p className="text-sm max-sm:text-xs text-gray-900">{selectedRegistro.nombre_programa}</p>
                                             </div>
                                             <div>
-                                                <p className="text-xs text-gray-500 uppercase font-bold mb-1">Jornada / Centro</p>
-                                                <p className="text-sm text-gray-900">{selectedRegistro.nombre_jornada}</p>
-                                                <p className="text-xs text-gray-500">{selectedRegistro.centro_formacion}</p>
+                                                <p className="text-xs text-gray-500"> <strong>Ficha:</strong> {selectedRegistro.numero_ficha}</p>
+
+                                                <p className="text-xs text-gray-500"><strong>Jornada:</strong> {selectedRegistro.nombre_jornada}</p>
+
+
                                             </div>
                                         </div>
 
                                         {/* Instructor y Coordinador */}
                                         <div className="grid grid-cols-2 gap-4">
                                             <div>
-                                                <p className="text-xs text-gray-500 uppercase font-bold mb-1">Instructor Autoriza</p>
-                                                <p className="text-sm font-medium text-gray-900">{selectedRegistro.nombre_instructor} {selectedRegistro.apellido_instructor}</p>
+                                                <p className="text-xs text-gray-500 uppercase font-bold mb-1">Instructor</p>
+                                                <p className="text-xs font-medium text-gray-900">{selectedRegistro.nombre_instructor}</p>
+                                                <p className="text-xs font-medium text-gray-900">{selectedRegistro.apellido_instructor} </p>
                                                 <p className="text-xs text-gray-500">{selectedRegistro.documento_instructor}</p>
                                             </div>
                                             <div>
                                                 <p className="text-xs text-gray-500 uppercase font-bold mb-1">Coordinación</p>
                                                 {selectedRegistro.nombre_coordinador ? (
                                                     <>
-                                                        <p className="text-sm font-medium text-gray-900">{selectedRegistro.nombre_coordinador} {selectedRegistro.apellido_coordinador}</p>
+                                                        <p className="text-xs font-medium text-gray-900">{selectedRegistro.nombre_coordinador}</p>
+                                                        <p className="text-xs font-medium text-gray-900"> {selectedRegistro.apellido_coordinador}</p>
+
                                                         <p className="text-xs text-gray-500">{selectedRegistro.documento_coordinador}</p>
                                                     </>
                                                 ) : (
@@ -351,7 +360,7 @@ export default function HistorialVigilante() {
                                         {/* Motivo */}
                                         <div>
                                             <p className="text-xs text-gray-500 uppercase font-bold mb-1">Motivo</p>
-                                            <div className="bg-gray-50 border border-gray-200 p-3 rounded-lg text-sm text-gray-700">
+                                            <div className="bg-gray-50 border border-gray-200 p-3 rounded-lg text-xs text-gray-700">
                                                 {getMotivoTexto(selectedRegistro.motivo, selectedRegistro.descripcion)}
                                             </div>
                                         </div>
@@ -437,7 +446,7 @@ export default function HistorialVigilante() {
                 {/* Modal Confirmación Eliminar Un Registro */}
                 {showSingleDeleteModal && (
                     <div className="fixed inset-0 z-[11000] overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
-                        <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+                        <div className="flex items-end items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
                             <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true" onClick={() => setShowSingleDeleteModal(false)}></div>
                             <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
 

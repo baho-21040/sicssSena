@@ -26,8 +26,12 @@ function getAccesosHoy(Request $request, Response $response) {
                     pf.nombre_programa,
                     pf.numero_ficha,
                     j.nombre_jornada,
-                    CONCAT(u_inst.nombre, ' ', u_inst.apellido) AS instructor,
-                    CONCAT(u_coord.nombre, ' ', u_coord.apellido) AS coordinador
+                    u_inst.nombre AS nombre_instructor,
+                    u_inst.apellido AS apellido_instructor,
+                    u_inst.documento AS documento_instructor,
+                    u_coord.nombre AS nombre_coordinador,
+                    u_coord.apellido AS apellido_coordinador,
+                    u_coord.documento AS documento_coordinador
                 FROM accesos acc
                 JOIN aprobaciones a ON acc.id_aprobacion = a.id_aprobacion
                 JOIN permisos p ON a.id_permiso = p.id_permiso

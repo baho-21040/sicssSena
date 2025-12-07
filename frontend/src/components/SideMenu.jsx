@@ -22,12 +22,14 @@ const getMenuLinks = (role) => {
                 { to: "/instructor/inicio", icon: "fas fa-chalkboard-teacher", label: "Inicio" },
                 { to: "/instructor/editarperfil", icon: "fas fa-plus", label: "Editar Mi Perfil" },
                 { to: "/instructor/alumnos", icon: "fas fa-users", label: "Mis Aprendices" },
+                { to: "/instructor/historial", icon: "fas fa-history", label: "Historial de salidas" },
             ];
         case 'Aprendiz':
             return [
                 { to: "/aprendiz/inicio", icon: "fas fa-graduation-cap", label: "Inicio" },
                 { to: "/Aprendiz/Solicitud", icon: "fas fa-book", label: "Nueva Solicitud" },
-                { to: "/aprendiz/mensajes", icon: "fas fa-comment", label: "Mensajes" },
+                { to: "/aprendiz/editarperfil", icon: "fas fa-user-edit", label: "Editar Perfil" },
+                { to: "/aprendiz/historial", icon: "fas fa-history", label: "Historial de salidas" },
             ];
 
         case 'Coordinacion':
@@ -46,6 +48,8 @@ const getMenuLinks = (role) => {
         case 'Vigilante':
             return [
                 { to: "/vigilante/inicio", icon: "fas fa-graduation-cap", label: "Inicio" },
+                { to: "/Vigilante/editarperfil", icon: "fas fa-book", label: "Editar Perfil" },
+                { to: "/vigilante/historial", icon: "fas fa-comment", label: "Historial de salidas" },
             ];
         default:
             return [];
@@ -120,7 +124,7 @@ const SideMenu = ({ isOpen, user, closeMenu }) => {
 
                 <a href="#" className="close-btn equix" onClick={closeMenu}>&times;</a>
 
-                <div className="menu-profile">
+                <div className="menu-profile ">
                     <h4>{u.nombreCompleto}</h4>
                     {user?.correo && (
                         <small style={{
@@ -129,6 +133,7 @@ const SideMenu = ({ isOpen, user, closeMenu }) => {
                             marginTop: '4px',
                             opacity: 0.8,
                             fontSize: '0.85em'
+                            
                         }}>
                             {user.correo}
                         </small>
