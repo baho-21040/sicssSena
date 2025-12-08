@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+﻿import React, { useState, useEffect, useRef } from 'react';
 import { useSound } from '../../contexts/SoundContext';
 import { Link } from 'react-router-dom';
 import DashboardLayout from '../../components/DashboardLayout';
@@ -389,7 +389,7 @@ const InicioCoordinacion = () => {
 
                     {/* TARJETA 2: Buscar Usuario */}
                     <Link
-                        to="/coordinacion/buscarusuario"
+                        to="/coordinacion/busquedadeusuario"
                         className="rounded-[60px] shadow-[0_4px_10px_rgba(0,0,0,0.05)] no-underline text-[#333] transition-all duration-300 ease-in-out flex items-center p-6 bg-white border-l-[5px] border-l-[#ccc] hover:-translate-y-1.5 hover:shadow-[0_10px_25px_rgba(0,0,0,0.15)] hover:border-l-[#007bff]">
                         <div className="flex items-center w-full">
                             <div className="text-[2.5em] mr-5 min-w-[50px] text-center text-[#007bff]">
@@ -865,6 +865,7 @@ const InicioCoordinacion = () => {
                                 </span>
                                 <span className="block text-sm text-gray-600">Vigilantes</span>
                             </div>
+
                             {/* Expandible section for mobile - appears after second row */}
                             {(expandedSection === 'coordinadores' || expandedSection === 'vigilantes') && (
                                 <div className="col-span-2 md:hidden" ref={expandedSectionRef}>
@@ -950,10 +951,77 @@ const InicioCoordinacion = () => {
                                 </div>
 
                             )}
+                            <div
+                                className={`text-center cursor-pointer hover:bg-gray-50 p-3 rounded-lg transition ${expandedSection === 'administradores' ? 'border-4 border-gray-600 bg-gray-50' : ''}`}
+                                onClick={() => toggleSection('administradores')}
+                            >
+                                <i className="fa-solid fa-user-gear text-3xl text-gray-600 mb-2"></i>
+                                <span className="block text-3xl font-bold text-gray-800">
+                                    {statsLoading ? <i className="fas fa-spinner fa-spin text-sm"></i> : stats.administradoresCount}
+                                </span>
+                                <span className="block text-sm text-gray-600">Administradores</span>
+                            </div>
+
+                            {/* Expandible section for mobile - appears after third row */}
+                            {expandedSection === 'administradores' && (
+                                <div className="col-span-2 md:hidden" ref={expandedSectionRef}>
+                                    <div className="border-t pt-4">
+                                        {usersLoading ? (
+                                            <div className="text-center py-4">
+                                                <i className="fas fa-spinner fa-spin text-2xl text-green-600"></i>
+                                            </div>
+                                        ) : (
+                                            <>
+                                                <div className="mb-4">
+                                                    <input
+                                                        type="text"
+                                                        placeholder="Buscar por nombre o documento..."
+                                                        value={searchTerm}
+                                                        onChange={(e) => setSearchTerm(e.target.value)}
+                                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-600"
+                                                    />
+                                                </div>
+                                                <div className="max-h-96 overflow-y-auto">
+                                                    <table className="w-full">
+                                                        <thead className="bg-gray-100 sticky top-0">
+                                                            <tr>
+                                                                <th className="px-4 py-2 text-left text-sm font-semibold">Nombre</th>
+                                                                <th className="px-4 py-2 text-left text-sm font-semibold">Documento</th>
+                                                                <th className="px-4 py-2 text-left text-sm font-semibold">Correo</th>
+                                                                <th className="px-4 py-2 text-left text-sm font-semibold">Estado</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            {filteredUsers.map((usuario, index) => (
+                                                                <tr key={usuario.id_usuario} className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
+                                                                    <td className="px-4 py-2 text-sm">{usuario.nombre} {usuario.apellido}</td>
+                                                                    <td className="px-4 py-2 text-sm">{usuario.documento}</td>
+                                                                    <td className="px-4 py-2 text-sm">{usuario.correo}</td>
+                                                                    <td className="px-4 py-2 text-sm">
+                                                                        <span className={`px-2 py-1 rounded text-xs ${usuario.estado === 'Activo' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+                                                                            {usuario.estado}
+                                                                        </span>
+                                                                    </td>
+                                                                </tr>
+                                                            ))}
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                                <button
+                                                    onClick={() => toggleSection(null)}
+                                                    className="mt-4 w-full bg-gray-200 hover:bg-gray-300 text-gray-700 py-2 rounded-lg font-semibold transition"
+                                                >
+                                                    Ocultar
+                                                </button>
+                                            </>
+                                        )}
+                                    </div>
+                                </div>
+                            )}
                         </div>
 
                         {/* Lista expandible de Roles - Desktop */}
-                        {(expandedSection === 'aprendices' || expandedSection === 'instructores' || expandedSection === 'coordinadores' || expandedSection === 'vigilantes') && (
+                        {(expandedSection === 'aprendices' || expandedSection === 'instructores' || expandedSection === 'coordinadores' || expandedSection === 'vigilantes' || expandedSection === 'administradores') && (
                             <div className="col-span-full mt-4 border-t pt-4 hidden md:block" ref={expandedSectionRef}>
                                 {usersLoading ? (
                                     <div className="text-center py-4">
@@ -1036,6 +1104,65 @@ const InicioCoordinacion = () => {
                             </span>
                             <span className="block text-sm text-gray-600">Activos</span>
                         </div>
+
+                        {/* Sección desplegable Intermedia (Solo Móvil - Para Total y Activos) */}
+                        {(expandedSection === 'totalPrograms' || expandedSection === 'programasActivos') && (
+                            <div className="col-span-2 md:hidden animate-[fadeIn_0.3s_ease-out]" ref={expandedSectionRef}>
+                                <div className="border-t pt-4">
+                                    {usersLoading ? (
+                                        <div className="text-center py-4">
+                                            <i className="fas fa-spinner fa-spin text-2xl text-teal-600"></i>
+                                        </div>
+                                    ) : (
+                                        <>
+                                            <div className="mb-4">
+                                                <input
+                                                    type="text"
+                                                    placeholder="Buscar programa por nombre o ficha..."
+                                                    value={searchTerm}
+                                                    onChange={(e) => setSearchTerm(e.target.value)}
+                                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-600"
+                                                />
+                                            </div>
+                                            <div className="max-h-96 overflow-y-auto">
+                                                <table className="w-full">
+                                                    <thead className="bg-gray-100 sticky top-0">
+                                                        <tr>
+                                                            <th className="px-4 py-2 text-left text-sm font-semibold">Programa</th>
+                                                            <th className="px-4 py-2 text-left text-sm font-semibold">Ficha</th>
+                                                            <th className="px-4 py-2 text-left text-sm font-semibold">Estado</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        {filteredPrograms.map((programa, index) => (
+                                                            <tr key={programa.id_programa} className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
+                                                                <td className="px-4 py-2 text-sm">{programa.nombre_programa}</td>
+                                                                <td className="px-4 py-2 text-sm">{programa.numero_ficha}</td>
+                                                                <td className="px-4 py-2 text-sm">
+                                                                    <span className={`px-2 py-1 rounded text-xs ${programa.estado === 'Activo' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+                                                                        {programa.estado}
+                                                                    </span>
+                                                                </td>
+                                                            </tr>
+                                                        ))}
+                                                    </tbody>
+                                                </table>
+                                                {filteredPrograms.length === 0 && (
+                                                    <div className="text-center py-4 text-gray-500">No se encontraron programas.</div>
+                                                )}
+                                            </div>
+                                            <button
+                                                onClick={() => toggleSection(null)}
+                                                className="mt-4 w-full bg-gray-200 hover:bg-gray-300 text-gray-700 py-2 rounded-lg font-semibold transition"
+                                            >
+                                                Ocultar
+                                            </button>
+                                        </>
+                                    )}
+                                </div>
+                            </div>
+                        )}
+
                         <div
                             className={`text-center cursor-pointer hover:bg-gray-50 p-3 rounded-lg transition ${expandedSection === 'programasInactivos' ? 'border-4 border-red-600 bg-red-50' : ''}`}
                             onClick={() => toggleSection('programasInactivos')}
@@ -1047,9 +1174,9 @@ const InicioCoordinacion = () => {
                             <span className="block text-sm text-gray-600">Inactivos</span>
                         </div>
 
-                        {/* Sección desplegable de Programas (Mobile & Desktop Combined Logic or Separated) */}
-                        {(expandedSection === 'totalPrograms' || expandedSection === 'programasActivos' || expandedSection === 'programasInactivos') && (
-                            <div className="col-span-full mt-4 border-t pt-4 animate-[fadeIn_0.3s_ease-out]" ref={expandedSectionRef}>
+                        {/* Sección desplegable Inferior (Desktop: Todas; Mobile: Solo Inactivos) */}
+                        {((expandedSection === 'totalPrograms' || expandedSection === 'programasActivos' || expandedSection === 'programasInactivos')) && (
+                            <div className={`col-span-full mt-4 border-t pt-4 animate-[fadeIn_0.3s_ease-out] ${(expandedSection === 'programasInactivos') ? 'block' : 'hidden md:block'}`} ref={expandedSectionRef}>
                                 {usersLoading ? (
                                     <div className="text-center py-4">
                                         <i className="fas fa-spinner fa-spin text-2xl text-teal-600"></i>
