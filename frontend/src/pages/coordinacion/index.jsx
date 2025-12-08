@@ -47,6 +47,7 @@ const InicioCoordinacion = () => {
 
     const { playNotificationSound, soundEnabled } = useSound();
     const previousCountRef = useRef(-1);
+    const expandedSectionRef = useRef(null);
     const cargarSolicitudes = async () => {
         try {
             const token = localStorage.getItem('token');
@@ -191,6 +192,12 @@ const InicioCoordinacion = () => {
             } else {
                 fetchUsersByCategory(section);
             }
+            // Scroll to expanded section after a short delay to allow rendering
+            setTimeout(() => {
+                if (expandedSectionRef.current) {
+                    expandedSectionRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                }
+            }, 100);
         }
     };
 
@@ -549,8 +556,8 @@ const InicioCoordinacion = () => {
                         </h4>
                         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                             <div
-                                className="text-center cursor-pointer hover:bg-gray-50 p-3 rounded-lg transition"
-                                onClick={() => toggleSection('total')}  // Cambia 'total' según la estadística
+                                className={`text-center cursor-pointer hover:bg-gray-100 p-3 rounded-lg transition ${expandedSection === 'total' ? 'border-4 border-indigo-600 bg-indigo-50' : ''}`}
+                                onClick={() => toggleSection('total')}
                             >
                                 <i className="fas fa-users text-3xl text-indigo-600 mb-2"></i>
                                 <span className="block text-3xl font-bold text-gray-800">
@@ -559,8 +566,8 @@ const InicioCoordinacion = () => {
                                 <span className="block text-sm text-gray-600">Usuarios Totales</span>
                             </div>
                             <div
-                                className="text-center cursor-pointer hover:bg-gray-50 p-3 rounded-lg transition"
-                                onClick={() => toggleSection('activos')}  // Cambia 'total' según la estadística
+                                className={`text-center cursor-pointer hover:bg-gray-50 p-3 rounded-lg transition ${expandedSection === 'activos' ? 'border-4 border-green-600 bg-green-50' : ''}`}
+                                onClick={() => toggleSection('activos')}
                             >
                                 <i className="fas fa-user-check text-3xl text-green-600 mb-2"></i>
                                 <span className="block text-3xl font-bold text-gray-800">
@@ -568,9 +575,65 @@ const InicioCoordinacion = () => {
                                 </span>
                                 <span className="block text-sm text-gray-600">Usuarios Activos</span>
                             </div>
+                            {/* Expandible section for mobile - appears after first row */}
+                            {(expandedSection === 'total' || expandedSection === 'activos') && (
+                                <div className="col-span-2 md:hidden" ref={expandedSectionRef}>
+                                    <div className="border-t pt-4">
+                                        {usersLoading ? (
+                                            <div className="text-center py-4">
+                                                <i className="fas fa-spinner fa-spin text-2xl text-green-600"></i>
+                                            </div>
+                                        ) : (
+                                            <>
+                                                <div className="mb-4">
+                                                    <input
+                                                        type="text"
+                                                        placeholder="Buscar por nombre o documento..."
+                                                        value={searchTerm}
+                                                        onChange={(e) => setSearchTerm(e.target.value)}
+                                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-600"
+                                                    />
+                                                </div>
+                                                <div className="max-h-96 overflow-y-auto">
+                                                    <table className="w-full">
+                                                        <thead className="bg-gray-100 sticky top-0">
+                                                            <tr>
+                                                                <th className="px-4 py-2 text-left text-sm font-semibold">Nombre</th>
+                                                                <th className="px-4 py-2 text-left text-sm font-semibold">Documento</th>
+                                                                <th className="px-4 py-2 text-left text-sm font-semibold">Rol</th>
+                                                                <th className="px-4 py-2 text-left text-sm font-semibold">Estado</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            {filteredUsers.map((usuario, index) => (
+                                                                <tr key={usuario.id_usuario} className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
+                                                                    <td className="px-4 py-2 text-sm">{usuario.nombre} {usuario.apellido}</td>
+                                                                    <td className="px-4 py-2 text-sm">{usuario.documento}</td>
+                                                                    <td className="px-4 py-2 text-sm">{usuario.nombre_rol}</td>
+                                                                    <td className="px-4 py-2 text-sm">
+                                                                        <span className={`px-2 py-1 rounded text-xs ${usuario.estado === 'Activo' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+                                                                            {usuario.estado}
+                                                                        </span>
+                                                                    </td>
+                                                                </tr>
+                                                            ))}
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                                <button
+                                                    onClick={() => toggleSection(null)}
+                                                    className="mt-4 w-full bg-gray-200 hover:bg-gray-300 text-gray-700 py-2 rounded-lg font-semibold transition"
+                                                >
+                                                    Ocultar
+                                                </button>
+                                            </>
+                                        )}
+                                    </div>
+                                </div>
+                            )}
                             <div
-                                className="text-center cursor-pointer hover:bg-gray-50 p-3 rounded-lg transition"
-                                onClick={() => toggleSection('inactivos')}  // Cambia 'total' según la estadística
+                                className={`text-center cursor-pointer hover:bg-gray-50 p-3 rounded-lg transition ${expandedSection === 'inactivos' ? 'border-4 border-red-600 bg-red-50' : ''}`}
+                                onClick={() => toggleSection('inactivos')}
                             >
                                 <i className="fas fa-user-slash text-3xl text-red-600 mb-2"></i>
                                 <span className="block text-3xl font-bold text-gray-800">
@@ -578,18 +641,73 @@ const InicioCoordinacion = () => {
                                 </span>
                                 <span className="block text-sm text-gray-600">Usuarios Desactivados</span>
                             </div>
-                            <div
-                                className="text-center ">
+                            <div className="text-center ">
                                 <i className="fas fa-clock text-3xl text-yellow-600 mb-2"></i>
                                 <span className="block text-3xl font-bold text-gray-800">
                                     {statsLoading ? <i className="fas fa-spinner fa-spin text-sm"></i> : stats.totalRequests}
                                 </span>
                                 <span className="block text-sm text-gray-600">Solicitudes Generadas</span>
                             </div>
+                            {/* Expandible section for mobile - appears after second row */}
+                            {expandedSection === 'inactivos' && (
+                                <div className="col-span-2 md:hidden" ref={expandedSectionRef}>
+                                    <div className="border-t pt-4">
+                                        {usersLoading ? (
+                                            <div className="text-center py-4">
+                                                <i className="fas fa-spinner fa-spin text-2xl text-green-600"></i>
+                                            </div>
+                                        ) : (
+                                            <>
+                                                <div className="mb-4">
+                                                    <input
+                                                        type="text"
+                                                        placeholder="Buscar por nombre o documento..."
+                                                        value={searchTerm}
+                                                        onChange={(e) => setSearchTerm(e.target.value)}
+                                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-600"
+                                                    />
+                                                </div>
+                                                <div className="max-h-96 overflow-y-auto">
+                                                    <table className="w-full">
+                                                        <thead className="bg-gray-100 sticky top-0">
+                                                            <tr>
+                                                                <th className="px-4 py-2 text-left text-sm font-semibold">Nombre</th>
+                                                                <th className="px-4 py-2 text-left text-sm font-semibold">Documento</th>
+                                                                <th className="px-4 py-2 text-left text-sm font-semibold">Rol</th>
+                                                                <th className="px-4 py-2 text-left text-sm font-semibold">Estado</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            {filteredUsers.map((usuario, index) => (
+                                                                <tr key={usuario.id_usuario} className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
+                                                                    <td className="px-4 py-2 text-sm">{usuario.nombre} {usuario.apellido}</td>
+                                                                    <td className="px-4 py-2 text-sm">{usuario.documento}</td>
+                                                                    <td className="px-4 py-2 text-sm">{usuario.nombre_rol}</td>
+                                                                    <td className="px-4 py-2 text-sm">
+                                                                        <span className={`px-2 py-1 rounded text-xs ${usuario.estado === 'Activo' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+                                                                            {usuario.estado}
+                                                                        </span>
+                                                                    </td>
+                                                                </tr>
+                                                            ))}
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                                <button
+                                                    onClick={() => toggleSection(null)}
+                                                    className="mt-4 w-full bg-gray-200 hover:bg-gray-300 text-gray-700 py-2 rounded-lg font-semibold transition"
+                                                >
+                                                    Ocultar
+                                                </button>
+                                            </>
+                                        )}
+                                    </div>
+                                </div>
+                            )}
                         </div>
-                        {/* Lista expandible de usuarios */}
+                        {/* Lista expandible de usuarios - shown on desktop */}
                         {(expandedSection === 'total' || expandedSection === 'activos' || expandedSection === 'inactivos') && (
-                            <div className="mt-4 border-t pt-4">
+                            <div className="mt-4 border-t pt-4 hidden md:block" ref={expandedSectionRef}>
                                 {usersLoading ? (
                                     <div className="text-center py-4">
                                         <i className="fas fa-spinner fa-spin text-2xl text-green-600"></i>
@@ -652,8 +770,8 @@ const InicioCoordinacion = () => {
                         </h4>
                         <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
                             <div
-                                className="text-center cursor-pointer hover:bg-gray-50 p-3 rounded-lg transition"
-                                onClick={() => toggleSection('aprendices')}  // Cambia 'total' según la estadística
+                                className={`text-center cursor-pointer hover:bg-gray-50 p-3 rounded-lg transition ${expandedSection === 'aprendices' ? 'border-4 border-blue-600 bg-blue-50' : ''}`}
+                                onClick={() => toggleSection('aprendices')}
                             >
                                 <i className="fas fa-user-graduate text-3xl text-blue-600 mb-2"></i>
                                 <span className="block text-3xl font-bold text-gray-800">
@@ -662,8 +780,8 @@ const InicioCoordinacion = () => {
                                 <span className="block text-sm text-gray-600">Aprendices</span>
                             </div>
                             <div
-                                className="text-center cursor-pointer hover:bg-gray-50 p-3 rounded-lg transition"
-                                onClick={() => toggleSection('instructores')}  // Cambia 'total' según la estadística
+                                className={`text-center cursor-pointer hover:bg-gray-50 p-3 rounded-lg transition ${expandedSection === 'instructores' ? 'border-4 border-green-600 bg-green-50' : ''}`}
+                                onClick={() => toggleSection('instructores')}
                             >
                                 <i className="fa-solid fa-person-chalkboard text-3xl text-green-600 mb-2"></i>
                                 <span className="block text-3xl font-bold text-gray-800">
@@ -671,9 +789,65 @@ const InicioCoordinacion = () => {
                                 </span>
                                 <span className="block text-sm text-gray-600">Instructores</span>
                             </div>
+                            {/* Expandible section for mobile - appears after first row */}
+                            {(expandedSection === 'aprendices' || expandedSection === 'instructores') && (
+                                <div className="col-span-2 md:hidden" ref={expandedSectionRef}>
+                                    <div className="border-t pt-4">
+                                        {usersLoading ? (
+                                            <div className="text-center py-4">
+                                                <i className="fas fa-spinner fa-spin text-2xl text-green-600"></i>
+                                            </div>
+                                        ) : (
+                                            <>
+                                                <div className="mb-4">
+                                                    <input
+                                                        type="text"
+                                                        placeholder="Buscar por nombre o documento..."
+                                                        value={searchTerm}
+                                                        onChange={(e) => setSearchTerm(e.target.value)}
+                                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-600"
+                                                    />
+                                                </div>
+                                                <div className="max-h-96 overflow-y-auto">
+                                                    <table className="w-full">
+                                                        <thead className="bg-gray-100 sticky top-0">
+                                                            <tr>
+                                                                <th className="px-4 py-2 text-left text-sm font-semibold">Nombre</th>
+                                                                <th className="px-4 py-2 text-left text-sm font-semibold">Documento</th>
+                                                                <th className="px-4 py-2 text-left text-sm font-semibold">Correo</th>
+                                                                <th className="px-4 py-2 text-left text-sm font-semibold">Estado</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            {filteredUsers.map((usuario, index) => (
+                                                                <tr key={usuario.id_usuario} className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
+                                                                    <td className="px-4 py-2 text-sm">{usuario.nombre} {usuario.apellido}</td>
+                                                                    <td className="px-4 py-2 text-sm">{usuario.documento}</td>
+                                                                    <td className="px-4 py-2 text-sm">{usuario.correo}</td>
+                                                                    <td className="px-4 py-2 text-sm">
+                                                                        <span className={`px-2 py-1 rounded text-xs ${usuario.estado === 'Activo' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+                                                                            {usuario.estado}
+                                                                        </span>
+                                                                    </td>
+                                                                </tr>
+                                                            ))}
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                                <button
+                                                    onClick={() => toggleSection(null)}
+                                                    className="mt-4 w-full bg-gray-200 hover:bg-gray-300 text-gray-700 py-2 rounded-lg font-semibold transition"
+                                                >
+                                                    Ocultar
+                                                </button>
+                                            </>
+                                        )}
+                                    </div>
+                                </div>
+                            )}
                             <div
-                                className="text-center cursor-pointer hover:bg-gray-50 p-3 rounded-lg transition"
-                                onClick={() => toggleSection('coordinadores')}  // Cambia 'total' según la estadística
+                                className={`text-center cursor-pointer hover:bg-gray-50 p-3 rounded-lg transition ${expandedSection === 'coordinadores' ? 'border-4 border-purple-600 bg-purple-50' : ''}`}
+                                onClick={() => toggleSection('coordinadores')}
                             >
                                 <i className="fas fa-user-tie text-3xl text-purple-600 mb-2"></i>
                                 <span className="block text-3xl font-bold text-gray-800">
@@ -682,8 +856,8 @@ const InicioCoordinacion = () => {
                                 <span className="block text-sm text-gray-600">Coordinadores</span>
                             </div>
                             <div
-                                className="text-center cursor-pointer hover:bg-gray-50 p-3 rounded-lg transition"
-                                onClick={() => toggleSection('vigilantes')}  // Cambia 'total' según la estadística
+                                className={`text-center cursor-pointer hover:bg-gray-50 p-3 rounded-lg transition ${expandedSection === 'vigilantes' ? 'border-4 border-orange-600 bg-orange-50' : ''}`}
+                                onClick={() => toggleSection('vigilantes')}
                             >
                                 <i className="fas fa-user-shield text-3xl text-orange-600 mb-2"></i>
                                 <span className="block text-3xl font-bold text-gray-800">
@@ -691,20 +865,96 @@ const InicioCoordinacion = () => {
                                 </span>
                                 <span className="block text-sm text-gray-600">Vigilantes</span>
                             </div>
-                            <div
-                                className="text-center cursor-pointer hover:bg-gray-50 p-3 rounded-lg transition"
-                                onClick={() => toggleSection('administradores')}  // Cambia 'total' según la estadística
-                            >
-                                <i className="fa-solid fa-user-gear text-3xl text-red-600 mb-2"></i>
-                                <span className="block text-3xl font-bold text-gray-800">
-                                    {statsLoading ? <i className="fas fa-spinner fa-spin text-sm"></i> : stats.administradoresCount}
-                                </span>
-                                <span className="block text-sm text-gray-600">Administradores</span>
-                            </div>
+                            {/* Expandible section for mobile - appears after second row */}
+                            {(expandedSection === 'coordinadores' || expandedSection === 'vigilantes') && (
+                                <div className="col-span-2 md:hidden" ref={expandedSectionRef}>
+                                    <div className="border-t pt-4">
+                                        {usersLoading ? (
+                                            <div className="text-center py-4">
+                                                <i className="fas fa-spinner fa-spin text-2xl text-green-600"></i>
+                                            </div>
+                                        ) : (
+
+                                            <>
+                                                <div className="mb-4">
+                                                    <input
+                                                        type="text"
+                                                        placeholder="Buscar por nombre o documento..."
+                                                        value={searchTerm}
+                                                        onChange={(e) => setSearchTerm(e.target.value)}
+                                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-600"
+                                                    />
+                                                </div>
+                                                <div className="max-h-96 overflow-y-auto">
+                                                    <table className="w-full">
+                                                        <thead className="bg-gray-100 sticky top-0">
+                                                            <tr>
+                                                                <th className="px-4 py-2 text-left text-sm font-semibold">Nombre</th>
+                                                                <th className="px-4 py-2 text-left text-sm font-semibold">Documento</th>
+                                                                <th className="px-4 py-2 text-left text-sm font-semibold">Estado</th>
+
+                                                            </tr>
+
+                                                        </thead>
+
+                                                        <tbody>
+
+                                                            {filteredUsers.map((usuario, index) => (
+
+                                                                <tr key={usuario.id_usuario} className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
+
+                                                                    <td className="px-4 py-2 text-sm">{usuario.nombre} {usuario.apellido}</td>
+
+                                                                    <td className="px-4 py-2 text-sm">{usuario.documento}</td>
+
+                                                                    <td className="px-4 py-2 text-sm">{usuario.correo}</td>
+
+                                                                    <td className="px-4 py-2 text-sm">
+
+                                                                        <span className={`px-2 py-1 rounded text-xs ${usuario.estado === 'Activo' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+
+                                                                            {usuario.estado}
+
+                                                                        </span>
+
+                                                                    </td>
+
+                                                                </tr>
+
+                                                            ))}
+
+                                                        </tbody>
+
+                                                    </table>
+
+                                                </div>
+
+                                                <button
+
+                                                    onClick={() => toggleSection(null)}
+
+                                                    className="mt-4 w-full bg-gray-200 hover:bg-gray-300 text-gray-700 py-2 rounded-lg font-semibold transition"
+
+                                                >
+
+                                                    Ocultar
+
+                                                </button>
+
+                                            </>
+
+                                        )}
+
+                                    </div>
+
+                                </div>
+
+                            )}
                         </div>
-                        {/* Lista expandible de usuarios por rol */}
-                        {(expandedSection === 'aprendices' || expandedSection === 'instructores' || expandedSection === 'coordinadores' || expandedSection === 'vigilantes' || expandedSection === 'administradores') && (
-                            <div className="mt-4 border-t pt-4">
+
+                        {/* Lista expandible de Roles - Desktop */}
+                        {(expandedSection === 'aprendices' || expandedSection === 'instructores' || expandedSection === 'coordinadores' || expandedSection === 'vigilantes') && (
+                            <div className="col-span-full mt-4 border-t pt-4 hidden md:block" ref={expandedSectionRef}>
                                 {usersLoading ? (
                                     <div className="text-center py-4">
                                         <i className="fas fa-spinner fa-spin text-2xl text-green-600"></i>
@@ -757,61 +1007,62 @@ const InicioCoordinacion = () => {
                             </div>
                         )}
                     </div>
+                </div>
 
-                    {/* Estadísticas de Programas */}
-                    <div className="bg-white rounded-xl shadow-lg p-6 border-t-4 border-t-green-600">
-                        <h4 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
-                            <i className="fas fa-graduation-cap text-green-600"></i>
-                            Estadísticas de Programas de Formación
-                        </h4>
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                            <div
-                                className="text-center cursor-pointer hover:bg-gray-50 p-3 rounded-lg transition"
-                                onClick={() => toggleSection('totalPrograms')}  // Cambia 'total' según la estadística
-                            >
-                                <i className="fas fa-book text-3xl text-indigo-600 mb-2"></i>
-                                <span className="block text-3xl font-bold text-gray-800">
-                                    {statsLoading ? <i className="fas fa-spinner fa-spin text-sm"></i> : stats.totalPrograms}
-                                </span>
-                                <span className="block text-sm text-gray-600">Programas Totales</span>
-                            </div>
-                            <div
-                                className="text-center cursor-pointer hover:bg-gray-50 p-3 rounded-lg transition"
-                                onClick={() => toggleSection('programasActivos')}  // Cambia 'total' según la estadística
-                            >
-                                <i className="fas fa-check-circle text-3xl text-green-600 mb-2"></i>
-                                <span className="block text-3xl font-bold text-gray-800">
-                                    {statsLoading ? <i className="fas fa-spinner fa-spin text-sm"></i> : stats.programasActivos}
-                                </span>
-                                <span className="block text-sm text-gray-600">Programas Activos</span>
-                            </div>
-                            <div
-                                className="text-center cursor-pointer hover:bg-gray-50 p-3 rounded-lg transition"
-                                onClick={() => toggleSection('programasInactivos')}  // Cambia 'total' según la estadística
-                            >
-                                <i className="fas fa-ban text-3xl text-red-600 mb-2"></i>
-                                <span className="block text-3xl font-bold text-gray-800">
-                                    {statsLoading ? <i className="fas fa-spinner fa-spin text-sm"></i> : stats.programasInactivos}
-                                </span>
-                                <span className="block text-sm text-gray-600">Programas Inactivos</span>
-                            </div>
+                {/* Estadísticas de Programas */}
+                <div className="bg-white rounded-xl shadow-lg p-6 border-t-4 border-t-teal-600">
+                    <h4 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+                        <i className="fas fa-graduation-cap text-teal-600"></i>
+                        Estadísticas de Programas
+                    </h4>
+                    <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                        <div
+                            className={`text-center cursor-pointer hover:bg-gray-50 p-3 rounded-lg transition ${expandedSection === 'totalPrograms' ? 'border-4 border-teal-600 bg-teal-50' : ''}`}
+                            onClick={() => toggleSection('totalPrograms')}
+                        >
+                            <i className="fas fa-book text-3xl text-teal-600 mb-2"></i>
+                            <span className="block text-3xl font-bold text-gray-800">
+                                {statsLoading ? <i className="fas fa-spinner fa-spin text-sm"></i> : stats.totalPrograms}
+                            </span>
+                            <span className="block text-sm text-gray-600">Programas Totales</span>
                         </div>
-                        {/* Lista expandible de programas */}
+                        <div
+                            className={`text-center cursor-pointer hover:bg-gray-50 p-3 rounded-lg transition ${expandedSection === 'programasActivos' ? 'border-4 border-green-600 bg-green-50' : ''}`}
+                            onClick={() => toggleSection('programasActivos')}
+                        >
+                            <i className="fas fa-check-circle text-3xl text-green-600 mb-2"></i>
+                            <span className="block text-3xl font-bold text-gray-800">
+                                {statsLoading ? <i className="fas fa-spinner fa-spin text-sm"></i> : stats.programasActivos}
+                            </span>
+                            <span className="block text-sm text-gray-600">Activos</span>
+                        </div>
+                        <div
+                            className={`text-center cursor-pointer hover:bg-gray-50 p-3 rounded-lg transition ${expandedSection === 'programasInactivos' ? 'border-4 border-red-600 bg-red-50' : ''}`}
+                            onClick={() => toggleSection('programasInactivos')}
+                        >
+                            <i className="fas fa-times-circle text-3xl text-red-600 mb-2"></i>
+                            <span className="block text-3xl font-bold text-gray-800">
+                                {statsLoading ? <i className="fas fa-spinner fa-spin text-sm"></i> : stats.programasInactivos}
+                            </span>
+                            <span className="block text-sm text-gray-600">Inactivos</span>
+                        </div>
+
+                        {/* Sección desplegable de Programas (Mobile & Desktop Combined Logic or Separated) */}
                         {(expandedSection === 'totalPrograms' || expandedSection === 'programasActivos' || expandedSection === 'programasInactivos') && (
-                            <div className="mt-4 border-t pt-4">
+                            <div className="col-span-full mt-4 border-t pt-4 animate-[fadeIn_0.3s_ease-out]" ref={expandedSectionRef}>
                                 {usersLoading ? (
                                     <div className="text-center py-4">
-                                        <i className="fas fa-spinner fa-spin text-2xl text-green-600"></i>
+                                        <i className="fas fa-spinner fa-spin text-2xl text-teal-600"></i>
                                     </div>
                                 ) : (
                                     <>
                                         <div className="mb-4">
                                             <input
                                                 type="text"
-                                                placeholder="Buscar por nombre de programa o número de ficha..."
+                                                placeholder="Buscar programa por nombre o ficha..."
                                                 value={searchTerm}
                                                 onChange={(e) => setSearchTerm(e.target.value)}
-                                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-600"
+                                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-600"
                                             />
                                         </div>
                                         <div className="max-h-96 overflow-y-auto">
@@ -820,8 +1071,6 @@ const InicioCoordinacion = () => {
                                                     <tr>
                                                         <th className="px-4 py-2 text-left text-sm font-semibold">Programa</th>
                                                         <th className="px-4 py-2 text-left text-sm font-semibold">Ficha</th>
-                                                        <th className="px-4 py-2 text-left text-sm font-semibold">Nivel</th>
-                                                        <th className="px-4 py-2 text-left text-sm font-semibold">Jornada</th>
                                                         <th className="px-4 py-2 text-left text-sm font-semibold">Estado</th>
                                                     </tr>
                                                 </thead>
@@ -830,8 +1079,6 @@ const InicioCoordinacion = () => {
                                                         <tr key={programa.id_programa} className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
                                                             <td className="px-4 py-2 text-sm">{programa.nombre_programa}</td>
                                                             <td className="px-4 py-2 text-sm">{programa.numero_ficha}</td>
-                                                            <td className="px-4 py-2 text-sm">{programa.nivel}</td>
-                                                            <td className="px-4 py-2 text-sm">{programa.nombre_jornada}</td>
                                                             <td className="px-4 py-2 text-sm">
                                                                 <span className={`px-2 py-1 rounded text-xs ${programa.estado === 'Activo' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
                                                                     {programa.estado}
@@ -841,6 +1088,9 @@ const InicioCoordinacion = () => {
                                                     ))}
                                                 </tbody>
                                             </table>
+                                            {filteredPrograms.length === 0 && (
+                                                <div className="text-center py-4 text-gray-500">No se encontraron programas.</div>
+                                            )}
                                         </div>
                                         <button
                                             onClick={() => toggleSection(null)}
@@ -854,7 +1104,9 @@ const InicioCoordinacion = () => {
                         )}
                     </div>
                 </div>
+
             </div>
+
 
             {/* Modal de Detalles */}
             {showDetallesModal && selectedSolicitud && (
