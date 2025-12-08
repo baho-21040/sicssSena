@@ -38,6 +38,13 @@ const InicioCoordinacion = () => {
     });
     const [statsLoading, setStatsLoading] = useState(true);
 
+    // Estados para listas expandibles
+    const [expandedSection, setExpandedSection] = useState(null);
+    const [usersList, setUsersList] = useState([]);
+    const [usersLoading, setUsersLoading] = useState(false);
+    const [programsList, setProgramsList] = useState([]);
+    const [searchTerm, setSearchTerm] = useState('');
+
     const { playNotificationSound, soundEnabled } = useSound();
     const previousCountRef = useRef(-1);
     const cargarSolicitudes = async () => {
@@ -109,6 +116,101 @@ const InicioCoordinacion = () => {
 
         fetchStats();
     }, []);
+
+    // Función para obtener lista de usuarios por categoría
+    const fetchUsersByCategory = async (category) => {
+        setUsersLoading(true);
+        try {
+            const token = localStorage.getItem('token');
+            let url = `${API}/api/usuarios?`;
+            switch (category) {
+                case 'total': break;
+                case 'activos': url += 'estado=Activo'; break;
+                case 'inactivos': url += 'estado=Inactivo'; break;
+
+                case 'administradores': url += 'rol=1'; break;
+                case 'aprendices': url += 'rol=2'; break;
+                case 'instructores': url += 'rol=3'; break;
+                case 'coordinadores': url += 'rol=4'; break;
+                case 'vigilantes': url += 'rol=5'; break;
+            }
+            const response = await fetch(url, {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            const data = await response.json();
+            if (data.status === 'ok') {
+                setUsersList(data.usuarios);
+            }
+        } catch (error) {
+            console.error('Error al cargar usuarios:', error);
+        } finally {
+            setUsersLoading(false);
+        }
+    };
+
+    // Función para obtener lista de programas
+    const fetchProgramsByCategory = async (category) => {
+        setUsersLoading(true);
+        try {
+            const token = localStorage.getItem('token');
+            const response = await fetch(`${API}/api/programas`, {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+
+            const data = await response.json();
+            if (data.status === 'ok') {
+                let filteredPrograms = data.programas;
+
+                if (category === 'programasActivos') {
+                    filteredPrograms = data.programas.filter(p => p.estado === 'Activo');
+                } else if (category === 'programasInactivos') {
+                    filteredPrograms = data.programas.filter(p => p.estado === 'Inactivo');
+                }
+
+                setProgramsList(filteredPrograms);
+            }
+        } catch (error) {
+            console.error('Error al cargar programas:', error);
+        } finally {
+            setUsersLoading(false);
+        }
+    };
+
+    // Función para alternar la expansión de una sección
+    const toggleSection = (section) => {
+        if (expandedSection === section) {
+            setExpandedSection(null);
+            setUsersList([]);
+            setProgramsList([]);
+            setSearchTerm('');
+        } else {
+            setExpandedSection(section);
+            setSearchTerm('');
+            if (section === 'totalPrograms' || section === 'programasActivos' || section === 'programasInactivos') {
+                fetchProgramsByCategory(section);
+            } else {
+                fetchUsersByCategory(section);
+            }
+        }
+    };
+
+    // Filtrar usuarios según término de búsqueda
+    const filteredUsers = usersList.filter(usuario => {
+        if (!searchTerm) return true;
+        const searchLower = searchTerm.toLowerCase();
+        const fullName = `${usuario.nombre} ${usuario.apellido}`.toLowerCase();
+        const documento = usuario.documento.toString();
+        return fullName.includes(searchLower) || documento.includes(searchTerm);
+    });
+    // Filtrar programas según término de búsqueda
+    const filteredPrograms = programsList.filter(programa => {
+        if (!searchTerm) return true;
+        const searchLower = searchTerm.toLowerCase();
+        const nombrePrograma = programa.nombre_programa.toLowerCase();
+        const numeroFicha = programa.numero_ficha.toString();
+        return nombrePrograma.includes(searchLower) || numeroFicha.includes(searchTerm);
+    });
+
 
     const getTimeAgo = (fecha) => {
         const now = new Date();
@@ -262,12 +364,11 @@ const InicioCoordinacion = () => {
             <div className="p-5 bg-gradient-to-br from-blue-50 to-indigo-50 min-h-screen">
                 {/* Fila superior - 4 botones de acción */}
                 {/* Grid de Tarjetas de Acción */}
-                <section className="flex justify-between flex-wrap mb-8 gap-1">
+                <section className="grid grid-cols-1 xl:grid-cols-4 lg:grid-cols-2 gap-4 mb-10">
                     {/* TARJETA 1: Crear Nuevo Usuario */}
                     <Link
                         to="/coordinacion/registrarusuario"
-                        className="rounded-[60px] w-[24%] shadow-[0_4px_10px_rgba(0,0,0,0.05)] no-underline text-[#333] transition-all duration-300 ease-in-out flex items-center p-6 bg-gradient-to-br from-white via-white to-[#e8f5e9] border-l-[5px] border-l-[#39A900] hover:-translate-y-1.5 hover:shadow-[0_10px_25px_rgba(0,0,0,0.15)] hover:border-l-[#2A7D00]"
-                    >
+                        className="rounded-[60px] shadow-[0_4px_10px_rgba(0,0,0,0.05)] no-underline text-[#333] transition-all duration-300 ease-in-out flex items-center p-6 bg-gradient-to-br from-white via-white to-[#e8f5e9] border-l-[5px] border-l-[#39A900] hover:-translate-y-1.5 hover:shadow-[0_10px_25px_rgba(0,0,0,0.15)] hover:border-l-[#2A7D00]" >
                         <div className="flex items-center w-full">
                             <div className="text-[2.5em] mr-5 min-w-[50px] text-center text-[#39A900]">
                                 <i className="fas fa-user-plus"></i>
@@ -281,9 +382,8 @@ const InicioCoordinacion = () => {
 
                     {/* TARJETA 2: Buscar Usuario */}
                     <Link
-                        to="/coordinacion/busquedadeusuario"
-                        className="rounded-[60px] w-[24%] shadow-[0_4px_10px_rgba(0,0,0,0.05)] no-underline text-[#333] transition-all duration-300 ease-in-out flex items-center p-6 bg-white border-l-[5px] border-l-[#ccc] hover:-translate-y-1.5 hover:shadow-[0_10px_25px_rgba(0,0,0,0.15)] hover:border-l-[#007bff]"
-                    >
+                        to="/coordinacion/buscarusuario"
+                        className="rounded-[60px] shadow-[0_4px_10px_rgba(0,0,0,0.05)] no-underline text-[#333] transition-all duration-300 ease-in-out flex items-center p-6 bg-white border-l-[5px] border-l-[#ccc] hover:-translate-y-1.5 hover:shadow-[0_10px_25px_rgba(0,0,0,0.15)] hover:border-l-[#007bff]">
                         <div className="flex items-center w-full">
                             <div className="text-[2.5em] mr-5 min-w-[50px] text-center text-[#007bff]">
                                 <i className="fas fa-search"></i>
@@ -298,8 +398,7 @@ const InicioCoordinacion = () => {
                     {/* TARJETA 3: Control de Acceso (Status) */}
                     <Link
                         to="/coordinacion/estado"
-                        className="rounded-[60px] w-[24%] shadow-[0_4px_10px_rgba(0,0,0,0.05)] no-underline text-[#333] transition-all duration-300 ease-in-out flex items-center p-6 bg-white border-l-[5px] border-l-[#ccc] hover:-translate-y-1.5 hover:shadow-[0_10px_25px_rgba(0,0,0,0.15)] hover:border-l-[#007bff]"
-                    >
+                        className="rounded-[60px] shadow-[0_4px_10px_rgba(0,0,0,0.05)] no-underline text-[#333] transition-all duration-300 ease-in-out flex items-center p-6 bg-white border-l-[5px] border-l-[#ccc] hover:-translate-y-1.5 hover:shadow-[0_10px_25px_rgba(0,0,0,0.15)] hover:border-l-[#007bff]">
                         <div className="flex items-center w-full">
                             <div className="text-[2.5em] mr-5 min-w-[50px] text-center text-[#ffc107]">
                                 <i className="fas fa-toggle-off"></i>
@@ -314,8 +413,7 @@ const InicioCoordinacion = () => {
                     {/* TARJETA 4: Control de Programas de Formación */}
                     <Link
                         to="/coordinacion/programas"
-                        className="rounded-[60px] w-[24%] shadow-[0_4px_10px_rgba(0,0,0,0.05)] no-underline text-[#333] transition-all duration-300 ease-in-out flex items-center p-6 bg-white border-l-[5px] border-l-[#ccc] hover:-translate-y-1.5 hover:shadow-[0_10px_25px_rgba(0,0,0,0.15)] hover:border-l-[#007bff]"
-                    >
+                        className="rounded-[60px] shadow-[0_4px_10px_rgba(0,0,0,0.05)] no-underline text-[#333] transition-all duration-300 ease-in-out flex items-center p-6 bg-white border-l-[5px] border-l-[#ccc] hover:-translate-y-1.5 hover:shadow-[0_10px_25px_rgba(0,0,0,0.15)] hover:border-l-[#007bff]">
                         <div className="flex items-center w-full">
                             <div className="text-[2.5em] mr-5 min-w-[50px] text-center text-[#17a2b8]">
                                 <i className="fas fa-list-check"></i>
@@ -391,7 +489,7 @@ const InicioCoordinacion = () => {
                                         >
                                             <td className="0 px-6 py-4">
                                                 <div className="flex items-center gap-3">
-                                                    
+
                                                     <div>
                                                         <p className="font-semibold text-gray-800">
                                                             {solicitud.nombre_aprendiz} {solicitud.apellido_aprendiz}
@@ -450,28 +548,38 @@ const InicioCoordinacion = () => {
                             Estadísticas de Usuarios
                         </h4>
                         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                            <div className="text-center">
+                            <div
+                                className="text-center cursor-pointer hover:bg-gray-50 p-3 rounded-lg transition"
+                                onClick={() => toggleSection('total')}  // Cambia 'total' según la estadística
+                            >
                                 <i className="fas fa-users text-3xl text-indigo-600 mb-2"></i>
                                 <span className="block text-3xl font-bold text-gray-800">
                                     {statsLoading ? <i className="fas fa-spinner fa-spin text-sm"></i> : stats.totalUsers}
                                 </span>
                                 <span className="block text-sm text-gray-600">Usuarios Totales</span>
                             </div>
-                            <div className="text-center">
+                            <div
+                                className="text-center cursor-pointer hover:bg-gray-50 p-3 rounded-lg transition"
+                                onClick={() => toggleSection('activos')}  // Cambia 'total' según la estadística
+                            >
                                 <i className="fas fa-user-check text-3xl text-green-600 mb-2"></i>
                                 <span className="block text-3xl font-bold text-gray-800">
                                     {statsLoading ? <i className="fas fa-spinner fa-spin text-sm"></i> : stats.activeUsers}
                                 </span>
                                 <span className="block text-sm text-gray-600">Usuarios Activos</span>
                             </div>
-                            <div className="text-center">
+                            <div
+                                className="text-center cursor-pointer hover:bg-gray-50 p-3 rounded-lg transition"
+                                onClick={() => toggleSection('inactivos')}  // Cambia 'total' según la estadística
+                            >
                                 <i className="fas fa-user-slash text-3xl text-red-600 mb-2"></i>
                                 <span className="block text-3xl font-bold text-gray-800">
                                     {statsLoading ? <i className="fas fa-spinner fa-spin text-sm"></i> : stats.inactiveUsers}
                                 </span>
                                 <span className="block text-sm text-gray-600">Usuarios Desactivados</span>
                             </div>
-                            <div className="text-center">
+                            <div
+                                className="text-center ">
                                 <i className="fas fa-clock text-3xl text-yellow-600 mb-2"></i>
                                 <span className="block text-3xl font-bold text-gray-800">
                                     {statsLoading ? <i className="fas fa-spinner fa-spin text-sm"></i> : stats.totalRequests}
@@ -479,6 +587,61 @@ const InicioCoordinacion = () => {
                                 <span className="block text-sm text-gray-600">Solicitudes Generadas</span>
                             </div>
                         </div>
+                        {/* Lista expandible de usuarios */}
+                        {(expandedSection === 'total' || expandedSection === 'activos' || expandedSection === 'inactivos') && (
+                            <div className="mt-4 border-t pt-4">
+                                {usersLoading ? (
+                                    <div className="text-center py-4">
+                                        <i className="fas fa-spinner fa-spin text-2xl text-green-600"></i>
+                                    </div>
+                                ) : (
+                                    <>
+                                        {/* Campo de búsqueda */}
+                                        <div className="mb-4">
+                                            <input
+                                                type="text"
+                                                placeholder="Buscar por nombre o documento..."
+                                                value={searchTerm}
+                                                onChange={(e) => setSearchTerm(e.target.value)}
+                                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-600"
+                                            />
+                                        </div>
+                                        <div className="max-h-96 overflow-y-auto">
+                                            <table className="w-full">
+                                                <thead className="bg-gray-100 sticky top-0">
+                                                    <tr>
+                                                        <th className="px-4 py-2 text-left text-sm font-semibold">Nombre</th>
+                                                        <th className="px-4 py-2 text-left text-sm font-semibold">Documento</th>
+                                                        <th className="px-4 py-2 text-left text-sm font-semibold">Rol</th>
+                                                        <th className="px-4 py-2 text-left text-sm font-semibold">Estado</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {filteredUsers.map((usuario, index) => (
+                                                        <tr key={usuario.id_usuario} className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
+                                                            <td className="px-4 py-2 text-sm">{usuario.nombre} {usuario.apellido}</td>
+                                                            <td className="px-4 py-2 text-sm">{usuario.documento}</td>
+                                                            <td className="px-4 py-2 text-sm">{usuario.nombre_rol}</td>
+                                                            <td className="px-4 py-2 text-sm">
+                                                                <span className={`px-2 py-1 rounded text-xs ${usuario.estado === 'Activo' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+                                                                    {usuario.estado}
+                                                                </span>
+                                                            </td>
+                                                        </tr>
+                                                    ))}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <button
+                                            onClick={() => toggleSection(null)}
+                                            className="mt-4 w-full bg-gray-200 hover:bg-gray-300 text-gray-700 py-2 rounded-lg font-semibold transition"
+                                        >
+                                            Ocultar
+                                        </button>
+                                    </>
+                                )}
+                            </div>
+                        )}
                     </div>
 
                     {/* Estadísticas por Rol */}
@@ -488,35 +651,50 @@ const InicioCoordinacion = () => {
                             Estadísticas por Rol
                         </h4>
                         <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-                            <div className="text-center">
+                            <div
+                                className="text-center cursor-pointer hover:bg-gray-50 p-3 rounded-lg transition"
+                                onClick={() => toggleSection('aprendices')}  // Cambia 'total' según la estadística
+                            >
                                 <i className="fas fa-user-graduate text-3xl text-blue-600 mb-2"></i>
                                 <span className="block text-3xl font-bold text-gray-800">
                                     {statsLoading ? <i className="fas fa-spinner fa-spin text-sm"></i> : stats.apprenticesCount}
                                 </span>
                                 <span className="block text-sm text-gray-600">Aprendices</span>
                             </div>
-                            <div className="text-center">
+                            <div
+                                className="text-center cursor-pointer hover:bg-gray-50 p-3 rounded-lg transition"
+                                onClick={() => toggleSection('instructores')}  // Cambia 'total' según la estadística
+                            >
                                 <i className="fa-solid fa-person-chalkboard text-3xl text-green-600 mb-2"></i>
                                 <span className="block text-3xl font-bold text-gray-800">
                                     {statsLoading ? <i className="fas fa-spinner fa-spin text-sm"></i> : stats.instructorsCount}
                                 </span>
                                 <span className="block text-sm text-gray-600">Instructores</span>
                             </div>
-                            <div className="text-center">
+                            <div
+                                className="text-center cursor-pointer hover:bg-gray-50 p-3 rounded-lg transition"
+                                onClick={() => toggleSection('coordinadores')}  // Cambia 'total' según la estadística
+                            >
                                 <i className="fas fa-user-tie text-3xl text-purple-600 mb-2"></i>
                                 <span className="block text-3xl font-bold text-gray-800">
                                     {statsLoading ? <i className="fas fa-spinner fa-spin text-sm"></i> : stats.coordinadoresCount}
                                 </span>
                                 <span className="block text-sm text-gray-600">Coordinadores</span>
                             </div>
-                            <div className="text-center">
+                            <div
+                                className="text-center cursor-pointer hover:bg-gray-50 p-3 rounded-lg transition"
+                                onClick={() => toggleSection('vigilantes')}  // Cambia 'total' según la estadística
+                            >
                                 <i className="fas fa-user-shield text-3xl text-orange-600 mb-2"></i>
                                 <span className="block text-3xl font-bold text-gray-800">
                                     {statsLoading ? <i className="fas fa-spinner fa-spin text-sm"></i> : stats.vigilantesCount}
                                 </span>
                                 <span className="block text-sm text-gray-600">Vigilantes</span>
                             </div>
-                            <div className="text-center">
+                            <div
+                                className="text-center cursor-pointer hover:bg-gray-50 p-3 rounded-lg transition"
+                                onClick={() => toggleSection('administradores')}  // Cambia 'total' según la estadística
+                            >
                                 <i className="fa-solid fa-user-gear text-3xl text-red-600 mb-2"></i>
                                 <span className="block text-3xl font-bold text-gray-800">
                                     {statsLoading ? <i className="fas fa-spinner fa-spin text-sm"></i> : stats.administradoresCount}
@@ -524,6 +702,60 @@ const InicioCoordinacion = () => {
                                 <span className="block text-sm text-gray-600">Administradores</span>
                             </div>
                         </div>
+                        {/* Lista expandible de usuarios por rol */}
+                        {(expandedSection === 'aprendices' || expandedSection === 'instructores' || expandedSection === 'coordinadores' || expandedSection === 'vigilantes' || expandedSection === 'administradores') && (
+                            <div className="mt-4 border-t pt-4">
+                                {usersLoading ? (
+                                    <div className="text-center py-4">
+                                        <i className="fas fa-spinner fa-spin text-2xl text-green-600"></i>
+                                    </div>
+                                ) : (
+                                    <>
+                                        <div className="mb-4">
+                                            <input
+                                                type="text"
+                                                placeholder="Buscar por nombre o documento..."
+                                                value={searchTerm}
+                                                onChange={(e) => setSearchTerm(e.target.value)}
+                                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-600"
+                                            />
+                                        </div>
+                                        <div className="max-h-96 overflow-y-auto">
+                                            <table className="w-full">
+                                                <thead className="bg-gray-100 sticky top-0">
+                                                    <tr>
+                                                        <th className="px-4 py-2 text-left text-sm font-semibold">Nombre</th>
+                                                        <th className="px-4 py-2 text-left text-sm font-semibold">Documento</th>
+                                                        <th className="px-4 py-2 text-left text-sm font-semibold">Correo</th>
+                                                        <th className="px-4 py-2 text-left text-sm font-semibold">Estado</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {filteredUsers.map((usuario, index) => (
+                                                        <tr key={usuario.id_usuario} className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
+                                                            <td className="px-4 py-2 text-sm">{usuario.nombre} {usuario.apellido}</td>
+                                                            <td className="px-4 py-2 text-sm">{usuario.documento}</td>
+                                                            <td className="px-4 py-2 text-sm">{usuario.correo}</td>
+                                                            <td className="px-4 py-2 text-sm">
+                                                                <span className={`px-2 py-1 rounded text-xs ${usuario.estado === 'Activo' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+                                                                    {usuario.estado}
+                                                                </span>
+                                                            </td>
+                                                        </tr>
+                                                    ))}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <button
+                                            onClick={() => toggleSection(null)}
+                                            className="mt-4 w-full bg-gray-200 hover:bg-gray-300 text-gray-700 py-2 rounded-lg font-semibold transition"
+                                        >
+                                            Ocultar
+                                        </button>
+                                    </>
+                                )}
+                            </div>
+                        )}
                     </div>
 
                     {/* Estadísticas de Programas */}
@@ -533,21 +765,30 @@ const InicioCoordinacion = () => {
                             Estadísticas de Programas de Formación
                         </h4>
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                            <div className="text-center">
+                            <div
+                                className="text-center cursor-pointer hover:bg-gray-50 p-3 rounded-lg transition"
+                                onClick={() => toggleSection('totalPrograms')}  // Cambia 'total' según la estadística
+                            >
                                 <i className="fas fa-book text-3xl text-indigo-600 mb-2"></i>
                                 <span className="block text-3xl font-bold text-gray-800">
                                     {statsLoading ? <i className="fas fa-spinner fa-spin text-sm"></i> : stats.totalPrograms}
                                 </span>
                                 <span className="block text-sm text-gray-600">Programas Totales</span>
                             </div>
-                            <div className="text-center">
+                            <div
+                                className="text-center cursor-pointer hover:bg-gray-50 p-3 rounded-lg transition"
+                                onClick={() => toggleSection('programasActivos')}  // Cambia 'total' según la estadística
+                            >
                                 <i className="fas fa-check-circle text-3xl text-green-600 mb-2"></i>
                                 <span className="block text-3xl font-bold text-gray-800">
                                     {statsLoading ? <i className="fas fa-spinner fa-spin text-sm"></i> : stats.programasActivos}
                                 </span>
                                 <span className="block text-sm text-gray-600">Programas Activos</span>
                             </div>
-                            <div className="text-center">
+                            <div
+                                className="text-center cursor-pointer hover:bg-gray-50 p-3 rounded-lg transition"
+                                onClick={() => toggleSection('programasInactivos')}  // Cambia 'total' según la estadística
+                            >
                                 <i className="fas fa-ban text-3xl text-red-600 mb-2"></i>
                                 <span className="block text-3xl font-bold text-gray-800">
                                     {statsLoading ? <i className="fas fa-spinner fa-spin text-sm"></i> : stats.programasInactivos}
@@ -555,6 +796,62 @@ const InicioCoordinacion = () => {
                                 <span className="block text-sm text-gray-600">Programas Inactivos</span>
                             </div>
                         </div>
+                        {/* Lista expandible de programas */}
+                        {(expandedSection === 'totalPrograms' || expandedSection === 'programasActivos' || expandedSection === 'programasInactivos') && (
+                            <div className="mt-4 border-t pt-4">
+                                {usersLoading ? (
+                                    <div className="text-center py-4">
+                                        <i className="fas fa-spinner fa-spin text-2xl text-green-600"></i>
+                                    </div>
+                                ) : (
+                                    <>
+                                        <div className="mb-4">
+                                            <input
+                                                type="text"
+                                                placeholder="Buscar por nombre de programa o número de ficha..."
+                                                value={searchTerm}
+                                                onChange={(e) => setSearchTerm(e.target.value)}
+                                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-600"
+                                            />
+                                        </div>
+                                        <div className="max-h-96 overflow-y-auto">
+                                            <table className="w-full">
+                                                <thead className="bg-gray-100 sticky top-0">
+                                                    <tr>
+                                                        <th className="px-4 py-2 text-left text-sm font-semibold">Programa</th>
+                                                        <th className="px-4 py-2 text-left text-sm font-semibold">Ficha</th>
+                                                        <th className="px-4 py-2 text-left text-sm font-semibold">Nivel</th>
+                                                        <th className="px-4 py-2 text-left text-sm font-semibold">Jornada</th>
+                                                        <th className="px-4 py-2 text-left text-sm font-semibold">Estado</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {filteredPrograms.map((programa, index) => (
+                                                        <tr key={programa.id_programa} className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
+                                                            <td className="px-4 py-2 text-sm">{programa.nombre_programa}</td>
+                                                            <td className="px-4 py-2 text-sm">{programa.numero_ficha}</td>
+                                                            <td className="px-4 py-2 text-sm">{programa.nivel}</td>
+                                                            <td className="px-4 py-2 text-sm">{programa.nombre_jornada}</td>
+                                                            <td className="px-4 py-2 text-sm">
+                                                                <span className={`px-2 py-1 rounded text-xs ${programa.estado === 'Activo' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+                                                                    {programa.estado}
+                                                                </span>
+                                                            </td>
+                                                        </tr>
+                                                    ))}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <button
+                                            onClick={() => toggleSection(null)}
+                                            className="mt-4 w-full bg-gray-200 hover:bg-gray-300 text-gray-700 py-2 rounded-lg font-semibold transition"
+                                        >
+                                            Ocultar
+                                        </button>
+                                    </>
+                                )}
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>
