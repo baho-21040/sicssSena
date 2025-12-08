@@ -140,6 +140,36 @@ return function ($app) {
             $stmt_permiso = $pdo->prepare($sql_permiso);
             $stmt_permiso->execute([':id_permiso' => $id_permiso]);
 
+            // --- INICIO INTEGRACIÓN CORREO (APROBACIÓN COORDINACIÓN) ---
+            // Obtener datos del aprendiz para notificar
+            $stmtData = $pdo->prepare("
+                SELECT u.correo, u.nombre, u.apellido, p.motivo, p.descripcion
+                FROM permisos p
+                INNER JOIN usuarios u ON p.id_usuario = u.id_usuario
+                WHERE p.id_permiso = ?
+            ");
+            $stmtData->execute([$id_permiso]);
+            $dataAprendiz = $stmtData->fetch(PDO::FETCH_ASSOC);
+
+            if ($dataAprendiz && !empty($dataAprendiz['correo'])) {
+                try {
+                    require_once __DIR__ . '/../email/solicitud/notificaraprendiz.php';
+                    $nombreCompleto = $dataAprendiz['nombre'] . ' ' . $dataAprendiz['apellido'];
+                    $descripcionSolicitud = !empty($dataAprendiz['descripcion']) ? $dataAprendiz['descripcion'] : $dataAprendiz['motivo'];
+                    
+                    enviarCorreoAprendiz(
+                        $dataAprendiz['correo'], 
+                        $nombreCompleto, 
+                        'COORDINACION', 
+                        'Aprobada',
+                        $descripcionSolicitud
+                    );
+                } catch (Throwable $e) {
+                    error_log("Error enviando correo coordinacion (aprobacion): " . $e->getMessage());
+                }
+            }
+            // --- FIN INTEGRACIÓN CORREO ---
+
             $response->getBody()->write(json_encode([
                 'status' => 'ok',
                 'message' => 'Solicitud aprobada exitosamente',
@@ -208,6 +238,37 @@ return function ($app) {
             
             $stmt_permiso = $pdo->prepare($sql_permiso);
             $stmt_permiso->execute([':id_permiso' => $id_permiso]);
+
+            // --- INICIO INTEGRACIÓN CORREO (RECHAZO COORDINACIÓN) ---
+            // Obtener datos del aprendiz para notificar
+            $stmtData = $pdo->prepare("
+                SELECT u.correo, u.nombre, u.apellido, p.motivo, p.descripcion 
+                FROM permisos p
+                INNER JOIN usuarios u ON p.id_usuario = u.id_usuario
+                WHERE p.id_permiso = ?
+            ");
+            $stmtData->execute([$id_permiso]);
+            $dataAprendiz = $stmtData->fetch(PDO::FETCH_ASSOC);
+
+            if ($dataAprendiz && !empty($dataAprendiz['correo'])) {
+                try {
+                    require_once __DIR__ . '/../email/solicitud/notificaraprendiz.php';
+                    $nombreCompleto = $dataAprendiz['nombre'] . ' ' . $dataAprendiz['apellido'];
+                    $descripcionSolicitud = !empty($dataAprendiz['descripcion']) ? $dataAprendiz['descripcion'] : $dataAprendiz['motivo'];
+                    
+                    enviarCorreoAprendiz(
+                        $dataAprendiz['correo'], 
+                        $nombreCompleto, 
+                        'COORDINACION', 
+                        'Rechazada',
+                        $descripcionSolicitud,
+                        $motivo_rechazo
+                    );
+                } catch (Throwable $e) {
+                    error_log("Error enviando correo coordinacion (rechazo): " . $e->getMessage());
+                }
+            }
+            // --- FIN INTEGRACIÓN CORREO ---
 
             $response->getBody()->write(json_encode([
                 'status' => 'ok',

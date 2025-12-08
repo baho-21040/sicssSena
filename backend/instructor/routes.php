@@ -89,6 +89,7 @@ return function ($app) {
     // Aprueba una solicitud del instructor y la envía a coordinación
     // ====================================================================
     $app->post('/api/instructor/aprobar', function (Request $request, Response $response) {
+        file_put_contents(__DIR__ . '/../custom_debug.log', "Inst Approval Route entered\n", FILE_APPEND);
         $user = verifyJwtFromHeader($request);
         if (!$user) {
             $response->getBody()->write(json_encode(['status' => 'error', 'message' => 'No autorizado']));
@@ -159,6 +160,78 @@ return function ($app) {
             
             $stmt_permiso = $pdo->prepare($sql_permiso);
             $stmt_permiso->execute([':id_permiso' => $id_permiso]);
+
+            // --- INICIO INTEGRACIÓN CORREO (APROBACIÓN INSTRUCTOR) ---
+            file_put_contents(__DIR__ . '/../custom_debug.log', "Inst Approval: DB updates done. Helper data query starting...\n", FILE_APPEND);
+            // 1. Obtener datos completos de la solicitud, aprendiz e instructor
+            $stmtData = $pdo->prepare("
+                SELECT 
+                    p.motivo, p.descripcion,
+                    u_apz.correo AS correo_aprendiz, u_apz.nombre AS nombre_aprendiz, u_apz.apellido AS apellido_aprendiz, u_apz.documento AS documento_aprendiz,
+                    pf.nombre_programa, pf.numero_ficha, j.nombre_jornada,
+                    u_inst.nombre AS nombre_instructor, u_inst.apellido AS apellido_instructor, u_inst.documento AS documento_instructor
+                FROM permisos p
+                INNER JOIN usuarios u_apz ON p.id_usuario = u_apz.id_usuario
+                LEFT JOIN programas_formacion pf ON u_apz.id_programa = pf.id_programa
+                LEFT JOIN jornadas j ON pf.id_jornada = j.id_jornada
+                INNER JOIN usuarios u_inst ON p.id_instructor_destino = u_inst.id_usuario
+                WHERE p.id_permiso = ?
+            ");
+            $stmtData->execute([$id_permiso]);
+            $dataPermiso = $stmtData->fetch(PDO::FETCH_ASSOC);
+
+            if ($dataPermiso) {
+                file_put_contents(__DIR__ . '/../custom_debug.log', "Inst Approval: Data found. Attempting email...\n", FILE_APPEND);
+                try {
+                    // Usar 'correo' o 'email' dependiendo del campo en la BD, aquí usaremos 'correo' que es lo estándar en este sistema
+                    $emailAprendiz = $dataPermiso['correo_aprendiz'] ?? null;
+                    $nombreAprendizCompleto = $dataPermiso['nombre_aprendiz'] . ' ' . $dataPermiso['apellido_aprendiz'];
+                    $nombreInstructorCompleto = $dataPermiso['nombre_instructor'] . ' ' . $dataPermiso['apellido_instructor'];
+                    $descripcionSolicitud = !empty($dataPermiso['descripcion']) ? $dataPermiso['descripcion'] : $dataPermiso['motivo'];
+
+                    // A. Notificar al APRENDIZ (Aprobado por Instructor)
+                    require_once __DIR__ . '/../email/solicitud/notificaraprendiz.php';
+                    if (!empty($emailAprendiz)) {
+                        file_put_contents(__DIR__ . '/../custom_debug.log', "Inst Approval: Sending email to Apprentice ($emailAprendiz)...\n", FILE_APPEND);
+                        enviarCorreoAprendiz($emailAprendiz, $nombreAprendizCompleto, 'INSTRUCTOR', 'Aprobada', $descripcionSolicitud);
+                        file_put_contents(__DIR__ . '/../custom_debug.log', "Inst Approval: Email to Apprentice sent.\n", FILE_APPEND);
+                    }
+
+                    // B. Notificar a TODOS los COORDINADORES activos
+                    // Buscar correos de coordinación (Rol 'Coordinacion' o 'Coordinador')
+                    $stmtCoord = $pdo->query("
+                        SELECT correo FROM usuarios 
+                        JOIN roles ON usuarios.id_rol = roles.id_rol 
+                        WHERE LOWER(roles.nombre_rol) IN ('coordinacion', 'coordinador') AND usuarios.estado = 'Activo' 
+                    ");
+                    $coordinadores = $stmtCoord->fetchAll(PDO::FETCH_COLUMN);
+
+                    if ($coordinadores) {
+                        require_once __DIR__ . '/../email/solicitud/notificarcoordinacion.php';
+                        foreach ($coordinadores as $emailCoordinacion) {
+                            if (!empty($emailCoordinacion)) {
+                                file_put_contents(__DIR__ . '/../custom_debug.log', "Inst Approval: Sending email to Coordination ($emailCoordinacion)...\n", FILE_APPEND);
+                                enviarCorreoCoordinacion(
+                                    $emailCoordinacion,
+                                    $nombreAprendizCompleto,
+                                    $dataPermiso['documento_aprendiz'],
+                                    $dataPermiso['nombre_programa'] ?? 'N/A',
+                                    $dataPermiso['numero_ficha'] ?? 'N/A',
+                                    $dataPermiso['nombre_jornada'] ?? 'N/A',
+                                    $nombreInstructorCompleto,
+                                    $dataPermiso['documento_instructor'],
+                                    $descripcionSolicitud
+                                );
+                            }
+                        }
+                        file_put_contents(__DIR__ . '/../custom_debug.log', "Inst Approval: Emails to All Coordinators sent.\n", FILE_APPEND);
+                    }
+                } catch (Throwable $e) {
+                    file_put_contents(__DIR__ . '/../custom_debug.log', "Inst Approval ERROR: " . $e->getMessage() . "\n", FILE_APPEND);
+                    error_log("Error enviando correos instructor (aprobacion): " . $e->getMessage());
+                }
+            }
+            // --- FIN INTEGRACIÓN CORREO ---
 
             $response->getBody()->write(json_encode([
                 'status' => 'ok',
@@ -239,6 +312,37 @@ return function ($app) {
             
             $stmt_permiso = $pdo->prepare($sql_permiso);
             $stmt_permiso->execute([':id_permiso' => $id_permiso]);
+
+            // --- INICIO INTEGRACIÓN CORREO (RECHAZO INSTRUCTOR) ---
+            // Obtener datos del aprendiz para notificar
+            $stmtData = $pdo->prepare("
+                SELECT u.correo, u.nombre, u.apellido, p.motivo, p.descripcion
+                FROM permisos p
+                INNER JOIN usuarios u ON p.id_usuario = u.id_usuario
+                WHERE p.id_permiso = ?
+            ");
+            $stmtData->execute([$id_permiso]);
+            $dataAprendiz = $stmtData->fetch(PDO::FETCH_ASSOC);
+
+            if ($dataAprendiz && !empty($dataAprendiz['correo'])) {
+                try {
+                    require_once __DIR__ . '/../email/solicitud/notificaraprendiz.php';
+                    $nombreCompleto = $dataAprendiz['nombre'] . ' ' . $dataAprendiz['apellido'];
+                    $descripcionSolicitud = !empty($dataAprendiz['descripcion']) ? $dataAprendiz['descripcion'] : $dataAprendiz['motivo'];
+                    
+                    enviarCorreoAprendiz(
+                        $dataAprendiz['correo'], 
+                        $nombreCompleto, 
+                        'INSTRUCTOR', 
+                        'Rechazada',
+                        $descripcionSolicitud,
+                        $motivo_rechazo
+                    );
+                } catch (Throwable $e) {
+                    error_log("Error enviando correo instructor (rechazo): " . $e->getMessage());
+                }
+            }
+            // --- FIN INTEGRACIÓN CORREO ---
 
             $response->getBody()->write(json_encode([
                 'status' => 'ok',

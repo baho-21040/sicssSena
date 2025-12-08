@@ -824,10 +824,10 @@ const SolicitudPermiso = () => {
 
             {/* Modal de Carga */}
             {showLoadingModal && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-[200]">
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-[200] gap-8">
                     <div className="bg-white p-8 rounded-lg shadow-[0_5px_15px_rgba(0,0,0,0.3)] text-center max-w-[400px] w-[90%  flex flex-col gap-10]">
 
-                        <div className="loader"></div>
+                        <div className="loader "></div>
                         <h3 className="text-xl mb-2">Enviando solicitud de aprobamiento...</h3>
                         <p className="text-gray-600">Por favor, espere.</p>
                     </div>

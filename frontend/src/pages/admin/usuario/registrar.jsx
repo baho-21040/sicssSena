@@ -199,7 +199,7 @@ export default function RegistrarUsuario() {
     return (
         <DashboardLayout title="Control de Salida | Registro de Usuario">
             <div className="admin-container">
-                <div className="main-content-admin">
+                <div className="main-content-admin p-4">
                     <div className="register-container">
                         <div className="register-card" ref={topRef}>
 
@@ -220,8 +220,8 @@ export default function RegistrarUsuario() {
                             )}
 
                             <div className="card-header-register">
-                                <i className="fas fa-user-plus icon-title"></i>
-                                <h2>Registro de Nuevo Usuario</h2>
+                                <i className="fas fa-user-plus icon-title "></i>
+                                <h2 className=''>Registro de Nuevo Usuario</h2>
                                 <p className="subtitle-register">Completa todos los campos para crear una cuenta de usuario.</p>
                             </div>
 

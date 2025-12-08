@@ -1,0 +1,3351 @@
+Route entered at 2025-12-08 06:41:14
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+verifyJwtFromHeader called
+JWT decoded success
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+Route entered at 2025-12-08 06:43:40
+Calling verifyJwtFromHeader...
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader returned: {"iat":1765171200,"exp":1765776000,"sub":23,"nombre":"mvgfgs","apellido":"fdffddf","id_rol":2,"nombre_rol":"Aprendiz"}
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+verifyJwtFromHeader called
+JWT decoded success
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+verifyJwtFromHeader called
+JWT decoded success
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+Route entered at 2025-12-08 06:45:46
+Calling verifyJwtFromHeader...
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader returned: {"iat":1765171200,"exp":1765776000,"sub":23,"nombre":"mvgfgs","apellido":"fdffddf","id_rol":2,"nombre_rol":"Aprendiz"}
+Role verification passed
+Body parsed. Data keys: ["id_instructor_destino","motivo","descripcion","hora_salida","reingresa"]
+Attempting DB connection...
+DB connection successful
+Preparing INSERT statement...
+INSERT executed. ID Inserted: 124
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+verifyJwtFromHeader called
+JWT decoded success
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+Route entered at 2025-12-08 06:47:15
+Calling verifyJwtFromHeader...
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader returned: {"iat":1765171200,"exp":1765776000,"sub":23,"nombre":"mvgfgs","apellido":"fdffddf","id_rol":2,"nombre_rol":"Aprendiz"}
+Role verification passed
+Body parsed. Data keys: ["id_instructor_destino","motivo","descripcion","hora_salida","reingresa"]
+Attempting DB connection...
+DB connection successful
+Preparing INSERT statement...
+INSERT executed. ID Inserted: 125
+Preparing Approval INSERT statement...
+Approval INSERT executed.
+2025-12-08 06:47:15 [TRACE] Fetching instructor data for ID: 81
+2025-12-08 06:47:15 [TRACE] Instructor data fetched: {"nombre":"Brayan ","apellido":"Hernandez Ortiz","correo":"brayanandreshernandezortiz2@gmail.com"}
+2025-12-08 06:47:15 [TRACE] Apprentice data fetched: {"nombre":"mvgfgs","apellido":"fdffddf","documento":"5643076","nombre_programa":"ANALISIS Y DESARROLLO DE SOFTWARE","numero_ficha":"2995479","nombre_jornada":"Noche"}
+2025-12-08 06:47:15 [TRACE] Conditions met. Attempting to require email script.
+2025-12-08 06:47:15 [TRACE] Script included.
+2025-12-08 06:47:15 [TRACE] Calling enviarCorreoInstructor...
+2025-12-08 06:47:17 [TRACE] Mail function returned.
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+verifyJwtFromHeader called
+JWT decoded success
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+verifyJwtFromHeader called
+JWT decoded success
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+verifyJwtFromHeader called
+JWT decoded success
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+verifyJwtFromHeader called
+JWT decoded success
+JWT decoded success
+verifyJwtFromHeader called
+verifyJwtFromHeader called
+JWT decoded success
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+verifyJwtFromHeader called
+JWT decoded success
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+verifyJwtFromHeader called
+JWT decoded success
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+verifyJwtFromHeader called
+JWT decoded success
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+verifyJwtFromHeader called
+JWT decoded success
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+verifyJwtFromHeader called
+JWT decoded success
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+verifyJwtFromHeader called
+JWT decoded success
+JWT decoded success
+verifyJwtFromHeader called
+verifyJwtFromHeader called
+JWT decoded success
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+verifyJwtFromHeader called
+JWT decoded success
+JWT decoded success
+verifyJwtFromHeader called
+verifyJwtFromHeader called
+JWT decoded success
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+verifyJwtFromHeader called
+JWT decoded success
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+verifyJwtFromHeader called
+JWT decoded success
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+verifyJwtFromHeader called
+JWT decoded success
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+verifyJwtFromHeader called
+JWT decoded success
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+verifyJwtFromHeader called
+JWT decoded success
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+Inst Approval Route entered
+verifyJwtFromHeader called
+JWT decoded success
+Inst Approval: DB updates done. Helper data query starting...
+verifyJwtFromHeader called
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+verifyJwtFromHeader called
+JWT decoded success
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+verifyJwtFromHeader called
+JWT decoded success
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+verifyJwtFromHeader called
+JWT decoded success
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+verifyJwtFromHeader called
+JWT decoded success
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+Inst Approval Route entered
+verifyJwtFromHeader called
+JWT decoded success
+Inst Approval: DB updates done. Helper data query starting...
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+verifyJwtFromHeader called
+JWT decoded success
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+verifyJwtFromHeader called
+JWT decoded success
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+Inst Approval Route entered
+verifyJwtFromHeader called
+JWT decoded success
+Inst Approval: DB updates done. Helper data query starting...
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+verifyJwtFromHeader called
+JWT decoded success
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+verifyJwtFromHeader called
+JWT decoded success
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+verifyJwtFromHeader called
+JWT decoded success
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+verifyJwtFromHeader called
+JWT decoded success
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+verifyJwtFromHeader called
+JWT decoded success
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+verifyJwtFromHeader called
+JWT decoded success
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+verifyJwtFromHeader called
+JWT decoded success
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+verifyJwtFromHeader called
+JWT decoded success
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+JWT decoded success
+verifyJwtFromHeader called
+verifyJwtFromHeader called
+verifyJwtFromHeader called
+JWT decoded success
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+verifyJwtFromHeader called
+JWT decoded success
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+verifyJwtFromHeader called
+verifyJwtFromHeader called
+JWT decoded success
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+verifyJwtFromHeader called
+JWT decoded success
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+verifyJwtFromHeader called
+JWT decoded success
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+verifyJwtFromHeader called
+JWT decoded success
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+verifyJwtFromHeader called
+JWT decoded success
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+verifyJwtFromHeader called
+JWT decoded success
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+verifyJwtFromHeader called
+JWT decoded success
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+verifyJwtFromHeader called
+JWT decoded success
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+Route entered at 2025-12-08 07:13:42
+Calling verifyJwtFromHeader...
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader returned: {"iat":1765171200,"exp":1765776000,"sub":23,"nombre":"mvgfgs","apellido":"fdffddf","id_rol":2,"nombre_rol":"Aprendiz"}
+Role verification passed
+Body parsed. Data keys: ["id_instructor_destino","motivo","descripcion","hora_salida","reingresa","hora_ingreso"]
+Attempting DB connection...
+DB connection successful
+Preparing INSERT statement...
+INSERT executed. ID Inserted: 126
+Preparing Approval INSERT statement...
+Approval INSERT executed.
+2025-12-08 07:13:42 [TRACE] Fetching instructor data for ID: 81
+2025-12-08 07:13:42 [TRACE] Instructor data fetched: {"nombre":"Brayan ","apellido":"Hernandez Ortiz","correo":"brayanandreshernandezortiz2@gmail.com"}
+2025-12-08 07:13:42 [TRACE] Apprentice data fetched: {"nombre":"mvgfgs","apellido":"fdffddf","documento":"5643076","nombre_programa":"ANALISIS Y DESARROLLO DE SOFTWARE","numero_ficha":"2995479","nombre_jornada":"Noche"}
+2025-12-08 07:13:42 [TRACE] Conditions met. Attempting to require email script.
+2025-12-08 07:13:42 [TRACE] Script included.
+2025-12-08 07:13:42 [TRACE] Calling enviarCorreoInstructor...
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+2025-12-08 07:13:44 [TRACE] Mail function returned.
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+verifyJwtFromHeader called
+JWT decoded success
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+verifyJwtFromHeader called
+JWT decoded success
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+verifyJwtFromHeader called
+JWT decoded success
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+Inst Approval Route entered
+verifyJwtFromHeader called
+JWT decoded success
+Inst Approval: DB updates done. Helper data query starting...
+Inst Approval: Data found. Attempting email...
+Inst Approval: Sending email to Apprentice (florenciainformate@gmail.com)...
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+Inst Approval: Email to Apprentice sent.
+Inst Approval: Sending email to Coordination (julio@gmail.com)...
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+Inst Approval: Email to Coordination sent.
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+verifyJwtFromHeader called
+JWT decoded success
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+verifyJwtFromHeader called
+JWT decoded success
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+verifyJwtFromHeader called
+JWT decoded success
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+verifyJwtFromHeader called
+JWT decoded success
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+verifyJwtFromHeader called
+JWT decoded success
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+verifyJwtFromHeader called
+JWT decoded success
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+verifyJwtFromHeader called
+JWT decoded success
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+verifyJwtFromHeader called
+JWT decoded success
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+verifyJwtFromHeader called
+JWT decoded success
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+verifyJwtFromHeader called
+JWT decoded success
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+verifyJwtFromHeader called
+JWT decoded success
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+Inst Approval Route entered
+verifyJwtFromHeader called
+JWT decoded success
+Inst Approval: DB updates done. Helper data query starting...
+Inst Approval: Data found. Attempting email...
+Inst Approval: Sending email to Apprentice (florenciainformate@gmail.com)...
+Inst Approval: Email to Apprentice sent.
+Inst Approval: Sending email to Coordination (julio@gmail.com)...
+verifyJwtFromHeader called
+JWT decoded success
+Inst Approval: Email to Coordination sent.
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+verifyJwtFromHeader called
+JWT decoded success
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+verifyJwtFromHeader called
+JWT decoded success
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+verifyJwtFromHeader called
+JWT decoded success
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+Route entered at 2025-12-08 07:33:59
+Calling verifyJwtFromHeader...
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader returned: {"iat":1765171200,"exp":1765776000,"sub":23,"nombre":"mvgfgs","apellido":"fdffddf","id_rol":2,"nombre_rol":"Aprendiz"}
+Role verification passed
+Body parsed. Data keys: ["id_instructor_destino","motivo","descripcion","hora_salida","reingresa"]
+Attempting DB connection...
+DB connection successful
+Preparing INSERT statement...
+INSERT executed. ID Inserted: 127
+Preparing Approval INSERT statement...
+Approval INSERT executed.
+2025-12-08 07:33:59 [TRACE] Fetching instructor data for ID: 81
+2025-12-08 07:33:59 [TRACE] Instructor data fetched: {"nombre":"Brayan ","apellido":"Hernandez Ortiz","correo":"brayanandreshernandezortiz2@gmail.com"}
+2025-12-08 07:33:59 [TRACE] Apprentice data fetched: {"nombre":"mvgfgs","apellido":"fdffddf","documento":"5643076","nombre_programa":"ANALISIS Y DESARROLLO DE SOFTWARE","numero_ficha":"2995479","nombre_jornada":"Noche"}
+2025-12-08 07:33:59 [TRACE] Conditions met. Attempting to require email script.
+2025-12-08 07:33:59 [TRACE] Script included.
+2025-12-08 07:33:59 [TRACE] Calling enviarCorreoInstructor...
+verifyJwtFromHeader called
+JWT decoded success
+2025-12-08 07:34:01 [TRACE] Mail function returned.
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+verifyJwtFromHeader called
+JWT decoded success
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+Inst Approval Route entered
+verifyJwtFromHeader called
+JWT decoded success
+Inst Approval: DB updates done. Helper data query starting...
+Inst Approval: Data found. Attempting email...
+Inst Approval: Sending email to Apprentice (florenciainformate@gmail.com)...
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+Inst Approval: Email to Apprentice sent.
+Inst Approval: Sending email to Coordination (julio@gmail.com)...
+verifyJwtFromHeader called
+JWT decoded success
+Inst Approval: Email to Coordination sent.
+verifyJwtFromHeader called
+verifyJwtFromHeader called
+JWT decoded success
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+verifyJwtFromHeader called
+JWT decoded success
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+verifyJwtFromHeader called
+JWT decoded success
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+verifyJwtFromHeader called
+JWT decoded success
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+verifyJwtFromHeader called
+JWT decoded success
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+verifyJwtFromHeader called
+JWT decoded success
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+verifyJwtFromHeader called
+JWT decoded success
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+verifyJwtFromHeader called
+JWT decoded success
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+verifyJwtFromHeader called
+JWT decoded success
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+verifyJwtFromHeader called
+JWT decoded success
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+verifyJwtFromHeader called
+JWT decoded success
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+verifyJwtFromHeader called
+JWT decoded success
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+Route entered at 2025-12-08 19:29:54
+Calling verifyJwtFromHeader...
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader returned: {"iat":1765171200,"exp":1765776000,"sub":23,"nombre":"mvgfgs","apellido":"fdffddf","id_rol":2,"nombre_rol":"Aprendiz"}
+Role verification passed
+Body parsed. Data keys: ["id_instructor_destino","motivo","descripcion","hora_salida","reingresa"]
+Attempting DB connection...
+DB connection successful
+Preparing INSERT statement...
+INSERT executed. ID Inserted: 128
+Preparing Approval INSERT statement...
+Approval INSERT executed.
+2025-12-08 19:29:54 [TRACE] Fetching instructor data for ID: 14
+2025-12-08 19:29:54 [TRACE] Instructor data fetched: {"nombre":"Weimar Alejandro","apellido":"Hoyos Martinelli","correo":"whoyosocana@gmail.com"}
+2025-12-08 19:29:54 [TRACE] Apprentice data fetched: {"nombre":"mvgfgs","apellido":"fdffddf","documento":"5643076","nombre_programa":"ANALISIS Y DESARROLLO DE SOFTWARE","numero_ficha":"2995479","nombre_jornada":"Noche"}
+2025-12-08 19:29:54 [TRACE] Conditions met. Attempting to require email script.
+2025-12-08 19:29:54 [TRACE] Script included.
+2025-12-08 19:29:54 [TRACE] Calling enviarCorreoInstructor...
+verifyJwtFromHeader called
+JWT decoded success
+2025-12-08 19:29:58 [TRACE] Mail function returned.
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+verifyJwtFromHeader called
+JWT decoded success
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+verifyJwtFromHeader called
+JWT decoded success
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+verifyJwtFromHeader called
+JWT decoded success
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+verifyJwtFromHeader called
+JWT decoded success
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+Inst Approval Route entered
+verifyJwtFromHeader called
+JWT decoded success
+Inst Approval: DB updates done. Helper data query starting...
+Inst Approval: Data found. Attempting email...
+Inst Approval: Sending email to Apprentice (florenciainformate@gmail.com)...
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+Inst Approval: Email to Apprentice sent.
+Inst Approval: Sending email to Coordination (julio@gmail.com)...
+verifyJwtFromHeader called
+JWT decoded success
+Inst Approval: Sending email to Coordination (baho@gmail.com)...
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+Inst Approval: Sending email to Coordination (ortizwilfer503@gmail.com)...
+Inst Approval: Emails to All Coordinators sent.
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+verifyJwtFromHeader called
+JWT decoded success
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+verifyJwtFromHeader called
+JWT decoded success
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+called
+JWT decoded success
+verifyJwtFromHeader called
+verifyJwtFromHeader called
+JWT decoded success
+JWT decoded success
+verifyJwtFromHeader called
+verifyJwtFromHeader called
+JWT decoded success
+JWT decoded success
+verifyJwtFromHeader called
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+verifyJwtFromHeader called
+JWT decoded success
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+verifyJwtFromHeader called
+JWT decoded success
+JWT decoded success
+verifyJwtFromHeader called
+verifyJwtFromHeader called
+JWT decoded success
+JWT decoded success
+verifyJwtFromHeader called
+verifyJwtFromHeader called
+JWT decoded success
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+verifyJwtFromHeader called
+JWT decoded success
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+verifyJwtFromHeader called
+JWT decoded success
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+verifyJwtFromHeader called
+JWT decoded success
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+verifyJwtFromHeader called
+JWT decoded success
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+verifyJwtFromHeader called
+JWT decoded success
+JWT decoded success
+verifyJwtFromHeader called
+verifyJwtFromHeader called
+JWT decoded success
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+verifyJwtFromHeader called
+JWT decoded success
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+verifyJwtFromHeader called
+JWT decoded success
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+verifyJwtFromHeader called
+JWT decoded success
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+verifyJwtFromHeader called
+JWT decoded success
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+verifyJwtFromHeader called
+JWT decoded success
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+verifyJwtFromHeader called
+JWT decoded success
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success
+verifyJwtFromHeader called
+JWT decoded success

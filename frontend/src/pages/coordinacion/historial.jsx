@@ -23,7 +23,6 @@ export default function HistorialCoordinacion() {
     // Modales
     const [showDetallesModal, setShowDetallesModal] = useState(false);
     const [selectedSolicitud, setSelectedSolicitud] = useState(null);
-    const [showQRModal, setShowQRModal] = useState(false);
     const [showSoporteModal, setShowSoporteModal] = useState(false);
     const [showConfirmDeleteModal, setShowConfirmDeleteModal] = useState(false);
     const [showConfirmDeleteOneModal, setShowConfirmDeleteOneModal] = useState(false);
@@ -593,16 +592,6 @@ export default function HistorialCoordinacion() {
                                         </div>
                                     )}
 
-                                    {selectedSolicitud.qr && (
-                                        <div className="col-span-2">
-                                            <button
-                                                onClick={() => setShowQRModal(true)}
-                                                className="w-full bg-green-500 text-white py-2 rounded-lg font-bold hover:bg-green-600 transition"
-                                            >
-                                                <i className="fas fa-qrcode mr-2"></i>Ver Código QR
-                                            </button>
-                                        </div>
-                                    )}
                                 </div>
                             </div>
                         </div>
@@ -611,7 +600,7 @@ export default function HistorialCoordinacion() {
 
                 {/* Modal de Soporte */}
                 {showSoporteModal && selectedSolicitud?.soporte && (
-                    <div className="fixed inset-0 bg-black bg-opacity-90 z-[1100] flex justify-center items-center p-4" onClick={() => setShowSoporteModal(false)}>
+                    <div className="fixed inset-0 bg-black bg-opacity-90 z-[112200] flex justify-center items-center p-4" onClick={() => setShowSoporteModal(false)}>
                         <div className="relative max-w-4xl w-full" onClick={(e) => e.stopPropagation()}>
                             <button
                                 onClick={() => setShowSoporteModal(false)}
@@ -628,26 +617,7 @@ export default function HistorialCoordinacion() {
                     </div>
                 )}
 
-                {/* Modal de QR */}
-                {showQRModal && selectedSolicitud?.qr && (
-                    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4" onClick={() => setShowQRModal(false)}>
-                        <div className="bg-white rounded-xl shadow-2xl p-8 max-w-md w-full" onClick={(e) => e.stopPropagation()}>
-                            <h3 className="text-2xl font-bold text-center mb-4 text-indigo-600">Código QR de Salida</h3>
-                            <div className="flex justify-center mb-4">
-                                <QRCodeSVG value={selectedSolicitud.qr} size={256} />
-                            </div>
-                            <p className="text-center text-gray-600 text-sm mb-4">
-                                Presenta este código en vigilancia para registrar tu salida
-                            </p>
-                            <button
-                                onClick={() => setShowQRModal(false)}
-                                className="w-full bg-indigo-500 text-white py-2 rounded-lg hover:bg-indigo-600 transition font-semibold"
-                            >
-                                Cerrar
-                            </button>
-                        </div>
-                    </div>
-                )}
+               
 
                 {/* Modal de Confirmación - Vaciar Todo */}
                 {showConfirmDeleteModal && (

@@ -1078,7 +1078,7 @@ const InicioCoordinacion = () => {
                 </div>
 
                 {/* Estadísticas de Programas */}
-                <div className="bg-white rounded-xl shadow-lg p-6 border-t-4 border-t-teal-600">
+                <div className="bg-white rounded-xl shadow-lg p-6 border-t-4 border-t-teal-600 mt-4">
                     <h4 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
                         <i className="fas fa-graduation-cap text-teal-600"></i>
                         Estadísticas de Programas
