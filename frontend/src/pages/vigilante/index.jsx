@@ -16,9 +16,17 @@ const InicioVigilante = () => {
     const [accesosHoy, setAccesosHoy] = useState([]);
     const [showImageModal, setShowImageModal] = useState(false);
     const [selectedImage, setSelectedImage] = useState(null);
+    const [showToast, setShowToast] = useState(false);
     const scannerRef = useRef(null);
 
     const API_URL = API_BASE_URL;
+
+    useEffect(() => {
+        if (showToast) {
+            const timer = setTimeout(() => setShowToast(false), 3000);
+            return () => clearTimeout(timer);
+        }
+    }, [showToast]);
 
     const motivosMap = {
         'cita_medica': 'Cita o incapacidad médica',
@@ -232,11 +240,11 @@ const InicioVigilante = () => {
             const data = await response.json();
 
             if (data.status === 'ok') {
-                // Cerrar modal y actualizar tabla
+                // Cerrar modal APENAS sea exitoso para UX inmediata
                 await closeScanner();
                 fetchAccesosHoy();
-                // Mostrar notificación de éxito
-                alert('✅ Acceso registrado correctamente');
+                // Mostrar TOAST en lugar de alert
+                setShowToast(true);
             } else {
                 setError(data.message || 'Error al registrar acceso');
             }
@@ -275,7 +283,27 @@ const InicioVigilante = () => {
 
     return (
         <DashboardLayout headerTitle="Vigilancia SENA">
-            <div className="min-h-screen bg-gray-100 p-6">
+            <div className="min-h-screen bg-gray-100 p-6 relative">
+                {/* Toast Notification Moderno */}
+                {showToast && (
+                    <div className="fixed top-24 right-6 z-50 animate-[slideIn_0.3s_ease-out]">
+                        <div className="bg-white/90 backdrop-blur-md border border-green-100 shadow-[0_8px_30px_rgb(0,0,0,0.12)] rounded-3xl p-4 flex items-center gap-4 min-w-[340px] border-l-[6px] border-l-[#39A900]">
+                            <div className="bg-gradient-to-br from-[#39A900] to-[#2A7D00] p-3 rounded-xl shadow-lg shadow-green-200">
+                                <i className="fas fa-check text-white text-lg"></i>
+                            </div>
+                            <div className="flex-1">
+                                <h4 className="font-extrabold text-[#2A7D00] text-sm leading-tight">¡Escaneo Exitoso!</h4>
+                                <p className="text-gray-500 text-xs font-medium mt-0.5">El registro se guardó correctamente.</p>
+                            </div>
+                            <button
+                                onClick={() => setShowToast(false)}
+                                className="text-gray-400 hover:text-gray-600 w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 transition"
+                            >
+                                <i className="fas fa-times"></i>
+                            </button>
+                        </div>
+                    </div>
+                )}
                 {/* Header con botones de acción */}
                 <div className="max-w-7xl mx-auto mb-6">
                     <div className="flex flex-wrap gap-4 justify-between items-center">
@@ -664,27 +692,21 @@ const InicioVigilante = () => {
                                     </>
                                 )}
 
-                                {/* Loading */}
-                                {loading && (
-                                    <div className="text-center py-12">
-                                        <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-[#39A900] mx-auto mb-4"></div>
-                                        <p className="text-lg font-semibold text-gray-700">Procesando...</p>
-                                    </div>
-                                )}
+                                {/* Loading eliminado visualmente como se solicitó, mantenemos el estado lógico pero sin feedback visual intrusivo */}
 
                                 {/* Error */}
                                 {error && (
                                     <div className="text-center py-8">
-                                        <div className="bg-red-100 p-4 rounded-full w-20 h-20 mx-auto mb-4 flex items-center justify-center">
-                                            <i class="ri-qr-scan-2-line text-4xl text-red-600"></i>
+                                        <div className="bg-red-50 p-4 rounded-full w-20 h-20 mx-auto mb-4 flex items-center justify-center animate-pulse">
+                                            <i className="ri-close-circle-line text-4xl text-red-500"></i>
                                         </div>
                                         <h3 className="text-xl font-bold text-red-700 mb-2">Acceso Denegado</h3>
-                                        <p className="text-red-600 mb-6">{error}</p>
+                                        <p className="text-red-600 mb-6 px-4">{error}</p>
                                         <button
                                             onClick={resetScanner}
-                                            className="bg-red-600 text-white px-6 py-3 rounded-lg font-bold hover:bg-red-700 transition"
+                                            className="bg-red-500 text-white px-8 py-3 rounded-xl font-bold hover:bg-red-600 transition shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
                                         >
-                                            Escanear Nuevamente
+                                            Intentar de nuevo
                                         </button>
                                     </div>
                                 )}

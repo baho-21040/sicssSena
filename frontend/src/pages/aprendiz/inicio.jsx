@@ -137,7 +137,9 @@ export default function InicioAprendiz() {
     const getEstadoBadgeClass = (estado) => {
         const estadoNormalizado = estado.toLowerCase().replace(/\s/g, '');
 
-        if (estadoNormalizado.includes('aprobado') || estadoNormalizado.includes('qrgenerado')) {
+        if (estadoNormalizado.includes('yaescaneado')) {
+            return 'bg-blue-100 text-blue-800 border border-blue-200';
+        } else if (estadoNormalizado === 'aprobado' || estadoNormalizado.includes('qrgenerado')) {
             return 'bg-[#e8f5e1] text-[#2A7D00]';
         } else if (estadoNormalizado.includes('rechazad') || estadoNormalizado.includes('cancelad')) {
             return 'bg-[#ffe0e0] text-[#b32a26]';
@@ -148,7 +150,15 @@ export default function InicioAprendiz() {
     };
 
     const getEstadoDisplay = (estado) => {
-        if (estado === 'Aprobado QR Generado' || estado.toLowerCase().includes('qrgenerado')) {
+        if (estado === 'Ya Escaneado') {
+            return (
+                <span className="flex items-center gap-1">
+                    <i className="fas fa-check-double"></i>
+                    Ya Escaneado
+                </span>
+            );
+        }
+        if (estado === 'Aprobado' || estado === 'Aprobado QR Generado' || estado.toLowerCase().includes('qrgenerado')) {
             return (
                 <span className="flex items-center gap-1">
                     <i className="fas fa-qrcode"></i>
@@ -417,11 +427,13 @@ export default function InicioAprendiz() {
                                             className="bg-white rounded-2xl p-5 shadow-[0_2px_8px_rgba(0,0,0,0.08)] hover:shadow-[0_4px_16px_rgba(0,0,0,0.12)] transition-all duration-300 border border-gray-100 relative overflow-hidden"
                                         >
                                             {/* Barra de color superior según estado */}
-                                            <div className={`absolute top-0 left-0 right-0 h-1 ${solicitud.estado_display.toLowerCase().includes('aprobado') || solicitud.estado_display.toLowerCase().includes('qrgenerado')
-                                                ? 'bg-gradient-to-r from-[#2A7D00] to-[#39A900]'
-                                                : solicitud.estado_display.toLowerCase().includes('rechazad') || solicitud.estado_display.toLowerCase().includes('cancelad')
-                                                    ? 'bg-gradient-to-r from-[#b32a26] to-[#d63031]'
-                                                    : 'bg-gradient-to-r from-[#ffc107] to-[#ff9800]'
+                                            <div className={`absolute top-0 left-0 right-0 h-1 ${solicitud.estado_display === 'Ya Escaneado'
+                                                ? 'bg-gradient-to-r from-blue-400 to-blue-600'
+                                                : solicitud.estado_display.toLowerCase().includes('aprobado') || solicitud.estado_display.toLowerCase().includes('qrgenerado')
+                                                    ? 'bg-gradient-to-r from-[#2A7D00] to-[#39A900]'
+                                                    : solicitud.estado_display.toLowerCase().includes('rechazad') || solicitud.estado_display.toLowerCase().includes('cancelad')
+                                                        ? 'bg-gradient-to-r from-[#b32a26] to-[#d63031]'
+                                                        : 'bg-gradient-to-r from-[#ffc107] to-[#ff9800]'
                                                 }`}></div>
 
                                             {/* Motivo - Ocupa todo el ancho */}
@@ -533,6 +545,13 @@ export default function InicioAprendiz() {
                                                     (selectedSolicitud.estado_coordinador === 'Rechazado' ? 'Coordinación' : 'Sistema'))
                                             }
                                         </p>
+                                        {/* Nombre del Coordinador si aplica */}
+                                        {(selectedSolicitud.rol_rechazo === 'Coordinacion' || selectedSolicitud.estado_coordinador === 'Rechazado') && selectedSolicitud.nombre_coordinador_rechazado && (
+                                            <p className="text-xs text-red-700 font-semibold mb-1">
+                                                {selectedSolicitud.nombre_coordinador_rechazado} {selectedSolicitud.apellido_coordinador_rechazado || ''}
+                                                {selectedSolicitud.documento_coordinador_rechazado && <span className="font-normal opacity-80"> ({selectedSolicitud.documento_coordinador_rechazado})</span>}
+                                            </p>
+                                        )}
                                         <p className="text-sm text-red-800 italic">
                                             "{selectedSolicitud.observacion_rechazo || selectedSolicitud.motivo_rechazo_instructor || selectedSolicitud.motivo_rechazo_coordinador || 'Sin justificación'}"
                                         </p>

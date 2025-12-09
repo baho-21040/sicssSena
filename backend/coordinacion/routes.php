@@ -538,24 +538,31 @@ return function ($app) {
                     u_apz.documento AS documento_aprendiz,
                     pf.nombre_programa,
                     pf.numero_ficha,
-                    MAX(CASE WHEN a.rol_aprobador = 'Coordinacion' THEN a.qr ELSE NULL END) AS qr,
-                    MAX(CASE WHEN a.rol_aprobador = 'Instructor' AND a.estado_aprobacion = 'Rechazado' THEN a.motivo ELSE NULL END) AS motivo_rechazo_instructor,
-                    MAX(CASE WHEN a.rol_aprobador = 'Coordinacion' AND a.estado_aprobacion = 'Rechazado' THEN a.motivo ELSE NULL END) AS motivo_rechazo_coordinador,
-                    MAX(CASE WHEN a.rol_aprobador = 'Instructor' THEN u_inst.nombre ELSE NULL END) AS nombre_instructor,
-                    MAX(CASE WHEN a.rol_aprobador = 'Instructor' THEN u_inst.apellido ELSE NULL END) AS apellido_instructor,
-                    MAX(CASE WHEN a.rol_aprobador = 'Instructor' THEN u_inst.documento ELSE NULL END) AS documento_instructor,
-                    'Aprobado' AS estado_instructor,
-                    MAX(CASE WHEN a.rol_aprobador = 'Coordinacion' THEN a.estado_aprobacion ELSE NULL END) AS estado_coordinador
+
+                    -- Subconsultas para Instructor
+                    (SELECT u_i.nombre FROM aprobaciones ap_i JOIN usuarios u_i ON ap_i.id_usuario_aprobador = u_i.id_usuario WHERE ap_i.id_permiso = p.id_permiso AND ap_i.rol_aprobador = 'Instructor' ORDER BY ap_i.fecha_aprobacion DESC LIMIT 1) AS nombre_instructor,
+                    (SELECT u_i.apellido FROM aprobaciones ap_i JOIN usuarios u_i ON ap_i.id_usuario_aprobador = u_i.id_usuario WHERE ap_i.id_permiso = p.id_permiso AND ap_i.rol_aprobador = 'Instructor' ORDER BY ap_i.fecha_aprobacion DESC LIMIT 1) AS apellido_instructor,
+                    (SELECT u_i.documento FROM aprobaciones ap_i JOIN usuarios u_i ON ap_i.id_usuario_aprobador = u_i.id_usuario WHERE ap_i.id_permiso = p.id_permiso AND ap_i.rol_aprobador = 'Instructor' ORDER BY ap_i.fecha_aprobacion DESC LIMIT 1) AS documento_instructor,
+                    (SELECT estado_aprobacion FROM aprobaciones WHERE id_permiso = p.id_permiso AND rol_aprobador = 'Instructor' ORDER BY fecha_aprobacion DESC LIMIT 1) AS estado_instructor,
+                    (SELECT motivo FROM aprobaciones WHERE id_permiso = p.id_permiso AND rol_aprobador = 'Instructor' AND estado_aprobacion = 'Rechazado' ORDER BY fecha_aprobacion DESC LIMIT 1) AS motivo_rechazo_instructor,
+
+                    -- Subconsultas para Coordinador
+                    (SELECT u_c.nombre FROM aprobaciones ap_c JOIN usuarios u_c ON ap_c.id_usuario_aprobador = u_c.id_usuario WHERE ap_c.id_permiso = p.id_permiso AND ap_c.rol_aprobador = 'Coordinacion' ORDER BY ap_c.fecha_aprobacion DESC LIMIT 1) AS nombre_coordinador,
+                    (SELECT u_c.apellido FROM aprobaciones ap_c JOIN usuarios u_c ON ap_c.id_usuario_aprobador = u_c.id_usuario WHERE ap_c.id_permiso = p.id_permiso AND ap_c.rol_aprobador = 'Coordinacion' ORDER BY ap_c.fecha_aprobacion DESC LIMIT 1) AS apellido_coordinador,
+                    (SELECT u_c.documento FROM aprobaciones ap_c JOIN usuarios u_c ON ap_c.id_usuario_aprobador = u_c.id_usuario WHERE ap_c.id_permiso = p.id_permiso AND ap_c.rol_aprobador = 'Coordinacion' ORDER BY ap_c.fecha_aprobacion DESC LIMIT 1) AS documento_coordinador,
+                    (SELECT estado_aprobacion FROM aprobaciones WHERE id_permiso = p.id_permiso AND rol_aprobador = 'Coordinacion' ORDER BY fecha_aprobacion DESC LIMIT 1) AS estado_coordinador,
+                    (SELECT motivo FROM aprobaciones WHERE id_permiso = p.id_permiso AND rol_aprobador = 'Coordinacion' AND estado_aprobacion = 'Rechazado' ORDER BY fecha_aprobacion DESC LIMIT 1) AS motivo_rechazo_coordinador,
+
+                    -- Extras
+                    (SELECT qr FROM aprobaciones WHERE id_permiso = p.id_permiso AND rol_aprobador = 'Coordinacion' ORDER BY fecha_aprobacion DESC LIMIT 1) AS qr,
+                    (SELECT COUNT(*) FROM accesos acc JOIN aprobaciones ap ON acc.id_aprobacion = ap.id_aprobacion WHERE ap.id_permiso = p.id_permiso AND ap.rol_aprobador = 'Coordinacion') as veces_escaneado
+
                 FROM 
                     permisos p
                 INNER JOIN 
                     usuarios u_apz ON p.id_usuario = u_apz.id_usuario
                 LEFT JOIN 
                     programas_formacion pf ON u_apz.id_programa = pf.id_programa
-                LEFT JOIN 
-                    aprobaciones a ON p.id_permiso = a.id_permiso
-                LEFT JOIN
-                    usuarios u_inst ON a.id_usuario_aprobador = u_inst.id_usuario
                 WHERE 
                     p.oculto_coordinador = 0
                     AND p.estado_general != 'Pendiente Instructor'
@@ -583,9 +590,6 @@ return function ($app) {
             }
 
             $sql .= "
-                GROUP BY
-                    p.id_permiso, p.fecha_solicitud, p.motivo, p.descripcion, p.hora_salida, p.hora_regreso, p.soporte, p.estado_general,
-                    u_apz.nombre, u_apz.apellido, u_apz.documento, pf.nombre_programa, pf.numero_ficha
                 ORDER BY 
                     p.fecha_solicitud DESC
             ";
@@ -596,8 +600,10 @@ return function ($app) {
             
             // Procesar estado_display
             foreach ($solicitudes as &$solicitud) {
-                if (!empty($solicitud['qr'])) {
-                    $solicitud['estado_display'] = 'Aprobado QR Generado';
+                if ($solicitud['veces_escaneado'] > 0) {
+                    $solicitud['estado_display'] = 'Ya Escaneado';
+                } elseif (!empty($solicitud['qr'])) {
+                    $solicitud['estado_display'] = 'Aprobado';
                 } else {
                     $solicitud['estado_display'] = $solicitud['estado_general'];
                 }

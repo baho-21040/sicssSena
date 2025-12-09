@@ -208,7 +208,11 @@ export default function HistorialAprendiz() {
             estado = 'Pendiente Coordinación';
         }
 
-        if (estado.includes('Aprobado') || estado.includes('QR')) {
+        if (estado === 'Ya Escaneado') {
+            return <span className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm font-semibold border border-blue-200"><i className="fas fa-check-double mr-1"></i> {estado}</span>;
+        }
+
+        if (estado === 'Aprobado' || estado.includes('Aprobado') || estado.includes('QR')) {
             return <span className="px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm font-semibold">✓ {estado}</span>;
         } else if (estado.includes('Rechazado')) {
             return <span className="px-3 py-1 bg-red-100 text-red-800 rounded-full text-sm font-semibold">✗ {estado}</span>;
@@ -443,6 +447,13 @@ export default function HistorialAprendiz() {
                                                             (selectedSolicitud.estado_coordinador === 'Rechazado' ? 'Coordinación' : 'Sistema'))
                                                     }
                                                 </p>
+                                                {/* Nombre del Coordinador si aplica */}
+                                                {(selectedSolicitud.rol_rechazo === 'Coordinacion' || selectedSolicitud.estado_coordinador === 'Rechazado') && selectedSolicitud.nombre_coordinador_rechazado && (
+                                                    <p className="text-xs text-red-700 font-semibold mb-1">
+                                                        {selectedSolicitud.nombre_coordinador_rechazado} {selectedSolicitud.apellido_coordinador_rechazado || ''}
+                                                        {selectedSolicitud.documento_coordinador_rechazado && <span className="font-normal opacity-80"> ({selectedSolicitud.documento_coordinador_rechazado})</span>}
+                                                    </p>
+                                                )}
                                                 <p className="text-sm text-red-800 italic">
                                                     "{selectedSolicitud.observacion_rechazo || selectedSolicitud.motivo_rechazo_instructor || selectedSolicitud.motivo_rechazo_coordinador || 'Sin justificación'}"
                                                 </p>
@@ -460,14 +471,19 @@ export default function HistorialAprendiz() {
                                                 </button>
                                             )}
 
-                                            {selectedSolicitud.qr ? (
+                                            {selectedSolicitud.qr && selectedSolicitud.estado_display !== 'Ya Escaneado' ? (
                                                 <button
                                                     onClick={() => setShowQRModal(true)}
                                                     className="flex-1 bg-[#39A900] text-white hover:bg-[#2A7D00] py-2 px-4 rounded-lg text-sm font-semibold transition flex items-center justify-center gap-2"
                                                 >
                                                     <i className="fas fa-qrcode"></i> Ver QR
                                                 </button>
+                                            ) : selectedSolicitud.estado_display === 'Ya Escaneado' ? (
+                                                <button disabled className="flex-1 bg-blue-50 text-blue-400 py-2 px-4 rounded-lg text-sm font-semibold cursor-not-allowed flex items-center justify-center gap-2 border border-blue-100">
+                                                    <i className="fas fa-check-double"></i> Ya escaneado
+                                                </button>
                                             ) : selectedSolicitud.estado_general === 'Aprobado' ? (
+                                                // Fallback por si acaso
                                                 <button disabled className="flex-1 bg-gray-100 text-gray-400 py-2 px-4 rounded-lg text-sm font-semibold cursor-not-allowed flex items-center justify-center gap-2">
                                                     <i className="fas fa-check-circle"></i> QR ya escaneado
                                                 </button>

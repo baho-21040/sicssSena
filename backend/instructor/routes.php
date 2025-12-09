@@ -89,7 +89,7 @@ return function ($app) {
     // Aprueba una solicitud del instructor y la envía a coordinación
     // ====================================================================
     $app->post('/api/instructor/aprobar', function (Request $request, Response $response) {
-        file_put_contents(__DIR__ . '/../custom_debug.log', "Inst Approval Route entered\n", FILE_APPEND);
+    
         $user = verifyJwtFromHeader($request);
         if (!$user) {
             $response->getBody()->write(json_encode(['status' => 'error', 'message' => 'No autorizado']));
@@ -162,7 +162,7 @@ return function ($app) {
             $stmt_permiso->execute([':id_permiso' => $id_permiso]);
 
             // --- INICIO INTEGRACIÓN CORREO (APROBACIÓN INSTRUCTOR) ---
-            file_put_contents(__DIR__ . '/../custom_debug.log', "Inst Approval: DB updates done. Helper data query starting...\n", FILE_APPEND);
+
             // 1. Obtener datos completos de la solicitud, aprendiz e instructor
             $stmtData = $pdo->prepare("
                 SELECT 
@@ -181,7 +181,7 @@ return function ($app) {
             $dataPermiso = $stmtData->fetch(PDO::FETCH_ASSOC);
 
             if ($dataPermiso) {
-                file_put_contents(__DIR__ . '/../custom_debug.log', "Inst Approval: Data found. Attempting email...\n", FILE_APPEND);
+
                 try {
                     // Usar 'correo' o 'email' dependiendo del campo en la BD, aquí usaremos 'correo' que es lo estándar en este sistema
                     $emailAprendiz = $dataPermiso['correo_aprendiz'] ?? null;
@@ -192,9 +192,9 @@ return function ($app) {
                     // A. Notificar al APRENDIZ (Aprobado por Instructor)
                     require_once __DIR__ . '/../email/solicitud/notificaraprendiz.php';
                     if (!empty($emailAprendiz)) {
-                        file_put_contents(__DIR__ . '/../custom_debug.log', "Inst Approval: Sending email to Apprentice ($emailAprendiz)...\n", FILE_APPEND);
+
                         enviarCorreoAprendiz($emailAprendiz, $nombreAprendizCompleto, 'INSTRUCTOR', 'Aprobada', $descripcionSolicitud);
-                        file_put_contents(__DIR__ . '/../custom_debug.log', "Inst Approval: Email to Apprentice sent.\n", FILE_APPEND);
+
                     }
 
                     // B. Notificar a TODOS los COORDINADORES activos
@@ -210,7 +210,7 @@ return function ($app) {
                         require_once __DIR__ . '/../email/solicitud/notificarcoordinacion.php';
                         foreach ($coordinadores as $emailCoordinacion) {
                             if (!empty($emailCoordinacion)) {
-                                file_put_contents(__DIR__ . '/../custom_debug.log', "Inst Approval: Sending email to Coordination ($emailCoordinacion)...\n", FILE_APPEND);
+
                                 enviarCorreoCoordinacion(
                                     $emailCoordinacion,
                                     $nombreAprendizCompleto,
@@ -224,10 +224,10 @@ return function ($app) {
                                 );
                             }
                         }
-                        file_put_contents(__DIR__ . '/../custom_debug.log', "Inst Approval: Emails to All Coordinators sent.\n", FILE_APPEND);
+
                     }
                 } catch (Throwable $e) {
-                    file_put_contents(__DIR__ . '/../custom_debug.log', "Inst Approval ERROR: " . $e->getMessage() . "\n", FILE_APPEND);
+
                     error_log("Error enviando correos instructor (aprobacion): " . $e->getMessage());
                 }
             }
@@ -405,10 +405,22 @@ return function ($app) {
                     pf.nombre_programa,
                     pf.numero_ficha,
                     MAX(CASE WHEN a.rol_aprobador = 'Coordinacion' THEN a.qr ELSE NULL END) AS qr,
+                    (SELECT COUNT(*) 
+                     FROM accesos acc 
+                     JOIN aprobaciones ap ON acc.id_aprobacion = ap.id_aprobacion 
+                     WHERE ap.id_permiso = p.id_permiso AND ap.rol_aprobador = 'Coordinacion') as veces_escaneado,
                     MAX(CASE WHEN a.rol_aprobador = 'Instructor' AND a.estado_aprobacion = 'Rechazado' THEN a.motivo ELSE NULL END) AS motivo_rechazo_instructor,
-                    MAX(CASE WHEN a.rol_aprobador = 'Coordinacion' AND a.estado_aprobacion = 'Rechazado' THEN a.motivo ELSE NULL END) AS motivo_rechazo_coordinador,
+                    
+                    -- Subconsultas explícitas para datos de Coordinación (Rechazo/Aprobación)
+                    (SELECT COALESCE(observaciones, motivo) FROM aprobaciones WHERE id_permiso = p.id_permiso AND rol_aprobador = 'Coordinacion' AND estado_aprobacion = 'Rechazado' ORDER BY fecha_aprobacion DESC LIMIT 1) AS motivo_rechazo_coordinador,
+                    
                     'Aprobado' AS estado_instructor,
-                    MAX(CASE WHEN a.rol_aprobador = 'Coordinacion' THEN a.estado_aprobacion ELSE NULL END) AS estado_coordinador
+                    (SELECT estado_aprobacion FROM aprobaciones WHERE id_permiso = p.id_permiso AND rol_aprobador = 'Coordinacion' ORDER BY fecha_aprobacion DESC LIMIT 1) AS estado_coordinador,
+                    
+                    -- Datos Coordinador (Generico - intenta tomar el más reciente de coordinacion)
+                    (SELECT u_c.nombre FROM aprobaciones ap_c JOIN usuarios u_c ON ap_c.id_usuario_aprobador = u_c.id_usuario WHERE ap_c.id_permiso = p.id_permiso AND ap_c.rol_aprobador = 'Coordinacion' ORDER BY ap_c.fecha_aprobacion DESC LIMIT 1) AS nombre_coordinador,
+                    (SELECT u_c.apellido FROM aprobaciones ap_c JOIN usuarios u_c ON ap_c.id_usuario_aprobador = u_c.id_usuario WHERE ap_c.id_permiso = p.id_permiso AND ap_c.rol_aprobador = 'Coordinacion' ORDER BY ap_c.fecha_aprobacion DESC LIMIT 1) AS apellido_coordinador,
+                    (SELECT u_c.documento FROM aprobaciones ap_c JOIN usuarios u_c ON ap_c.id_usuario_aprobador = u_c.id_usuario WHERE ap_c.id_permiso = p.id_permiso AND ap_c.rol_aprobador = 'Coordinacion' ORDER BY ap_c.fecha_aprobacion DESC LIMIT 1) AS documento_coordinador
                 FROM 
                     permisos p
                 INNER JOIN 
@@ -417,6 +429,8 @@ return function ($app) {
                     programas_formacion pf ON u_apz.id_programa = pf.id_programa
                 LEFT JOIN 
                     aprobaciones a ON p.id_permiso = a.id_permiso
+                LEFT JOIN
+                    usuarios u_app ON a.id_usuario_aprobador = u_app.id_usuario
                 WHERE 
                     p.id_instructor_destino = :id_instructor
                     AND p.oculto_instructor = 0
@@ -450,8 +464,10 @@ return function ($app) {
             
             // Procesar estado_display
             foreach ($solicitudes as &$solicitud) {
-                if (!empty($solicitud['qr'])) {
-                    $solicitud['estado_display'] = 'Aprobado QR Generado';
+                if ($solicitud['veces_escaneado'] > 0) {
+                    $solicitud['estado_display'] = 'Ya Escaneado';
+                } elseif (!empty($solicitud['qr'])) {
+                    $solicitud['estado_display'] = 'Aprobado';
                 } else {
                     $solicitud['estado_display'] = $solicitud['estado_general'];
                 }

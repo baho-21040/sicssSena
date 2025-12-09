@@ -217,6 +217,10 @@ export default function HistorialInstructor() {
             estado = 'Pendiente Coordinación';
         }
 
+        if (estado === 'Ya Escaneado') {
+            return <span className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm font-semibold border border-blue-200"><i className="fas fa-check-double mr-1"></i> {estado}</span>;
+        }
+
         if (estado.includes('Aprobado') || estado.includes('QR')) {
             return <span className="px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm font-semibold">✓ {estado}</span>;
         } else if (estado.includes('Rechazado')) {
@@ -517,6 +521,51 @@ export default function HistorialInstructor() {
                                             <div className="bg-gray-50 border border-gray-200 p-3 rounded-lg text-sm text-gray-700">
                                                 {getMotivoTexto(selectedSolicitud.motivo, selectedSolicitud.descripcion)}
                                             </div>
+                                        </div>
+
+                                        {/* Nueva Sección: Estado Coordinación */}
+                                        <div className={`p-4 rounded-lg border-l-4 ${selectedSolicitud.estado_coordinador === 'Aprobado' || selectedSolicitud.estado_display === 'Ya Escaneado'
+                                            ? 'bg-green-50 border-green-500'
+                                            : selectedSolicitud.estado_coordinador === 'Rechazado' || selectedSolicitud.estado_general === 'Rechazado'
+                                                ? 'bg-red-50 border-red-500'
+                                                : 'bg-orange-50 border-orange-500' // Pendiente
+                                            }`}>
+                                            <p className="text-xs uppercase font-semibold mb-1">Estado Coordinación</p>
+
+                                            {(selectedSolicitud.estado_coordinador === 'Aprobado' || selectedSolicitud.estado_display === 'Ya Escaneado') ? (
+                                                <div>
+                                                    <p className="font-semibold text-green-800">Aprobado</p>
+                                                    {selectedSolicitud.nombre_coordinador && (
+                                                        <p className="text-sm mt-1">
+                                                            <strong>Por coordinador(a):</strong> {selectedSolicitud.nombre_coordinador} {selectedSolicitud.apellido_coordinador}
+                                                            {selectedSolicitud.documento_coordinador && <span className="text-gray-600 text-xs ml-1">({selectedSolicitud.documento_coordinador})</span>}
+                                                        </p>
+                                                    )}
+                                                </div>
+                                            ) : (selectedSolicitud.estado_coordinador === 'Rechazado' || selectedSolicitud.estado_general === 'Rechazado') ? (
+                                                <div>
+                                                    <p className="font-semibold text-red-800">Rechazado</p>
+                                                    {selectedSolicitud.motivo_rechazo_coordinador && (
+                                                        <p className="text-sm mt-1">Motivo: {selectedSolicitud.motivo_rechazo_coordinador}</p>
+                                                    )}
+
+                                                    {/* Mostrar coordinador si fue quien rechazó */}
+                                                    {(selectedSolicitud.estado_coordinador === 'Rechazado' || selectedSolicitud.estado_general === 'Rechazado') && (selectedSolicitud.nombre_coordinador || selectedSolicitud.nombre_coordinador_rechazo) && (
+                                                        <div className="mt-1 pt-1 border-t border-red-200">
+                                                            <p className="text-xs font-semibold uppercase">Por coordinador(a):</p>
+                                                            <p className="text-sm">
+                                                                {selectedSolicitud.nombre_coordinador_rechazo || selectedSolicitud.nombre_coordinador} {selectedSolicitud.apellido_coordinador_rechazo || selectedSolicitud.apellido_coordinador}
+                                                            </p>
+                                                            {(selectedSolicitud.documento_coordinador_rechazo || selectedSolicitud.documento_coordinador) &&
+                                                                <p className="text-xs text-gray-600">Doc: {selectedSolicitud.documento_coordinador_rechazo || selectedSolicitud.documento_coordinador}</p>
+                                                            }
+                                                        </div>
+                                                    )}
+                                                </div>
+
+                                            ) : (
+                                                <p className="font-semibold text-orange-800">Pendiente Coordinación</p>
+                                            )}
                                         </div>
 
                                         {/* Horario */}

@@ -90,24 +90,24 @@ $app->add(function ($request, $handler) {
 
 // Helper JWT
 function verifyJwtFromHeader($request) {
-    file_put_contents(__DIR__ . '/../custom_debug.log', "verifyJwtFromHeader called\n", FILE_APPEND);
+
     $header = $request->getHeaderLine('Authorization');
     if (!$header) {
-        file_put_contents(__DIR__ . '/../custom_debug.log', "No Authorization header\n", FILE_APPEND);
+
         return null;
     }
     if (!preg_match('/Bearer\s+(.*)$/i', $header, $matches)) {
-        file_put_contents(__DIR__ . '/../custom_debug.log', "No Bearer token match\n", FILE_APPEND);
+
         return null;
     }
     $token = $matches[1];
     try {
         $secret = getenv('JWT_SECRET') ?: 'TU_SECRETO_MUY_SEGURO';
         $decoded = JWT::decode($token, new Key($secret, 'HS256'));
-        file_put_contents(__DIR__ . '/../custom_debug.log', "JWT decoded success\n", FILE_APPEND);
+
         return (array) $decoded;
     } catch (\Throwable $e) {
-        file_put_contents(__DIR__ . '/../custom_debug.log', "JWT Error: " . $e->getMessage() . "\n", FILE_APPEND);
+
         return null;
     }
 }

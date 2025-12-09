@@ -64,6 +64,7 @@ return function ($app) {
                     (SELECT estado_aprobacion FROM aprobaciones WHERE id_permiso = p.id_permiso AND rol_aprobador = 'Coordinacion' ORDER BY fecha_aprobacion DESC LIMIT 1) AS estado_coordinador,
                     (SELECT COALESCE(observaciones, motivo) FROM aprobaciones WHERE id_permiso = p.id_permiso AND rol_aprobador = 'Coordinacion' AND estado_aprobacion = 'Rechazado' ORDER BY fecha_aprobacion DESC LIMIT 1) AS motivo_rechazo_coordinador,
                     -- Información de rechazo
+                    -- Información de rechazo
                     (SELECT COALESCE(a_rech.observaciones, a_rech.motivo)
                      FROM aprobaciones a_rech 
                      WHERE a_rech.id_permiso = p.id_permiso AND a_rech.estado_aprobacion = 'Rechazado' 
@@ -71,7 +72,34 @@ return function ($app) {
                     (SELECT a_rech.rol_aprobador 
                      FROM aprobaciones a_rech 
                      WHERE a_rech.id_permiso = p.id_permiso AND a_rech.estado_aprobacion = 'Rechazado' 
-                     ORDER BY a_rech.fecha_aprobacion DESC LIMIT 1) AS rol_rechazo
+                     ORDER BY a_rech.fecha_aprobacion DESC LIMIT 1) AS rol_rechazo,
+                    -- Datos Coordinador (Aprobación)
+                    (SELECT u_coord.nombre 
+                     FROM aprobaciones ap_c 
+                     JOIN usuarios u_coord ON ap_c.id_usuario_aprobador = u_coord.id_usuario 
+                     WHERE ap_c.id_permiso = p.id_permiso AND ap_c.rol_aprobador = 'Coordinacion' AND ap_c.estado_aprobacion = 'Aprobado' LIMIT 1) AS nombre_coordinador_aprobado,
+                    (SELECT u_coord.apellido 
+                     FROM aprobaciones ap_c 
+                     JOIN usuarios u_coord ON ap_c.id_usuario_aprobador = u_coord.id_usuario 
+                     WHERE ap_c.id_permiso = p.id_permiso AND ap_c.rol_aprobador = 'Coordinacion' AND ap_c.estado_aprobacion = 'Aprobado' LIMIT 1) AS apellido_coordinador_aprobado,
+                    (SELECT u_coord.documento 
+                     FROM aprobaciones ap_c 
+                     JOIN usuarios u_coord ON ap_c.id_usuario_aprobador = u_coord.id_usuario 
+                     WHERE ap_c.id_permiso = p.id_permiso AND ap_c.rol_aprobador = 'Coordinacion' AND ap_c.estado_aprobacion = 'Aprobado' LIMIT 1) AS documento_coordinador_aprobado,
+                    -- Datos Coordinador (Rechazo)
+                    (SELECT u_coord.nombre 
+                     FROM aprobaciones ap_c 
+                     JOIN usuarios u_coord ON ap_c.id_usuario_aprobador = u_coord.id_usuario 
+                     WHERE ap_c.id_permiso = p.id_permiso AND ap_c.rol_aprobador = 'Coordinacion' AND ap_c.estado_aprobacion = 'Rechazado' LIMIT 1) AS nombre_coordinador_rechazado,
+                    (SELECT u_coord.documento 
+                     FROM aprobaciones ap_c 
+                     JOIN usuarios u_coord ON ap_c.id_usuario_aprobador = u_coord.id_usuario 
+                     WHERE ap_c.id_permiso = p.id_permiso AND ap_c.rol_aprobador = 'Coordinacion' AND ap_c.estado_aprobacion = 'Rechazado' LIMIT 1) AS documento_coordinador_rechazado,
+                    -- Verificación de escaneo
+                    (SELECT COUNT(*) 
+                     FROM accesos acc 
+                     JOIN aprobaciones ap ON acc.id_aprobacion = ap.id_aprobacion 
+                     WHERE ap.id_permiso = p.id_permiso AND ap.rol_aprobador = 'Coordinacion') AS veces_escaneado
                 FROM 
                     permisos p
                 LEFT JOIN 
@@ -94,8 +122,10 @@ return function ($app) {
             
             // Procesar estado_display
             foreach ($solicitudes as &$solicitud) {
-                if (!empty($solicitud['qr'])) {
-                    $solicitud['estado_display'] = 'Aprobado QR Generado';
+                if ($solicitud['veces_escaneado'] > 0) {
+                     $solicitud['estado_display'] = 'Ya Escaneado';
+                } elseif (!empty($solicitud['qr'])) {
+                    $solicitud['estado_display'] = 'Aprobado';
                 } else {
                     $solicitud['estado_display'] = $solicitud['estado_general'];
                 }
@@ -161,7 +191,27 @@ return function ($app) {
                     (SELECT a_rech.rol_aprobador 
                      FROM aprobaciones a_rech 
                      WHERE a_rech.id_permiso = p.id_permiso AND a_rech.estado_aprobacion = 'Rechazado' 
-                     ORDER BY a_rech.fecha_aprobacion DESC LIMIT 1) AS rol_rechazo
+                     ORDER BY a_rech.fecha_aprobacion DESC LIMIT 1) AS rol_rechazo,
+                     
+                    -- DATOS COORDINADOR RECHAZO (Explicit Subqueries)
+                    (SELECT u_c.nombre 
+                     FROM aprobaciones ap_c 
+                     JOIN usuarios u_c ON ap_c.id_usuario_aprobador = u_c.id_usuario 
+                     WHERE ap_c.id_permiso = p.id_permiso AND ap_c.rol_aprobador = 'Coordinacion' AND ap_c.estado_aprobacion = 'Rechazado' LIMIT 1) AS nombre_coordinador_rechazado,
+                    (SELECT u_c.apellido 
+                     FROM aprobaciones ap_c 
+                     JOIN usuarios u_c ON ap_c.id_usuario_aprobador = u_c.id_usuario 
+                     WHERE ap_c.id_permiso = p.id_permiso AND ap_c.rol_aprobador = 'Coordinacion' AND ap_c.estado_aprobacion = 'Rechazado' LIMIT 1) AS apellido_coordinador_rechazado,
+                    (SELECT u_c.documento 
+                     FROM aprobaciones ap_c 
+                     JOIN usuarios u_c ON ap_c.id_usuario_aprobador = u_c.id_usuario 
+                     WHERE ap_c.id_permiso = p.id_permiso AND ap_c.rol_aprobador = 'Coordinacion' AND ap_c.estado_aprobacion = 'Rechazado' LIMIT 1) AS documento_coordinador_rechazado,
+
+                    -- Verificación de escaneo
+                    (SELECT COUNT(*) 
+                     FROM accesos acc 
+                     JOIN aprobaciones ap ON acc.id_aprobacion = ap.id_aprobacion 
+                     WHERE ap.id_permiso = p.id_permiso AND ap.rol_aprobador = 'Coordinacion') AS veces_escaneado
                 FROM 
                     permisos p
                 LEFT JOIN 
@@ -182,8 +232,10 @@ return function ($app) {
             
             // Procesar estado_display y formatear datos extra
             foreach ($solicitudes as &$solicitud) {
-                if (!empty($solicitud['qr'])) {
-                    $solicitud['estado_display'] = 'Aprobado QR Generado';
+                if ($solicitud['veces_escaneado'] > 0) {
+                     $solicitud['estado_display'] = 'Ya Escaneado';
+                } elseif (!empty($solicitud['qr'])) {
+                    $solicitud['estado_display'] = 'Aprobado';
                 } else {
                     $solicitud['estado_display'] = $solicitud['estado_general'];
                 }
@@ -473,10 +525,10 @@ return function ($app) {
     // ====================================================================
     $app->post('/api/aprendiz/solicitud', function (Request $request, Response $response) {
         // TRACE LOG START
-        file_put_contents(__DIR__ . '/../custom_debug.log', "Route entered at " . date('Y-m-d H:i:s') . "\n", FILE_APPEND);
-        file_put_contents(__DIR__ . '/../custom_debug.log', "Calling verifyJwtFromHeader...\n", FILE_APPEND);
+
+
         $user = verifyJwtFromHeader($request);
-        file_put_contents(__DIR__ . '/../custom_debug.log', "verifyJwtFromHeader returned: " . json_encode($user) . "\n", FILE_APPEND);
+
         if (!$user) {
             $response->getBody()->write(json_encode(['status' => 'error', 'message' => 'No autorizado']));
             return $response->withStatus(401);
@@ -484,11 +536,11 @@ return function ($app) {
 
         // Verificar que sea aprendiz
         if (strcasecmp($user['nombre_rol'] ?? '', 'Aprendiz') !== 0) {
-            file_put_contents(__DIR__ . '/../custom_debug.log', "Role mismatch: " . ($user['nombre_rol'] ?? 'efff') . "\n", FILE_APPEND);
+
             $response->getBody()->write(json_encode(['status' => 'error', 'message' => 'Solo aprendices pueden crear solicitudes']));
             return $response->withStatus(403);
         }
-        file_put_contents(__DIR__ . '/../custom_debug.log', "Role verification passed\n", FILE_APPEND);
+
 
         $id_usuario = $user['sub'] ?? null;
         if (!$id_usuario) {
@@ -497,7 +549,7 @@ return function ($app) {
         }
 
         $data = $request->getParsedBody();
-        file_put_contents(__DIR__ . '/../custom_debug.log', "Body parsed. Data keys: " . json_encode(array_keys((array)$data)) . "\n", FILE_APPEND);
+
         
         // Validar campos requeridos
         $required = ['id_instructor_destino', 'motivo', 'hora_salida', 'reingresa'];
@@ -512,9 +564,9 @@ return function ($app) {
         }
 
         try {
-            file_put_contents(__DIR__ . '/../custom_debug.log', "Attempting DB connection...\n", FILE_APPEND);
+
             $pdo = conexion();
-            file_put_contents(__DIR__ . '/../custom_debug.log', "DB connection successful\n", FILE_APPEND);
+
             
             // Preparar datos
             $id_instructor = $data['id_instructor_destino'];
@@ -578,7 +630,7 @@ return function ($app) {
                     VALUES 
                     (:id_usuario, :id_instructor, :motivo, :descripcion, :soporte, :hora_salida, :hora_regreso, 'Pendiente Instructor', NOW())";
             
-            file_put_contents(__DIR__ . '/../custom_debug.log', "Preparing INSERT statement...\n", FILE_APPEND);
+
             $stmt = $pdo->prepare($sql);
             $stmt->execute([
                 ':id_usuario' => $id_usuario,
@@ -589,7 +641,7 @@ return function ($app) {
                 ':hora_salida' => $hora_salida,
                 ':hora_regreso' => $hora_regreso
             ]);
-            file_put_contents(__DIR__ . '/../custom_debug.log', "INSERT executed. ID Inserted: " . $pdo->lastInsertId() . "\n", FILE_APPEND);
+
 
             $id_permiso = $pdo->lastInsertId();
 
@@ -599,22 +651,22 @@ return function ($app) {
                                VALUES 
                                (:id_permiso, :id_instructor, 'Instructor', 'Pendiente')";
             
-            file_put_contents(__DIR__ . '/../custom_debug.log', "Preparing Approval INSERT statement...\n", FILE_APPEND);
+
             $stmt_aprobacion = $pdo->prepare($sql_aprobacion);
             $stmt_aprobacion->execute([
                 ':id_permiso' => $id_permiso,
                 ':id_instructor' => $id_instructor
             ]);
-            file_put_contents(__DIR__ . '/../custom_debug.log', "Approval INSERT executed.\n", FILE_APPEND);
+
 
             // --- INICIO INTEGRACIÓN CORREO ---
             // Obtener datos para el correo
             // 1. Datos del Instructor
-            file_put_contents(__DIR__ . '/../custom_debug.log', date('Y-m-d H:i:s') . " [TRACE] Fetching instructor data for ID: $id_instructor\n", FILE_APPEND);
+
             $stmtInst = $pdo->prepare("SELECT nombre, apellido, correo FROM usuarios WHERE id_usuario = ?");
             $stmtInst->execute([$id_instructor]);
             $instructorData = $stmtInst->fetch(PDO::FETCH_ASSOC);
-            file_put_contents(__DIR__ . '/../custom_debug.log', date('Y-m-d H:i:s') . " [TRACE] Instructor data fetched: " . json_encode($instructorData) . "\n", FILE_APPEND);
+
 
             // 2. Datos del Aprendiz y Programa
             $stmtApz = $pdo->prepare("
@@ -627,23 +679,23 @@ return function ($app) {
             ");
             $stmtApz->execute([$id_usuario]);
             $aprendizData = $stmtApz->fetch(PDO::FETCH_ASSOC);
-            file_put_contents(__DIR__ . '/../custom_debug.log', date('Y-m-d H:i:s') . " [TRACE] Apprentice data fetched: " . json_encode($aprendizData) . "\n", FILE_APPEND);
+
 
             if ($instructorData && $aprendizData && !empty($instructorData['correo'])) {
-                file_put_contents(__DIR__ . '/../custom_debug.log', date('Y-m-d H:i:s') . " [TRACE] Conditions met. Attempting to require email script.\n", FILE_APPEND);
+
                 try {
                     // Verificando existencia antes de incluir
                     if (!file_exists(__DIR__ . '/../email/solicitud/notificarinstructor.php')) {
                         throw new Exception("File not found: " . __DIR__ . '/../email/solicitud/notificarinstructor.php');
                     }
                     require_once __DIR__ . '/../email/solicitud/notificarinstructor.php';
-                    file_put_contents(__DIR__ . '/../custom_debug.log', date('Y-m-d H:i:s') . " [TRACE] Script included.\n", FILE_APPEND);
+
                     
                     $nombreInstructor = $instructorData['nombre'] . ' ' . $instructorData['apellido'];
                     $nombreAprendiz = $aprendizData['nombre'] . ' ' . $aprendizData['apellido'];
                     
                     // Enviar correo
-                    file_put_contents(__DIR__ . '/../custom_debug.log', date('Y-m-d H:i:s') . " [TRACE] Calling enviarCorreoInstructor...\n", FILE_APPEND);
+
                     enviarCorreoInstructor(
                         $instructorData['correo'],
                         $nombreInstructor,
@@ -654,13 +706,12 @@ return function ($app) {
                         $aprendizData['nombre_jornada'] ?? 'N/A',
                         !empty($descripcion) ? $descripcion : $motivo 
                     );
-                    file_put_contents(__DIR__ . '/../custom_debug.log', date('Y-m-d H:i:s') . " [TRACE] Mail function returned.\n", FILE_APPEND);
+
                 } catch (Throwable $e) {
-                    file_put_contents(__DIR__ . '/../custom_debug.log', date('Y-m-d H:i:s') . " [ERROR] Trace Error: " . $e->getMessage() . "\n" . $e->getTraceAsString() . "\n", FILE_APPEND);
+
                 }
-            } else {
-                file_put_contents(__DIR__ . '/../custom_debug.log', date('Y-m-d H:i:s') . " [TRACE] Conditions NOT met for email.\n", FILE_APPEND);
             }
+
             // --- FIN INTEGRACIÓN CORREO ---
 
             $response->getBody()->write(json_encode([

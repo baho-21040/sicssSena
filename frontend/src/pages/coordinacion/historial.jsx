@@ -206,6 +206,12 @@ export default function HistorialCoordinacion() {
 
 
 
+
+
+        if (estado === 'Ya Escaneado') {
+            return <span className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm font-semibold border border-blue-200"><i className="fas fa-check-double mr-1"></i> {estado}</span>;
+        }
+
         if (estado.includes('Aprobado') || estado.includes('QR')) {
             return <span className="px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm font-semibold">✓ {estado}</span>;
         } else if (estado.includes('Rechazado')) {
@@ -556,6 +562,7 @@ export default function HistorialCoordinacion() {
                                             {selectedSolicitud.nombre_instructor && (
                                                 <p className="text-sm mt-1">
                                                     <strong>Instructor:</strong> {selectedSolicitud.nombre_instructor} {selectedSolicitud.apellido_instructor}
+                                                    {selectedSolicitud.documento_instructor && <span className="text-gray-600 text-xs ml-1">({selectedSolicitud.documento_instructor})</span>}
                                                 </p>
                                             )}
                                             {selectedSolicitud.motivo_rechazo_instructor && (
@@ -572,9 +579,26 @@ export default function HistorialCoordinacion() {
                                             }`}>
                                             <p className="text-xs uppercase font-semibold mb-1">Estado Coordinación</p>
                                             <p className="font-semibold">{selectedSolicitud.estado_coordinador || selectedSolicitud.estado_general}</p>
+                                            {(selectedSolicitud.estado_coordinador === 'Aprobado' || selectedSolicitud.estado_general === 'Aprobado Final' || selectedSolicitud.estado_display === 'Ya Escaneado') && selectedSolicitud.nombre_coordinador ? (
+                                                <p className="text-sm mt-1">
+                                                    <strong>Aprobado por coordinador(a):</strong> {selectedSolicitud.nombre_coordinador} {selectedSolicitud.apellido_coordinador}
+                                                    {selectedSolicitud.documento_coordinador && <span className="text-gray-600 text-xs ml-1">({selectedSolicitud.documento_coordinador})</span>}
+                                                </p>
+                                            ) : null}
+
                                             {(selectedSolicitud.motivo_rechazo_coordinador) ? (
-                                                <p className="text-sm mt-1">Motivo: {selectedSolicitud.motivo_rechazo_coordinador}</p>
-                                            ) : selectedSolicitud.estado_general === 'Rechazado' && (
+                                                <div className="mt-1">
+                                                    <p className="text-sm">Motivo: {selectedSolicitud.motivo_rechazo_coordinador}</p>
+                                                    {/* Mostrar coordinador que rechazó */}
+                                                    {selectedSolicitud.estado_coordinador === 'Rechazado' && selectedSolicitud.nombre_coordinador && (
+                                                        <div className="mt-1 pt-1 border-t border-red-200">
+                                                            <p className="text-xs font-semibold text-red-700">Rechazado por:</p>
+                                                            <p className="text-sm text-red-800">{selectedSolicitud.nombre_coordinador} {selectedSolicitud.apellido_coordinador}</p>
+                                                            {selectedSolicitud.documento_coordinador && <p className="text-xs text-red-600">Doc: {selectedSolicitud.documento_coordinador}</p>}
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            ) : selectedSolicitud.estado_general === 'Rechazado' && !selectedSolicitud.motivo_rechazo_instructor && (
                                                 <p className="text-sm mt-1">Motivo: Rechazado por sistema o sin motivo especificado</p>
                                             )}
                                         </div>
@@ -617,7 +641,7 @@ export default function HistorialCoordinacion() {
                     </div>
                 )}
 
-               
+
 
                 {/* Modal de Confirmación - Vaciar Todo */}
                 {showConfirmDeleteModal && (
