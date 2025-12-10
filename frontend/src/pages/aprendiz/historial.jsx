@@ -209,13 +209,13 @@ export default function HistorialAprendiz() {
         }
 
         if (estado === 'Ya Escaneado') {
-            return <span className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm font-semibold border border-blue-200"><i className="fas fa-check-double mr-1"></i> {estado}</span>;
+            return <span className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm font-semibold border border-blue-200">Escaneado</span>;
         }
 
         if (estado === 'Aprobado' || estado.includes('Aprobado') || estado.includes('QR')) {
-            return <span className="px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm font-semibold">✓ {estado}</span>;
+            return <span className="px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm font-semibold"> {estado}</span>;
         } else if (estado.includes('Rechazado')) {
-            return <span className="px-3 py-1 bg-red-100 text-red-800 rounded-full text-sm font-semibold">✗ {estado}</span>;
+            return <span className="px-3 py-1 bg-red-100 text-red-800 rounded-full text-sm font-semibold"> {estado}</span>;
         } else if (estado.includes('Pendiente')) {
             return <span className="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-sm font-semibold">⏳ {estado}</span>;
         }
@@ -234,26 +234,24 @@ export default function HistorialAprendiz() {
 
     return (
         <DashboardLayout title="Historial de Solicitudes">
-            <div className="min-h-screen bg-gradient-to-br from-green-50 to-emerald-50 p-6 pt-24">
+            <div className="min-h-screen bg-gradient-to-br from-green-50 to-emerald-50 p-6 pt-18">
                 <div className="max-w-7xl mx-auto">
                     {/* Header */}
                     <div className="bg-white rounded-xl shadow-lg p-6 mb-6">
                         <div className="flex items-center justify-between mb-4">
                             <div className="flex items-center gap-4">
-                                <div className="bg-gradient-to-br from-[#39A900] to-emerald-600 text-white p-4 rounded-full">
-                                    <i className="fas fa-history text-2xl"></i>
+                                <div className=" bg-gray-100  text-white p-4 rounded-full">
+                                    <p className="text-3xl font-bold text-[#006400]">{filteredSolicitudes.length}</p>
+
                                 </div>
                                 <div>
-                                    <h1 className="text-3xl font-bold bg-gradient-to-r from-[#39A900] to-emerald-600 bg-clip-text text-transparent">
+                                    <h1 className="text-2xl font-bold bg-gradient-to-r from-[#39A900] to-emerald-600 bg-clip-text text-transparent">
                                         Historial de Solicitudes
                                     </h1>
-                                    <p className="text-gray-600">Consulta y gestiona todas tus solicitudes pasadas</p>
+                                    <p className="text-gray-600 text-sm">Consulta todas tus solicitudes pasadas</p>
                                 </div>
                             </div>
-                            <div className="text-right">
-                                <p className="text-sm text-gray-500">Total de solicitudes</p>
-                                <p className="text-3xl font-bold text-[#39A900]">{filteredSolicitudes.length}</p>
-                            </div>
+
                         </div>
 
                         {/* Barra de Filtros */}
@@ -322,13 +320,13 @@ export default function HistorialAprendiz() {
                         </div>
                     ) : (
                         <div className="bg-white rounded-xl shadow-lg overflow-hidden">
-                            <div className="overflow-x-auto">
+                            {/* Vista de tabla para pantallas grandes */}
+                            <div className="overflow-x-auto max-[600px]:hidden">
                                 <table className="w-full">
                                     <thead className="bg-gradient-to-r from-[#39A900] to-emerald-600 text-white">
                                         <tr>
-                                            <th className="px-4 py-3 text-left font-semibold">Fecha y Hora</th>
+                                            <th className="px-4 py-3 text-left font-semibold">Hora y Fecha</th>
                                             <th className="px-4 py-3 text-left font-semibold">Motivo</th>
-                                            <th className="px-4 py-3 text-left font-semibold">Instructor</th>
                                             <th className="px-4 py-3 text-left font-semibold">Estado</th>
                                             <th className="px-4 py-3 text-center font-semibold">Acciones</th>
                                         </tr>
@@ -346,9 +344,7 @@ export default function HistorialAprendiz() {
                                                 <td className="px-4 py-3 text-sm text-gray-600">
                                                     {getMotivoTexto(solicitud.motivo, solicitud.descripcion)}
                                                 </td>
-                                                <td className="px-4 py-3 text-sm text-gray-600">
-                                                    {solicitud.nombre_instructor} {solicitud.apellido_instructor}
-                                                </td>
+
                                                 <td className="px-4 py-3">
                                                     {getEstadoBadge(solicitud)}
                                                 </td>
@@ -367,6 +363,78 @@ export default function HistorialAprendiz() {
                                     </tbody>
                                 </table>
                             </div>
+
+                            {/* Vista de tarjetas para móvil (<= 600px) */}
+                            <div className="hidden max-[601px]:block p-4">
+                                {filteredSolicitudes.length === 0 ? (
+                                    <div className="py-8 text-center text-gray-500">
+                                        <i className="fas fa-inbox text-4xl mb-3 block"></i>
+                                        No hay solicitudes con el filtro seleccionado
+                                    </div>
+                                ) : (
+                                    <div className="space-y-4">
+                                        {filteredSolicitudes.map((solicitud) => (
+                                            <div
+                                                key={solicitud.id_permiso}
+                                                onClick={() => openDetallesModal(solicitud)}
+                                                className="bg-white rounded-2xl p-5 shadow-[0_2px_8px_rgba(0,0,0,0.08)] hover:shadow-[0_4px_16px_rgba(0,0,0,0.12)] transition-all duration-300 border border-gray-100 relative overflow-hidden cursor-pointer"
+                                            >
+                                                {/* Barra de color superior según estado */}
+                                                <div className={`absolute top-0 left-0 right-0 h-1 ${solicitud.estado_display === 'Ya Escaneado' || solicitud.estado_display === 'Escaneado'
+                                                    ? 'bg-gradient-to-r from-blue-400 to-blue-600'
+                                                    : (solicitud.estado_display || solicitud.estado_general).toLowerCase().includes('aprobado') || (solicitud.estado_display || solicitud.estado_general).toLowerCase().includes('qrgenerado')
+                                                        ? 'bg-gradient-to-r from-[#2A7D00] to-[#39A900]'
+                                                        : (solicitud.estado_display || solicitud.estado_general).toLowerCase().includes('rechazad') || (solicitud.estado_display || solicitud.estado_general).toLowerCase().includes('cancelad')
+                                                            ? 'bg-gradient-to-r from-[#b32a26] to-[#d63031]'
+                                                            : 'bg-gradient-to-r from-[#ffc107] to-[#ff9800]'
+                                                    }`}></div>
+
+                                                {/* Motivo - Ocupa todo el ancho */}
+                                                <div className="mb-4 pt-2">
+                                                    <div className="flex items-start gap-2">
+                                                        <div className="bg-[#e8f5e1] p-2 rounded-lg">
+                                                            <i className="fas fa-file-alt text-[#39A900] text-sm"></i>
+                                                        </div>
+                                                        <div className="flex-1">
+                                                            <p className="text-xs text-gray-500 uppercase font-semibold mb-1 tracking-wide">Motivo</p>
+                                                            <p className="text-sm text-gray-800 font-medium leading-snug">{getMotivoTexto(solicitud.motivo, solicitud.descripcion)}</p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                {/* Fecha/Hora, Instructor y Estado */}
+                                                <div className="grid grid-cols-2 gap-3 mb-2">
+                                                    <div className="bg-gray-50 rounded-xl p-3">
+                                                        <p className="text-xs text-gray-500 uppercase font-semibold mb-1.5 tracking-wide">Hora y Fecha</p>
+                                                        <div className="flex items-center gap-1.5 text-xs text-gray-700 font-medium">
+                                                            <i className="far fa-clock text-[#39A900]"></i>
+                                                            {formatFechaHora(solicitud.fecha_solicitud)}
+                                                        </div>
+                                                    </div>
+
+
+
+                                                    <div className="bg-gray-50 rounded-xl p-3">
+                                                        <p className="text-xs text-gray-500 uppercase font-semibold mb-1.5 tracking-wide">Estado</p>
+                                                        {getEstadoBadge(solicitud)}
+                                                    </div>
+                                                </div>
+
+                                                {/* Botón Detalles - Inferior derecha */}
+                                                <div className="flex justify-end pt-2 border-t border-gray-100">
+                                                    <button
+                                                        onClick={() => openDetallesModal(solicitud)}
+                                                        className="bg-gradient-to-r from-[#17a2b8] to-[#138496] text-white px-4 py-2 rounded-xl hover:from-[#138496] hover:to-[#117a8b] transition-all duration-300 inline-flex items-center gap-2 text-xs font-semibold shadow-sm hover:shadow-md"
+                                                    >
+                                                        <i className="fas fa-info-circle"></i>
+                                                        Detalles
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
                         </div>
                     )}
                 </div>
@@ -374,7 +442,7 @@ export default function HistorialAprendiz() {
                 {/* Modal de Detalles */}
                 {showDetallesModal && selectedSolicitud && (
                     <div className="fixed inset-0 z-[1000] overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
-                        <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+                        <div className="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
                             <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true" onClick={closeDetallesModal}></div>
                             <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
 
@@ -408,7 +476,7 @@ export default function HistorialAprendiz() {
                                         <div className="flex justify-between items-center bg-gray-50 p-3 rounded-lg">
                                             <div>
                                                 <p className="text-xs text-gray-500 uppercase font-bold">Fecha Solicitud</p>
-                                                <p className="text-sm font-medium text-gray-900">{formatFechaHora(selectedSolicitud.fecha_solicitud)}</p>
+                                                <p className="text-xs font-medium text-gray-900">{formatFechaHora(selectedSolicitud.fecha_solicitud)}</p>
                                             </div>
                                             <div>
                                                 {getEstadoBadge(selectedSolicitud)}
@@ -417,8 +485,8 @@ export default function HistorialAprendiz() {
 
                                         {/* Motivo */}
                                         <div>
-                                            <p className="text-xs text-gray-500 uppercase font-bold mb-1">Motivo</p>
-                                            <div className="bg-white border border-gray-200 p-3 rounded-lg text-sm text-gray-700">
+                                            <p className="text-xs text-gray-500  uppercase font-bold mb-1">Motivo</p>
+                                            <div className="bg-gray-100 border border-gray-200 p-3 rounded-lg text-sm text-gray-700">
                                                 {getMotivoTexto(selectedSolicitud.motivo, selectedSolicitud.descripcion)}
                                             </div>
                                         </div>
@@ -437,6 +505,19 @@ export default function HistorialAprendiz() {
                                             </div>
                                         </div>
 
+                                        {/* Coordinador que aprobó (si aplica) */}
+                                        {(selectedSolicitud.estado_general === 'Aprobado' || selectedSolicitud.estado_general.includes('Aprobado')) && selectedSolicitud.nombre_coordinador_aprobado && (
+                                            <div className="bg-green-50 border border-green-100 p-3 rounded-lg mt-2">
+                                                <p className="text-xs text-green-600 uppercase font-bold mb-1">Aprobado por Coordinación</p>
+                                                <p className="text-sm text-green-800 font-semibold">
+                                                    {selectedSolicitud.nombre_coordinador_aprobado} {selectedSolicitud.apellido_coordinador_aprobado}
+                                                </p>
+                                                {selectedSolicitud.documento_coordinador_aprobado && (
+                                                    <p className="text-xs text-green-700 opacity-80">Doc: {selectedSolicitud.documento_coordinador_aprobado}</p>
+                                                )}
+                                            </div>
+                                        )}
+
                                         {/* Información de Rechazo */}
                                         {selectedSolicitud.estado_general.includes('Rechazado') && (
                                             <div className="bg-red-50 border border-red-100 p-3 rounded-lg mt-2">
@@ -447,11 +528,11 @@ export default function HistorialAprendiz() {
                                                             (selectedSolicitud.estado_coordinador === 'Rechazado' ? 'Coordinación' : 'Sistema'))
                                                     }
                                                 </p>
-                                                {/* Nombre del Coordinador si aplica */}
+                                                {/* Nombre del Coordinador si rechazó */}
                                                 {(selectedSolicitud.rol_rechazo === 'Coordinacion' || selectedSolicitud.estado_coordinador === 'Rechazado') && selectedSolicitud.nombre_coordinador_rechazado && (
                                                     <p className="text-xs text-red-700 font-semibold mb-1">
                                                         {selectedSolicitud.nombre_coordinador_rechazado} {selectedSolicitud.apellido_coordinador_rechazado || ''}
-                                                        {selectedSolicitud.documento_coordinador_rechazado && <span className="font-normal opacity-80"> ({selectedSolicitud.documento_coordinador_rechazado})</span>}
+                                                        {selectedSolicitud.documento_coordinador_rechazado && <span className="font-normal opacity-80"> (Doc: {selectedSolicitud.documento_coordinador_rechazado})</span>}
                                                     </p>
                                                 )}
                                                 <p className="text-sm text-red-800 italic">
@@ -480,7 +561,7 @@ export default function HistorialAprendiz() {
                                                 </button>
                                             ) : selectedSolicitud.estado_display === 'Ya Escaneado' ? (
                                                 <button disabled className="flex-1 bg-blue-50 text-blue-400 py-2 px-4 rounded-lg text-sm font-semibold cursor-not-allowed flex items-center justify-center gap-2 border border-blue-100">
-                                                    <i className="fas fa-check-double"></i> Ya escaneado
+                                                    Escaneado
                                                 </button>
                                             ) : selectedSolicitud.estado_general === 'Aprobado' ? (
                                                 // Fallback por si acaso

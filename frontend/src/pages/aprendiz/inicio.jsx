@@ -153,8 +153,7 @@ export default function InicioAprendiz() {
         if (estado === 'Ya Escaneado') {
             return (
                 <span className="flex items-center gap-1">
-                    <i className="fas fa-check-double"></i>
-                    Ya Escaneado
+                    Escaneado
                 </span>
             );
         }
@@ -341,16 +340,16 @@ export default function InicioAprendiz() {
 
                         {/* Vista de tabla para pantallas grandes */}
                         <div className="overflow-x-auto max-[600px]:hidden">
-                            <table className="w-full">
+                            <table className="w-full" >
                                 <thead>
                                     <tr className="bg-gray-50 border-b border-gray-200">
-                                        <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">Motivo</th>
+                                        <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700" >Motivo</th>
                                         <th className="px-8 py-4 text-left text-sm font-semibold text-gray-700">Enviado</th>
                                         <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">Estado</th>
                                         <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">Acciones</th>
                                     </tr>
                                 </thead>
-                                <tbody>
+                                <tbody  > 
                                     {loading ? (
                                         <tr>
                                             <td colSpan="4" className="px-6 py-8 text-center">
@@ -368,7 +367,7 @@ export default function InicioAprendiz() {
                                     ) : solicitudes.length === 0 ? (
                                         <tr>
                                             <td colSpan="4" className="px-6 py-8 text-center text-gray-500">
-                                                <i className="fas fa-inbox text-4xl mb-3 block"></i>
+                                                <i className="fas fa-inbox text-4xl mb-3 block mr-4 "></i>
                                                 No hay solicitudes registradas para el día de hoy.
                                             </td>
                                         </tr>
@@ -405,6 +404,8 @@ export default function InicioAprendiz() {
                         {/* Vista de tarjetas para móvil (< 600px) */}
                         <div className="hidden max-[601px]:block p-4">
                             {loading ? (
+
+
                                 <div className="py-8 text-center">
                                     <i className="fas fa-spinner fa-spin text-3xl text-[#39A900]"></i>
                                     <p className="mt-2 text-gray-600">Cargando solicitudes...</p>
@@ -416,7 +417,7 @@ export default function InicioAprendiz() {
                                 </div>
                             ) : solicitudes.length === 0 ? (
                                 <div className="py-8 text-center text-gray-500">
-                                    <i className="fas fa-inbox text-4xl mb-3 block"></i>
+                                    <i className="fas fa-inbox text-3xl mb-3 block mr-4"></i>
                                     No hay solicitudes registradas para el día de hoy.
                                 </div>
                             ) : (
@@ -424,7 +425,8 @@ export default function InicioAprendiz() {
                                     {solicitudes.map((solicitud) => (
                                         <div
                                             key={solicitud.id_permiso}
-                                            className="bg-white rounded-2xl p-5 shadow-[0_2px_8px_rgba(0,0,0,0.08)] hover:shadow-[0_4px_16px_rgba(0,0,0,0.12)] transition-all duration-300 border border-gray-100 relative overflow-hidden"
+                                            onClick={() => openDetallesModal(solicitud)}
+                                            className="bg-white rounded-2xl p-5 shadow-[0_2px_8px_rgba(0,0,0,0.08)] hover:shadow-[0_4px_16px_rgba(0,0,0,0.12)] transition-all duration-300 border border-gray-100 relative overflow-hidden cursor-pointer"
                                         >
                                             {/* Barra de color superior según estado */}
                                             <div className={`absolute top-0 left-0 right-0 h-1 ${solicitud.estado_display === 'Ya Escaneado'
@@ -469,7 +471,10 @@ export default function InicioAprendiz() {
                                             {/* Botón Detalles - Inferior derecha */}
                                             <div className="flex justify-end pt-2 border-t border-gray-100">
                                                 <button
-                                                    onClick={() => openDetallesModal(solicitud)}
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        openDetallesModal(solicitud);
+                                                    }}
                                                     className="bg-gradient-to-r from-[#17a2b8] to-[#138496] text-white px-4 py-2 rounded-xl hover:from-[#138496] hover:to-[#117a8b] transition-all duration-300 inline-flex items-center gap-2 text-xs font-semibold shadow-sm hover:shadow-md"
                                                 >
                                                     <i className="fas fa-info-circle"></i>
@@ -595,7 +600,7 @@ export default function InicioAprendiz() {
                             </div>
 
                             {/* Botones de acción */}
-                            <div className="mt-6 grid grid-cols-2 gap-3">
+                            <div className="mt-4 grid grid-cols-2 gap-3">
                                 {/* Botón Cancelar Solicitud (Solo si está pendiente) */}
                                 {selectedSolicitud.estado_display.toLowerCase().includes('pendiente') ? (
                                     <button

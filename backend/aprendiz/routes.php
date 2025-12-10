@@ -193,6 +193,20 @@ return function ($app) {
                      WHERE a_rech.id_permiso = p.id_permiso AND a_rech.estado_aprobacion = 'Rechazado' 
                      ORDER BY a_rech.fecha_aprobacion DESC LIMIT 1) AS rol_rechazo,
                      
+                    -- DATOS COORDINADOR APROBACIÓN
+                    (SELECT u_coord.nombre 
+                     FROM aprobaciones ap_c 
+                     JOIN usuarios u_coord ON ap_c.id_usuario_aprobador = u_coord.id_usuario 
+                     WHERE ap_c.id_permiso = p.id_permiso AND ap_c.rol_aprobador = 'Coordinacion' AND ap_c.estado_aprobacion = 'Aprobado' LIMIT 1) AS nombre_coordinador_aprobado,
+                    (SELECT u_coord.apellido 
+                     FROM aprobaciones ap_c 
+                     JOIN usuarios u_coord ON ap_c.id_usuario_aprobador = u_coord.id_usuario 
+                     WHERE ap_c.id_permiso = p.id_permiso AND ap_c.rol_aprobador = 'Coordinacion' AND ap_c.estado_aprobacion = 'Aprobado' LIMIT 1) AS apellido_coordinador_aprobado,
+                    (SELECT u_coord.documento 
+                     FROM aprobaciones ap_c 
+                     JOIN usuarios u_coord ON ap_c.id_usuario_aprobador = u_coord.id_usuario 
+                     WHERE ap_c.id_permiso = p.id_permiso AND ap_c.rol_aprobador = 'Coordinacion' AND ap_c.estado_aprobacion = 'Aprobado' LIMIT 1) AS documento_coordinador_aprobado,
+
                     -- DATOS COORDINADOR RECHAZO (Explicit Subqueries)
                     (SELECT u_c.nombre 
                      FROM aprobaciones ap_c 

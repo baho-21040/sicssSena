@@ -339,12 +339,12 @@ const EsperaSolicitud = () => {
                             {/* Aprendiz Name */}
                             <div className="flex flex-col ">
                                 <span className="titulo font-semibold text-gray-500 text-xs uppercase mb-1">Aprendiz:</span>
-                                <span className="text-gray-800 text-xs p-1 bg-gray-50 rounded-tl rounded-tr border-l-4 border-l-blue-500 truncate" title={localSolicitudData.nombre_aprendiz}>
+                                <span className="text-gray-800 text-xs p-1 bg-gray-50 rounded-tl rounded-tr border-l-4 border-l-blue-500 truncate  sm:text-sm md:text-base" title={localSolicitudData.nombre_aprendiz}>
                                     {localSolicitudData.nombre_aprendiz}
 
                                 </span>
 
-                                <span className="text-gray-800 text-xs p-1 bg-gray-50 rounded-bl rounded-br border-l-4 border-l-blue-500 ">
+                                <span className="text-gray-800 text-xs p-1 bg-gray-50 rounded-bl rounded-br border-l-4 border-l-blue-500  sm:text-sm md:text-base ">
                                     {localSolicitudData.documento_aprendiz}
                                 </span>
                             </div>
@@ -352,10 +352,10 @@ const EsperaSolicitud = () => {
                             {/* Instructor Name */}
                             <div className="flex flex-col">
                                 <span className="titulo  font-semibold text-gray-500 text-xs uppercase mb-1">Instructor(a):</span>
-                                <span className="text-gray-800 text-xs p-1 bg-gray-50 rounded-tl rounded-tr border-l-4 border-l-blue-500 truncate" title={localSolicitudData.nombre_instructor}>
+                                <span className="text-gray-800 text-xs p-1 bg-gray-50 rounded-tl rounded-tr border-l-4 border-l-blue-500 truncate sm:text-sm md:text-base" title={localSolicitudData.nombre_instructor}>
                                     {localSolicitudData.nombre_instructor}
                                 </span>
-                                <span className="text-gray-800 text-xs p-1 bg-gray-50 rounded-bl rounded-br border-l-4 border-l-blue-500 ">
+                                <span className="text-gray-800 text-xs p-1 bg-gray-50 rounded-bl rounded-br border-l-4 border-l-blue-500  sm:text-sm md:text-base">
                                     {localSolicitudData.documento_instructor || 'No registrado'}
                                 </span>
 
@@ -367,14 +367,14 @@ const EsperaSolicitud = () => {
                             <div className="custom-wrapper-group">
                                 <div className="flex flex-col">
                                     <span className="titulo font-semibold text-gray-500 text-xs uppercase mb-1">Ficha:</span>
-                                    <span className="text-gray-800 text-xs p-2 bg-gray-50 rounded border-l-4 border-l-blue-500">
+                                    <span className="text-gray-800 text-xs p-2 bg-gray-50 rounded border-l-4 border-l-blue-500  sm:text-sm md:text-base">
                                         {localSolicitudData.numero_ficha}
                                     </span>
                                 </div>
 
                                 <div className="flex flex-col">
-                                    <span className="titulo font-semibold text-gray-500 text-xs uppercase mb-1">Jornada:</span>
-                                    <span className="text-gray-800 text-xs p-2 bg-gray-50 rounded border-l-4 border-l-blue-500">
+                                    <span className="titulo font-semibold text-gray-500 text-xs uppercase mb-1 ">Jornada:</span>
+                                    <span className="text-gray-800 text-xs p-2 bg-gray-50 rounded border-l-4 border-l-blue-500  sm:text-sm md:text-base">
                                         {localSolicitudData.jornada || 'No registrada'}
                                     </span>
                                 </div>
@@ -385,13 +385,13 @@ const EsperaSolicitud = () => {
                                 <div className="custom-wrapper-group">
                                     <div className="flex flex-col">
                                         <span className="titulo font-semibold text-gray-500 text-xs uppercase mb-1">Hora Salida:</span>
-                                        <span className="text-gray-800 text-xs p-2 bg-gray-50 rounded border-l-4 border-l-blue-500">
+                                        <span className="text-gray-800 text-xs p-2 bg-gray-50 rounded border-l-4 border-l-blue-500  sm:text-sm md:text-base">
                                             {formatTime12h(localSolicitudData.hora_salida)}
                                         </span>
                                     </div>
                                     <div className="flex flex-col">
                                         <span className="titulo font-semibold text-gray-500 text-xs uppercase mb-1">Hora Regreso:</span>
-                                        <span className="text-gray-800 text-xs p-2 bg-gray-50 rounded border-l-4 border-l-blue-500">
+                                        <span className="text-gray-800 text-xs p-2 bg-gray-50 rounded border-l-4 border-l-blue-500 sm:text-sm md:text-base">
                                             {formatTime12h(localSolicitudData.hora_regreso)}
                                         </span>
                                     </div>
@@ -399,7 +399,7 @@ const EsperaSolicitud = () => {
                             ) : (
                                 <div className="flex flex-col">
                                     <span className="titulo font-semibold text-gray-500 text-xs uppercase mb-1">Hora Salida:</span>
-                                    <span className="text-gray-800 text-xs p-2 bg-gray-50 rounded border-l-4 border-l-blue-500">
+                                    <span className="text-gray-800 text-xs p-2 bg-gray-50 rounded border-l-4 border-l-blue-500 sm:text-sm md:text-base">
                                         {formatTime12h(localSolicitudData.hora_salida)}
                                     </span>
                                 </div>
@@ -408,7 +408,7 @@ const EsperaSolicitud = () => {
                             {/* Motivo - Full Width */}
                             <div className="flex flex-col custom-full-width">
                                 <span className="titulo font-semibold text-gray-500 text-xs uppercase mb-1">Motivo:</span>
-                                <span className="text-gray-800 text-[14px] p-2 bg-gray-100 rounded border-l-4 border-l-yellow-500 italic">
+                                <span className="text-gray-800 text-[14px] p-2 bg-gray-100 rounded border-l-4 border-l-yellow-500 italic sm:text-sm md:text-base" >
                                     {localSolicitudData.motivo_mostrar}
                                 </span>
                             </div>
