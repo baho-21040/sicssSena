@@ -208,23 +208,25 @@ return function ($app) {
 
                     if ($coordinadores) {
                         require_once __DIR__ . '/../email/solicitud/notificarcoordinacion.php';
-                        foreach ($coordinadores as $emailCoordinacion) {
-                            if (!empty($emailCoordinacion)) {
+                        
+                        // Filtrar correos vacíos
+                        $destinatarios = array_filter($coordinadores, function($email) {
+                            return !empty($email);
+                        });
 
-                                enviarCorreoCoordinacion(
-                                    $emailCoordinacion,
-                                    $nombreAprendizCompleto,
-                                    $dataPermiso['documento_aprendiz'],
-                                    $dataPermiso['nombre_programa'] ?? 'N/A',
-                                    $dataPermiso['numero_ficha'] ?? 'N/A',
-                                    $dataPermiso['nombre_jornada'] ?? 'N/A',
-                                    $nombreInstructorCompleto,
-                                    $dataPermiso['documento_instructor'],
-                                    $descripcionSolicitud
-                                );
-                            }
+                        if (!empty($destinatarios)) {
+                            enviarCorreoCoordinacion(
+                                $destinatarios,
+                                $nombreAprendizCompleto,
+                                $dataPermiso['documento_aprendiz'],
+                                $dataPermiso['nombre_programa'] ?? 'N/A',
+                                $dataPermiso['numero_ficha'] ?? 'N/A',
+                                $dataPermiso['nombre_jornada'] ?? 'N/A',
+                                $nombreInstructorCompleto,
+                                $dataPermiso['documento_instructor'],
+                                $descripcionSolicitud
+                            );
                         }
-
                     }
                 } catch (Throwable $e) {
 

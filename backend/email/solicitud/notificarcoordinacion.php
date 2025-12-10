@@ -31,7 +31,15 @@ function enviarCorreoCoordinacion($emailCoordinacion, $nombreAprendiz, $document
         $mail->setFrom('informate.florencia2024@gmail.com', 'Sistema de Control de Ingresos y Salidas – Sicss SENA');
         
         // Asumiendo que coordinación tiene un correo general o se pasa uno específico
-        $mail->addAddress($emailCoordinacion, 'Coordinación Académica');
+        if (is_array($emailCoordinacion)) {
+            foreach ($emailCoordinacion as $email) {
+                if (!empty($email)) {
+                    $mail->addAddress($email);
+                }
+            }
+        } else {
+            $mail->addAddress($emailCoordinacion, 'Coordinación Académica');
+        }
 
         // --- Contenido del Correo ---
         $mail->isHTML(true);

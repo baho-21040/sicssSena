@@ -138,10 +138,12 @@ $app->get('/api/me', function ($request, $response) {
         $pdo = conexion();
         $stmt = $pdo->prepare("SELECT u.id_usuario,u.nombre,u.apellido,u.documento,u.correo,u.estado,u.id_programa,
                                    r.id_rol,r.nombre_rol,
-                                   p.nombre_programa,p.numero_ficha,p.nivel,p.centro_formacion
+                                   p.nombre_programa,p.numero_ficha,p.nivel,p.centro_formacion,
+                                   j.nombre_jornada
                             FROM usuarios u
                             LEFT JOIN roles r ON u.id_rol = r.id_rol
                             LEFT JOIN programas_formacion p ON u.id_programa = p.id_programa
+                            LEFT JOIN jornadas j ON p.id_jornada = j.id_jornada
                             WHERE u.id_usuario = :id");
         $stmt->execute([':id' => (int)$user['sub']]);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -167,6 +169,7 @@ $app->get('/api/me', function ($request, $response) {
                     'numero_ficha' => $row['numero_ficha'],
                     'nivel' => $row['nivel'],
                     'centro_formacion' => $row['centro_formacion'],
+                    'nombre_jornada' => $row['nombre_jornada'],
                 ] : null
             ]
         ];

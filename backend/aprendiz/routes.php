@@ -761,12 +761,17 @@ return function ($app) {
                     P.motivo,
                     P.descripcion,
                     P.soporte,
+                    P.hora_salida,
+                    P.hora_regreso,
+                    P.fecha_solicitud,
+                    -- Instructor Destino (Datos Directos)
+                    U_Inst.nombre AS nombre_instructor,
+                    U_Inst.apellido AS apellido_instructor,
+                    U_Inst.documento AS documento_instructor,
                     -- Aprobación del Instructor
                     (SELECT estado_aprobacion FROM aprobaciones WHERE id_permiso = P.id_permiso AND rol_aprobador = 'Instructor' ORDER BY fecha_aprobacion DESC LIMIT 1) AS estado_instructor,
                     (SELECT fecha_aprobacion FROM aprobaciones WHERE id_permiso = P.id_permiso AND rol_aprobador = 'Instructor' ORDER BY fecha_aprobacion DESC LIMIT 1) AS fecha_instructor,
                     (SELECT motivo FROM aprobaciones WHERE id_permiso = P.id_permiso AND rol_aprobador = 'Instructor' ORDER BY fecha_aprobacion DESC LIMIT 1) AS motivo_rechazo_instructor,
-                    (SELECT U.nombre FROM aprobaciones A INNER JOIN usuarios U ON A.id_usuario_aprobador = U.id_usuario WHERE A.id_permiso = P.id_permiso AND A.rol_aprobador = 'Instructor' ORDER BY A.fecha_aprobacion DESC LIMIT 1) AS nombre_instructor,
-                    (SELECT U.apellido FROM aprobaciones A INNER JOIN usuarios U ON A.id_usuario_aprobador = U.id_usuario WHERE A.id_permiso = P.id_permiso AND A.rol_aprobador = 'Instructor' ORDER BY A.fecha_aprobacion DESC LIMIT 1) AS apellido_instructor,
                     -- Aprobación del Coordinador
                     (SELECT estado_aprobacion FROM aprobaciones WHERE id_permiso = P.id_permiso AND rol_aprobador = 'Coordinacion' ORDER BY fecha_aprobacion DESC LIMIT 1) AS estado_coordinador,
                     (SELECT fecha_aprobacion FROM aprobaciones WHERE id_permiso = P.id_permiso AND rol_aprobador = 'Coordinacion' ORDER BY fecha_aprobacion DESC LIMIT 1) AS fecha_coordinador,
@@ -776,6 +781,8 @@ return function ($app) {
                     (SELECT U.apellido FROM aprobaciones A INNER JOIN usuarios U ON A.id_usuario_aprobador = U.id_usuario WHERE A.id_permiso = P.id_permiso AND A.rol_aprobador = 'Coordinacion' ORDER BY A.fecha_aprobacion DESC LIMIT 1) AS apellido_coordinador
                 FROM
                     permisos P
+                LEFT JOIN
+                    usuarios U_Inst ON P.id_instructor_destino = U_Inst.id_usuario
                 WHERE
                     P.id_permiso = :id_permiso
                     AND P.id_usuario = :id_usuario
