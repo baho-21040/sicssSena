@@ -173,11 +173,11 @@ export default function EditarInstructor() {
                     <div className="bg-white rounded-xl shadow-lg p-8 mb-6">
                         <div className="flex items-center gap-4 mb-6">
                             <div className="bg-[#39A900] text-white p-4 rounded-full">
-                                <i className="fas fa-user-edit text-3xl"></i>
+                               <i class="fa-regular fa-address-card text-2xl"></i>
                             </div>
                             <div>
                                 <h1 className="text-2xl font-bold text-[#2A7D00]">Mi Perfil</h1>
-                                <p className="text-gray-600">Gestiona tu información personal</p>
+                                <p className="text-gray-600 text-sm sm:text-base">Gestiona tu información personal</p>
                             </div>
                         </div>
 
@@ -223,20 +223,21 @@ export default function EditarInstructor() {
                     </div>
 
                     {/* Opciones de Edición */}
-                    <div className="bg-white rounded-xl shadow-lg p-8">
-                        <h2 className="text-2xl font-bold text-[#2A7D00] mb-4">
-                            <i className="fas fa-cog mr-2"></i>Configuración de Cuenta
+                    <div className="bg-white rounded-xl shadow-lg p-6 ">
+                        <h2 className="flex text-2xl font-bold text-[#2A7D00] mb-6">
+                            <i className="fas fa-cog mr-2"></i>
+                            <p className='text-lg sm:text-2xl'>Configuración de Cuenta</p>
                         </h2>
 
                         <div className="space-y-4">
                             {/* Actualizar Correo */}
-                            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition gap-4">
-                                <div className="w-full sm:w-auto">
-                                    <h3 className="font-semibold text-gray-800">
-                                        <i className="fas fa-envelope text-[#17a2b8] mr-2"></i>
+                            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition">
+                                <div className="w-full sm:w-auto mb-4 sm:mb-0">
+                                    <h3 className="text-sm font-semibold text-gray-800">
+                                        <i className=" fas fa-envelope text-[#17a2b8] mr-2"></i>
                                         Actualizar Correo Electrónico
                                     </h3>
-                                    <p className="text-sm text-gray-600">Cambia tu dirección de correo electrónico</p>
+                                    <p className="text-xs text-gray-600">Cambia tu dirección de correo electrónico</p>
                                 </div>
                                 <button
                                     onClick={() => setShowEmailModal(true)}
@@ -247,9 +248,9 @@ export default function EditarInstructor() {
                             </div>
 
                             {/* Cambiar Contraseña */}
-                            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition gap-4">
-                                <div className="w-full sm:w-auto">
-                                    <h3 className="font-semibold text-gray-800">
+                            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition">
+                                <div className="w-full sm:w-auto mb-4 sm:mb-0">
+                                    <h3 className="text-sm font-semibold text-gray-800 ">
                                         <i className="fas fa-lock text-[#ffc107] mr-2"></i>
                                         Cambiar Contraseña
                                     </h3>

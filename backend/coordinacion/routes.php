@@ -566,6 +566,7 @@ return function ($app) {
                 WHERE 
                     p.oculto_coordinador = 0
                     AND p.estado_general != 'Pendiente Instructor'
+                    AND NOT EXISTS (SELECT 1 FROM aprobaciones a WHERE a.id_permiso = p.id_permiso AND a.rol_aprobador = 'Instructor' AND a.estado_aprobacion = 'Rechazado')
                     AND (p.estado_general = 'Pendiente Coordinador' 
                          OR p.estado_general = 'Aprobado Final' 
                          OR p.estado_general = 'Rechazado')

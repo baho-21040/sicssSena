@@ -1,5 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { useSound } from '../../contexts/SoundContext';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import DashboardLayout from '../../components/DashboardLayout';
 import { useUser } from '../../contexts/UserContext';
@@ -21,16 +20,13 @@ const InicioInstructor = () => {
     const [procesando, setProcesando] = useState(false);
     const [notification, setNotification] = useState(null);
 
-    const { playNotificationSound } = useSound();
-    const previousCountRef = useRef(-1);
-
-    // Mostrar notificación
+    // Mostrar notificación local (para feedback de acciones como aprobar/rechazar)
     const showNotification = (message, type = 'success') => {
         setNotification({ message, type });
         setTimeout(() => setNotification(null), 4000);
     };
 
-    // Cargar solicitudes
+    // Cargar solicitudes (sin lógica de notificación - ahora es manejada por NotificationContext)
     const cargarSolicitudes = async () => {
         try {
             const token = localStorage.getItem('token');
@@ -40,24 +36,6 @@ const InicioInstructor = () => {
 
             const data = await response.json();
             if (data.status === 'ok') {
-                const newCount = data.solicitudes.length;
-                const prevCount = previousCountRef.current;
-
-                // Si es la primera carga (-1), solo actualizamos el contador
-                if (prevCount === -1) {
-                    previousCountRef.current = newCount;
-                } else if (newCount > prevCount) {
-                    // Si hay más solicitudes que antes
-                    console.log('🔔 Nueva solicitud detectada!');
-                    console.log('Intentando reproducir sonido...');
-                    playNotificationSound();
-                    showNotification('🔔 Nueva solicitud recibida!', 'success');
-                    previousCountRef.current = newCount;
-                } else {
-                    // Actualizar contador si disminuye o es igual
-                    previousCountRef.current = newCount;
-                }
-
                 setSolicitudes(data.solicitudes);
             }
         } catch (err) {
@@ -67,7 +45,7 @@ const InicioInstructor = () => {
         }
     };
 
-    // Polling cada 5 segundos
+    // Polling cada 5 segundos para actualizar la tabla
     useEffect(() => {
         cargarSolicitudes();
         const interval = setInterval(cargarSolicitudes, 5000);
@@ -524,7 +502,7 @@ const InicioInstructor = () => {
                         <div className="bg-gradient-to-r from-[#3498db] to-[#2980b9] p-4 text-white">
                             <div className="flex items-start justify-between">
                                 <h2 className="text-xl sm:text-2xl md:text-3xl font-bold">Detalles</h2>
-                                
+
                                 <div className="flex flex-col items-end gap-2">
                                     {!procesando && (
                                         <button onClick={() => setShowDetallesModal(false)} className="text-white hover:text-gray-200 text-3xl leading-none">&times;</button>

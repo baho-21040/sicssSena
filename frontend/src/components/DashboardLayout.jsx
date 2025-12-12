@@ -4,10 +4,12 @@ import Header from './Header';
 import SideMenu from './SideMenu';
 import Footer from './Footer';
 import { useUser } from '../contexts/UserContext';
+import { useNotification } from '../contexts/NotificationContext';
 
 // Este componente envuelve todas las rutas que necesitan Header y SideMenu
 const DashboardLayout = ({ children, headerTitle }) => {
     const { user } = useUser();
+    const { notification } = useNotification();
     const navigate = useNavigate();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -77,6 +79,25 @@ const DashboardLayout = ({ children, headerTitle }) => {
                 {children}
             </div>
             <Footer />
+
+            {/* Toast de Notificación Global */}
+            {notification && (
+                <div className={`fixed top-24 right-4 z-[9999] px-6 py-4 rounded-lg shadow-2xl flex items-center gap-3 animate-[slideIn_0.3s_ease-out] ${notification.type === 'success'
+                    ? 'bg-green-500 text-white'
+                    : 'bg-red-500 text-white'
+                    }`}>
+                    <i className={`fas ${notification.type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'} text-2xl`}></i>
+                    <span className="font-semibold text-lg">{notification.message}</span>
+                </div>
+            )}
+
+            {/* Estilos para animación del toast */}
+            <style>{`
+                @keyframes slideIn {
+                    from { opacity: 0; transform: translateX(100px); }
+                    to { opacity: 1; transform: translateX(0); }
+                }
+            `}</style>
         </div>
     );
 };

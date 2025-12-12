@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import DashboardLayout from '../../components/DashboardLayout';
 import { useUser } from '../../contexts/UserContext';
 import { API_BASE_URL } from '../../config/api.js';
+import { Link } from "react-router-dom";
 
 const API = API_BASE_URL;
 
@@ -170,14 +171,19 @@ export default function EditarPerfilAprendiz() {
             <div className="min-h-screen bg-gray-50 p-8 pt-18">
                 <div className="max-w-4xl mx-auto">
                     {/* Header */}
+                    
+
                     <div className="bg-white rounded-xl shadow-lg p-8 mb-6">
+                        <Link to="/aprendiz/inicio" className="btn-back mb-4">
+                        <i className="fas fa-chevron-left"></i> Volver al Inicio
+                    </Link>
                         <div className="flex items-center gap-4 mb-6">
                             <div className="bg-[#39A900] text-white p-4 rounded-full">
-                                <i className="fas fa-user-edit text-3xl"></i>
+                                <i class="fa-regular fa-address-card text-2xl"></i>
                             </div>
                             <div>
-                                <h1 className="text-3xl font-bold text-[#2A7D00]">Mi Perfil</h1>
-                                <p className="text-gray-600">Gestiona tu información personal</p>
+                                <h1 className="text-2xl font-bold text-[#2A7D00]">Mi Perfil</h1>
+                                <p className="text-gray-600 text-sm sm:text-base">Gestiona tu información personal</p>
                             </div>
                         </div>
 
@@ -244,20 +250,21 @@ export default function EditarPerfilAprendiz() {
                     </div>
 
                     {/* Opciones de Edición */}
-                    <div className="bg-white rounded-xl shadow-lg p-8">
-                        <h2 className="text-2xl font-bold text-[#2A7D00] mb-6">
-                            <i className="fas fa-cog mr-2"></i>Configuración de Cuenta
+                    <div className="bg-white rounded-xl shadow-lg p-6 ">
+                        <h2 className="flex text-2xl font-bold text-[#2A7D00] mb-6">
+                            <i className="fas fa-cog mr-2"></i>
+                            <p className='text-lg sm:text-2xl'>Configuración de Cuenta</p>
                         </h2>
 
                         <div className="space-y-4">
                             {/* Actualizar Correo */}
                             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition">
-                                <div className="w-full sm:w-auto">
-                                    <h3 className="font-semibold text-gray-800">
-                                        <i className="fas fa-envelope text-[#17a2b8] mr-2"></i>
+                                <div className="w-full sm:w-auto mb-4 sm:mb-0">
+                                    <h3 className="text-sm font-semibold text-gray-800">
+                                        <i className=" fas fa-envelope text-[#17a2b8] mr-2"></i>
                                         Actualizar Correo Electrónico
                                     </h3>
-                                    <p className="text-sm text-gray-600">Cambia tu dirección de correo electrónico</p>
+                                    <p className="text-xs text-gray-600">Cambia tu dirección de correo electrónico</p>
                                 </div>
                                 <button
                                     onClick={() => setShowEmailModal(true)}
@@ -269,8 +276,8 @@ export default function EditarPerfilAprendiz() {
 
                             {/* Cambiar Contraseña */}
                             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition">
-                                <div className="w-full sm:w-auto">
-                                    <h3 className="font-semibold text-gray-800">
+                                <div className="w-full sm:w-auto mb-4 sm:mb-0">
+                                    <h3 className="text-sm font-semibold text-gray-800 ">
                                         <i className="fas fa-lock text-[#ffc107] mr-2"></i>
                                         Cambiar Contraseña
                                     </h3>

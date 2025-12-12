@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import DashboardLayout from '../../components/DashboardLayout';
 import { useUser } from '../../contexts/UserContext';
+import { Link } from "react-router-dom";
 
 import { API_BASE_URL } from '../../config/api.js';
 
@@ -163,7 +164,7 @@ const EsperaSolicitud = () => {
             };
         }
 
-        return { texto: estado, color: 'gray', icono: '📋' };
+        return { texto: estado, color: 'gray', icono: <i class="fa-solid fa-hourglass-start fa-beat-fade"></i> };
     };
 
     const formatTime12h = (timeStr) => {
@@ -219,6 +220,10 @@ const EsperaSolicitud = () => {
             `}</style>
             <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-6">
                 <div className="max-w-[900px] mx-auto">
+
+                    <Link to="/aprendiz/inicio" className="btn-back mb-4">
+                            <i className="fas fa-chevron-left"></i> Volver al Inicio
+                        </Link>
 
                     {/* Estado Actual */}
                     <div className={`bg-white rounded-[90px] p-4 mb-6 shadow-lg border-l-4 ${estadoVisual.color === 'green' ? 'border-l-green-500' :

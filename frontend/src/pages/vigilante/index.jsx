@@ -340,11 +340,11 @@ const InicioVigilante = () => {
                 {/* Tabla de accesos del día */}
                 <div className="max-w-7xl mx-auto bg-white rounded-xl shadow-lg overflow-hidden">
                     <div className="bg-gradient-to-r from-[#39A900] to-[#2A7D00] p-6">
-                        <h2 className="text-2xl font-bold text-white flex items-center gap-3  max-[430px]:text-lg">
+                        <h2 className="text-2xl font-bold text-white flex items-center gap-3  max-[450px]:text-base">
                             <i className="fas fa-clipboard-list"></i>
                             Accesos Registrados Hoy
                         </h2>
-                        <p className="text-white/90 mt-1">
+                        <p className="text-white/90 mt-1 text-lg  max-[450px]:text-xs ">
                             {new Date().toLocaleDateString('es-CO', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
                         </p>
                     </div>

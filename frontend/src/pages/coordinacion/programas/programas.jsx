@@ -225,7 +225,7 @@ export default function Programas() {
                                     className="bg-[#39A900] text-white px-5 py-2.5 rounded-lg hover:bg-[#2A7D00] transition-colors font-bold flex items-center gap-2"
                                     title="Registrar un nuevo Programa"
                                 >
-                                    <i className="fas fa-plus-circle"></i> Nueva Formación
+                                    <i className="fas fa-plus-circle"></i> Formación
                                 </Link>
                             </div>
                         </div>

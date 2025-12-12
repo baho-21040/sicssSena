@@ -209,15 +209,15 @@ export default function HistorialCoordinacion() {
 
 
         if (estado === 'Ya Escaneado') {
-            return <span className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm font-semibold border border-blue-200"><i className="fas fa-check-double mr-1"></i> {estado}</span>;
+            return <span className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm font-semibold border border-blue-200"> {estado}</span>;
         }
 
         if (estado.includes('Aprobado') || estado.includes('QR')) {
-            return <span className="px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm font-semibold">✓ {estado}</span>;
+            return <span className="px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm font-semibold">{estado}</span>;
         } else if (estado.includes('Rechazado')) {
-            return <span className="px-3 py-1 bg-red-100 text-red-800 rounded-full text-sm font-semibold">✗ {estado}</span>;
+            return <span className="px-3 py-1 bg-red-100 text-red-800 rounded-full text-sm font-semibold"> {estado}</span>;
         } else if (estado.includes('Pendiente')) {
-            return <span className="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-sm font-semibold">⏳ {estado}</span>;
+            return <span className="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-sm font-semibold"> {estado}</span>;
         }
         return <span className="px-3 py-1 bg-gray-100 text-gray-800 rounded-full text-sm font-semibold">{estado}</span>;
     };
@@ -310,19 +310,10 @@ export default function HistorialCoordinacion() {
         XLSX.writeFile(wb, `Reporte_Coordinacion_${new Date().toISOString().split('T')[0]}.xlsx`);
     };
 
-    if (loading) {
-        return (
-            <DashboardLayout title="Historial de Salidas">
-                <div className="min-h-screen flex items-center justify-center bg-gray-50">
-                    <i className="fas fa-spinner fa-spin text-4xl text-indigo-600"></i>
-                </div>
-            </DashboardLayout>
-        );
-    }
-
+   
     return (
         <DashboardLayout title="Historial de Salidas">
-            <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50 p-6 pt-24">
+            <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50 p-6 pt-18">
                 <div className="max-w-7xl mx-auto">
                     {/* Header */}
                     <div className="bg-white rounded-xl shadow-lg p-6 mb-6">
@@ -333,27 +324,17 @@ export default function HistorialCoordinacion() {
                         <div className="flex items-center justify-between mb-4">
                             <div className="flex items-center gap-4">
                                 <div className="bg-gradient-to-br from-indigo-500 to-purple-600 text-white p-4 rounded-full">
-                                    <i className="fas fa-history text-2xl"></i>
+                                    <p className="text-3xl font-bold text-white">{filteredSolicitudes.length}</p>
+
                                 </div>
                                 <div>
-                                    <h1 className="text-3xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
-                                        Historial de Salidas
+                                    <h1 className="text-xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+                                        Historial de Solicitudes
                                     </h1>
-                                    <p className="text-gray-600">Gestiona el historial de solicitudes procesadas</p>
+                                    <p className="text-gray-600 text-sm">Consulta todas las solicitudes de los aprendices</p>
                                 </div>
                             </div>
-                            <div className="text-right flex flex-col items-end gap-2">
-                                <div>
-                                    <p className="text-sm text-gray-500">Total de solicitudes</p>
-                                    <p className="text-3xl font-bold text-indigo-600">{filteredSolicitudes.length}</p>
-                                </div>
-                                <button
-                                    onClick={handleDownloadReport}
-                                    className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition font-semibold shadow-md flex items-center gap-2"
-                                >
-                                    <i className="fas fa-file-excel"></i> Descargar Reporte
-                                </button>
-                            </div>
+
                         </div>
 
                         {/* Barra de Filtros */}
@@ -385,24 +366,23 @@ export default function HistorialCoordinacion() {
                                 />
                             </div>
 
-                            {/* Botón Restablecer */}
-                            <div className="flex items-end">
+                            {/* Botones de Acción (Agrupados para móvil) */}
+                            <div className="md:col-span-2 grid grid-cols-2 gap-2 items-end">
+                                {/* Botón Restablecer */}
                                 <button
                                     onClick={handleRestablecerFiltros}
                                     className="w-full bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition font-semibold"
                                 >
-                                    <i className="fas fa-redo mr-2"></i>Restablecer
+                                    <i className="fas fa-redo mr-2"></i>
                                 </button>
-                            </div>
 
-                            {/* Botón Vaciar Historial */}
-                            <div className="flex items-end">
+                                {/* Botón Vaciar Historial */}
                                 <button
                                     onClick={() => setShowConfirmDeleteModal(true)}
                                     className="w-full bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition font-semibold"
                                     disabled={solicitudes.length === 0}
                                 >
-                                    <i className="fas fa-trash mr-2"></i>Vaciar Historial
+                                    <i className="fas fa-trash mr-2"></i>
                                 </button>
                             </div>
                         </div>
@@ -422,7 +402,21 @@ export default function HistorialCoordinacion() {
                                 </button>
                             ))}
                         </div>
+
+
+
+                        <div className="text-right flex flex-col items-end  mt-4">
+
+                            <button
+                                onClick={handleDownloadReport}
+                                className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition font-semibold shadow-md flex items-center gap-2"
+                            >
+                                <i className="fa-solid fa-file-arrow-down"></i>  Reporte
+                            </button>
+                        </div>
+
                     </div>
+
 
                     {/* Tabla de Solicitudes */}
                     {error ? (
@@ -436,15 +430,14 @@ export default function HistorialCoordinacion() {
                         </div>
                     ) : (
                         <div className="bg-white rounded-xl shadow-lg overflow-hidden">
-                            <div className="overflow-x-auto">
+                            {/* Tabla para pantallas grandes (> 975px) */}
+                            <div className="overflow-x-auto max-[975px]:hidden">
                                 <table className="w-full">
                                     <thead className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white">
                                         <tr>
                                             <th className="px-4 py-3 text-left font-semibold">Fecha</th>
                                             <th className="px-4 py-3 text-left font-semibold">Aprendiz</th>
-                                            <th className="px-4 py-3 text-left font-semibold">Documento</th>
                                             <th className="px-4 py-3 text-left font-semibold">Programa</th>
-                                            <th className="px-4 py-3 text-left font-semibold">Motivo</th>
                                             <th className="px-4 py-3 text-left font-semibold">Estado</th>
                                             <th className="px-4 py-3 text-center font-semibold">Acciones</th>
                                         </tr>
@@ -456,25 +449,27 @@ export default function HistorialCoordinacion() {
                                                 className={`border-b hover:bg-indigo-50 transition ${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'
                                                     }`}
                                             >
-                                                <td className="px-4 py-3 text-sm">
+                                                <td className="px-4 py-3 text-xs">
                                                     {formatFechaHora(solicitud.fecha_solicitud)}
                                                 </td>
                                                 <td className="px-4 py-3">
-                                                    <p className="font-semibold text-gray-800">
+                                                    <p className="font-semibold text-gray-800 text-sm">
                                                         {solicitud.nombre_aprendiz} {solicitud.apellido_aprendiz}
                                                     </p>
+
+                                                    <p className='text-xs text-gray-500'> <strong>Doc: </strong>
+                                                        {solicitud.documento_aprendiz}
+                                                    </p>
                                                 </td>
-                                                <td className="px-4 py-3 text-sm text-gray-600">
-                                                    {solicitud.documento_aprendiz}
+
+
+
+                                                <td className="px-4 py-3 ">
+                                                    <p className="font-medium text-sm">{solicitud.nombre_programa}</p>
+                                                    <p className="text-gray-500 text-xs">Ficha: {solicitud.numero_ficha}</p>
                                                 </td>
-                                                <td className="px-4 py-3 text-sm">
-                                                    <p className="font-medium">{solicitud.nombre_programa}</p>
-                                                    <p className="text-gray-500">Ficha: {solicitud.numero_ficha}</p>
-                                                </td>
-                                                <td className="px-4 py-3 text-sm">
-                                                    {getMotivoTexto(solicitud.motivo, solicitud.descripcion)}
-                                                </td>
-                                                <td className="px-4 py-3">
+
+                                                <td className="px-2 py-3">
                                                     {getEstadoBadge(solicitud)}
                                                 </td>
                                                 <td className="px-4 py-3 text-center">
@@ -496,15 +491,96 @@ export default function HistorialCoordinacion() {
                                     </tbody>
                                 </table>
                             </div>
+
+                            {/* Vista de Tarjetas para pantallas pequeñas (<= 975px) */}
+                            <div className="hidden max-[975px]:block p-4 space-y-4">
+                                {filteredSolicitudes.map((solicitud) => (
+                                    <div
+                                        key={solicitud.id_permiso}
+                                        onClick={() => {
+                                            setSelectedSolicitud(solicitud);
+                                            setShowDetallesModal(true);
+                                        }}
+                                        className="bg-white rounded-xl shadow-md p-4 border border-gray-100 relative overflow-hidden"
+                                    >
+                                        {/* Barra de estado lateral */}
+                                        <div className={`absolute top-0 left-0 bottom-0 w-1 ${(solicitud.estado_display || solicitud.estado_general).toLowerCase().includes('aprobado') || (solicitud.estado_display || solicitud.estado_general).toLowerCase().includes('qr')
+                                            ? 'bg-green-500'
+                                            : (solicitud.estado_display || solicitud.estado_general).toLowerCase().includes('rechazado')
+                                                ? 'bg-red-500'
+                                                : 'bg-yellow-500'
+                                            }`}></div>
+
+                                        <div className="pl-3">
+                                            {/* Motivo */}
+                                            <div className="mb-3">
+                                                <div className="flex items-start gap-2">
+                                                    <div className="bg-indigo-50 p-1.5 rounded-lg">
+                                                        <i className="fas fa-file-alt text-indigo-600 text-xs"></i>
+                                                    </div>
+                                                    <div>
+                                                        <p className="text-[10px] text-gray-500 uppercase font-bold tracking-wide">Motivo</p>
+                                                        <p className="text-sm font-semibold text-gray-800">{getMotivoTexto(solicitud.motivo, solicitud.descripcion)}</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            {/* Aprendiz */}
+                                            <div className="mb-3">
+                                                <p className="text-[10px] text-gray-500 uppercase font-bold mb-1">Aprendiz</p>
+                                                <p className="text-sm font-bold text-gray-900">{solicitud.nombre_aprendiz} {solicitud.apellido_aprendiz}</p>
+                                                <p className="text-xs text-gray-500">Doc: {solicitud.documento_aprendiz}</p>
+                                            </div>
+
+                                            {/* Programa - Ancho Completo */}
+                                            <div className="mb-3 bg-gray-50 p-2 rounded-lg">
+                                                <p className="text-[10px] text-gray-500 uppercase font-bold mb-1">Programa</p>
+                                                <p className="text-xs font-medium text-gray-800">{solicitud.nombre_programa}</p>
+                                                <p className="text-[10px] text-gray-500">Ficha: {solicitud.numero_ficha}</p>
+                                            </div>
+
+                                            {/* Fecha y Estado (Grid) */}
+                                            <div className="grid grid-cols-2 gap-3 mb-2">
+                                                <div>
+                                                    <p className="text-[10px] text-gray-500 uppercase font-bold mb-1">Fecha</p>
+                                                    <p className="text-xs font-medium text-gray-700">
+                                                        <i className="far fa-clock mr-1 text-indigo-500"></i>
+                                                        {formatFechaHora(solicitud.fecha_solicitud)}
+                                                    </p>
+                                                </div>
+                                                <div>
+                                                    <p className="text-[10px] text-gray-500 uppercase font-bold mb-1">Estado</p>
+                                                    <p className='text-xs'>{getEstadoBadge(solicitud)}</p>
+
+                                                </div>
+                                            </div>
+
+                                            {/* Botón Detalles */}
+                                            <div className="flex justify-end mt-3 pt-2 border-t border-gray-100">
+                                                <button
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        setSelectedSolicitud(solicitud);
+                                                        setShowDetallesModal(true);
+                                                    }}
+                                                    className="text-white bg-indigo-600 hover:bg-indigo-700 px-4 py-1.5 rounded-lg text-xs font-semibold shadow-sm transition flex items-center gap-2"
+                                                >
+                                                    <i className="fas fa-info-circle"></i> Detalles
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
                         </div>
                     )}
                 </div>
 
                 {/* Modal de Detalles */}
                 {showDetallesModal && selectedSolicitud && (
-                    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[9999] pt-20 p-4" onClick={() => setShowDetallesModal(false)}>
-                        <div className="bg-white rounded-xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
-                            <div className="bg-gradient-to-r from-indigo-600 to-purple-600 p-6 text-white">
+                    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[9999] pt-18 p-2" onClick={() => setShowDetallesModal(false)}>
+                        <div className="bg-white rounded-xl shadow-2xl max-w-2xl w-full max-h-[90vh] flex flex-col overflow-hidden" onClick={(e) => e.stopPropagation()}>
+                            <div className="bg-gradient-to-r from-indigo-600 to-purple-600 p-2.5 text-white">
                                 <div className="flex items-center justify-between">
                                     <h2 className="text-2xl font-bold">Detalles de la Solicitud</h2>
                                     <div className="flex items-center gap-4">
@@ -524,19 +600,22 @@ export default function HistorialCoordinacion() {
                                 </div>
                             </div>
 
-                            <div className="p-6 space-y-4">
+                            <div className="p-6 space-y-4 overflow-y-auto flex-1">
                                 {/* Aprendiz y Fecha de Solicitud */}
                                 <div className="grid grid-cols-2 gap-4">
                                     <div>
                                         <p className="text-xs text-indigo-600 uppercase font-semibold mb-2">Aprendiz</p>
                                         <p className="font-bold text-gray-800">{selectedSolicitud.nombre_aprendiz} {selectedSolicitud.apellido_aprendiz}</p>
                                         <p className="text-sm text-gray-600">Doc: {selectedSolicitud.documento_aprendiz}</p>
-                                        <p className="text-sm text-gray-600 mt-2">Programa: {selectedSolicitud.nombre_programa}</p>
-                                        <p className="text-sm text-gray-600">Ficha: {selectedSolicitud.numero_ficha}</p>
                                     </div>
                                     <div className="text-right">
                                         <p className="text-xs text-gray-500 uppercase font-semibold mb-2">Fecha de Solicitud</p>
-                                        <p className="font-bold text-gray-800">{formatFechaHora(selectedSolicitud.fecha_solicitud)}</p>
+                                        <p className="font-bold text-gray-800 text-xs">{formatFechaHora(selectedSolicitud.fecha_solicitud)}</p>
+                                    </div>
+                                    <div className="col-span-2 bg-gray-50 p-2 rounded-lg">
+                                        <p className="text-xs text-indigo-600 uppercase font-semibold mb-1">Formación</p>
+                                        <p className="text-sm font-bold text-gray-800">{selectedSolicitud.nombre_programa}</p>
+                                        <p className="text-xs text-gray-600">Ficha: {selectedSolicitud.numero_ficha}</p>
                                     </div>
                                 </div>
 
@@ -702,6 +781,6 @@ export default function HistorialCoordinacion() {
                     </div>
                 )}
             </div>
-        </DashboardLayout>
+        </DashboardLayout >
     );
 }

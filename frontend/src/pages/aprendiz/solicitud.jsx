@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import DashboardLayout from '../../components/DashboardLayout';
 import { useUser } from '../../contexts/UserContext';
 import { API_BASE_URL } from '../../config/api.js';
+import { Link } from "react-router-dom";
 
 // Asegúrate de que API_BASE_URL esté bien configurado en '../../config/api.js'
 const API = API_BASE_URL;
@@ -384,7 +385,13 @@ const SolicitudPermiso = () => {
     return (
 
         <DashboardLayout title="Solicitud de Permiso de Salida">
+
             <div className="min-h-screen bg-[#f4f4f4] p-5">
+
+                <Link to="/aprendiz/inicio" className="btn-back">
+                    <i className="fas fa-chevron-left"></i> Volver al Inicio
+                </Link>
+
                 <div className="max-w-[800px] mx-auto my-5 bg-white p-6 rounded-lg shadow-[0_4px_12px_rgba(0,0,0,0.05)]">
                     <h2 className="text-center text-[#39A900] mb-6 text-lg sm:text-3xl font-bold">
                         Solicitud de Permiso de Salida

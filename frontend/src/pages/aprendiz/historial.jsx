@@ -5,10 +5,12 @@ import DashboardLayout from '../../components/DashboardLayout';
 import { useUser } from '../../contexts/UserContext';
 import { API_BASE_URL } from '../../config/api.js';
 
+
 const API = API_BASE_URL;
 
 export default function HistorialAprendiz() {
     const { user } = useUser();
+
     const [solicitudes, setSolicitudes] = useState([]);
     const [filteredSolicitudes, setFilteredSolicitudes] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -217,7 +219,7 @@ export default function HistorialAprendiz() {
         } else if (estado.includes('Rechazado')) {
             return <span className="px-3 py-1 bg-red-100 text-red-800 rounded-full text-sm font-semibold"> {estado}</span>;
         } else if (estado.includes('Pendiente')) {
-            return <span className="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-sm font-semibold">⏳ {estado}</span>;
+            return <span className="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-sm font-semibold"> {estado}</span>;
         }
         return <span className="px-3 py-1 bg-gray-100 text-gray-800 rounded-full text-sm font-semibold">{estado}</span>;
     };
@@ -238,6 +240,9 @@ export default function HistorialAprendiz() {
                 <div className="max-w-7xl mx-auto">
                     {/* Header */}
                     <div className="bg-white rounded-xl shadow-lg p-6 mb-6">
+                        <Link to="/coordinacion/inicio" className="btn-back mb-4">
+                            <i className="fas fa-chevron-left"></i> Volver al Inicio
+                        </Link>
                         <div className="flex items-center justify-between mb-4">
                             <div className="flex items-center gap-4">
                                 <div className=" bg-gray-100  text-white p-4 rounded-full">
@@ -269,24 +274,23 @@ export default function HistorialAprendiz() {
                                 />
                             </div>
 
-                            {/* Botón Restablecer */}
-                            <div className="flex items-end">
+                            {/* Botones de Acción (Agrupados para móvil) */}
+                            <div className="md:col-span-2 grid grid-cols-2 gap-2 items-end">
+                                {/* Botón Restablecer */}
                                 <button
                                     onClick={handleRestablecerFiltros}
                                     className="w-full bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition font-semibold"
                                 >
-                                    <i className="fas fa-redo mr-2"></i>Restablecer
+                                    <i className="fas fa-redo mr-2"></i>
                                 </button>
-                            </div>
 
-                            {/* Botón Vaciar Historial */}
-                            <div className="flex items-end">
+                                {/* Botón Vaciar Historial */}
                                 <button
                                     onClick={() => setShowConfirmDeleteModal(true)}
                                     className="w-full bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition font-semibold"
                                     disabled={solicitudes.length === 0}
                                 >
-                                    <i className="fas fa-trash mr-2"></i>Vaciar Historial
+                                    <i className="fas fa-trash mr-2"></i>
                                 </button>
                             </div>
                         </div>
@@ -499,7 +503,7 @@ export default function HistorialAprendiz() {
                                                 <p className="text-xs text-gray-500">{selectedSolicitud.documento_instructor}</p>
                                             </div>
                                             <div>
-                                                <p className="text-xs text-gray-500 uppercase font-bold mb-1">Horario</p>
+                                                <p className="text-xs text-gray-500 uppercase font-bold mb-1">Hora</p>
                                                 <p className="text-xs text-gray-600">Salida: <span className="font-medium text-gray-900">{formatTime12h(selectedSolicitud.hora_salida)}</span></p>
                                                 <p className="text-xs text-gray-600">Regreso: <span className="font-medium text-gray-900">{selectedSolicitud.hora_regreso ? formatTime12h(selectedSolicitud.hora_regreso) : 'N/A'}</span></p>
                                             </div>
@@ -564,9 +568,12 @@ export default function HistorialAprendiz() {
                                                     Escaneado
                                                 </button>
                                             ) : selectedSolicitud.estado_general === 'Aprobado' ? (
-                                                // Fallback por si acaso
                                                 <button disabled className="flex-1 bg-gray-100 text-gray-400 py-2 px-4 rounded-lg text-sm font-semibold cursor-not-allowed flex items-center justify-center gap-2">
                                                     <i className="fas fa-check-circle"></i> QR ya escaneado
+                                                </button>
+                                            ) : (selectedSolicitud.estado_general.toLowerCase().includes('rechazado') || selectedSolicitud.estado_general.toLowerCase().includes('cancelado')) ? (
+                                                <button disabled className="flex-1 bg-red-50 text-red-400 py-2 px-4 rounded-lg text-sm font-semibold cursor-not-allowed flex items-center justify-center gap-2">
+                                                    <i className="fas fa-ban"></i> {selectedSolicitud.estado_general}
                                                 </button>
                                             ) : (
                                                 <button disabled className="flex-1 bg-gray-100 text-gray-400 py-2 px-4 rounded-lg text-sm font-semibold cursor-not-allowed flex items-center justify-center gap-2">
