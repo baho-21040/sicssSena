@@ -3,6 +3,7 @@ import { useNavigate, useLocation, Link } from 'react-router-dom';
 import '../../styles/login.css';
 import { login as loginApi, selectAccount as selectAccountApi } from '../../services/auth.js';
 import { useUser } from '../../contexts/UserContext.jsx';
+import siccsLogo from '../../assets/siccslogo.png';
 
 
 export default function Login() {
@@ -115,7 +116,7 @@ export default function Login() {
             <div className="login-container">
                 <div className="login-card">
                     <div className="login-header">
-                        <img className="logosena" src="https://ape.sena.edu.co/imgLayout/logos/Logosimbolo-SENA-PRINCIPAL.png" alt="logo del SENA" />
+                        <img className="logosena" src={siccsLogo} alt="logo del SENA"/>
                         <h1 className="titulo-bienvenida">Portal de Acceso <span className="sena-label">SENA</span></h1>
                         <p className="subtitulo">Control de Salidas Aprendices</p>
                     </div>

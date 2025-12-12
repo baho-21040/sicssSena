@@ -179,9 +179,10 @@ export default function ClaveOlvidada() {
         <div className="background-container">
             <div className="login-container">
                 <div className="login-card" style={{ maxWidth: '500px' }}>
-                    <div className="login-header">
-                        <img className="logosena" src="https://ape.sena.edu.co/imgLayout/logos/Logosimbolo-SENA-PRINCIPAL.png" alt="logo del SENA" />
-                        <h1 className="titulo-bienvenida">Recuperar Contraseña</h1>
+                    {/* CAMBIO APLICADO: Reducir padding/margin del header */}
+                    <div className="login-header" style={{ marginBottom: '15px', paddingBottom: '10px' }}> 
+                        {/* CAMBIO APLICADO: Reducir tamaño del título */}
+                        <h1 className="titulo-bienvenida" style={{ fontSize: '1.5em' }}>Recuperar Contraseña</h1> 
                         <p className="subtitulo">Sistema de Control de Salidas</p>
                     </div>
 
